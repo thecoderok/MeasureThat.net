@@ -14,6 +14,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
+    <ApplicationInsightsResourceId>/subscriptions/9abb1bbc-9756-43ad-8275-0d461c2798ad/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/BenchmarkLab</ApplicationInsightsResourceId>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />
