@@ -27,6 +27,11 @@ namespace BenchmarkLab.Controllers
             return View();
         }
 
+        public IActionResult RunTest()
+        {
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();
