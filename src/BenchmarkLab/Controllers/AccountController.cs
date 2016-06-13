@@ -92,8 +92,9 @@ namespace BenchmarkLab.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
+            /*ViewData["ReturnUrl"] = returnUrl;
+            return View();*/
         }
 
         //
