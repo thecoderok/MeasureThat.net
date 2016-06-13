@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using BenchmarkLab.Models;
 using BenchmarkLab.Models.AccountViewModels;
 using BenchmarkLab.Services;
+using BenchmarkLab.Utility;
 
 namespace BenchmarkLab.Controllers
 {
@@ -102,7 +103,8 @@ namespace BenchmarkLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
+            /*ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -123,7 +125,7 @@ namespace BenchmarkLab.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View(model);*/
         }
 
         //

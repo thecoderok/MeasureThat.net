@@ -10,5 +10,10 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
+
+        public IActionResult Dummy(string g_recaptcha_response)
+        {
+            return View();
+        }
     }
 }
