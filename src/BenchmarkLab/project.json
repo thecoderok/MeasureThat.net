@@ -76,8 +76,6 @@
     }
   },
 
-  "version": "1.0.0-*",
-
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
