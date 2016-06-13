@@ -62,7 +62,8 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2016 - BenchmarkLab (Version: @ApplicationVersionHelper.ApplicationVersion.Value)</p>
+            <p>&copy; 2016 - BenchmarkLab (Version: @(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion))</p>
+
         </footer>
     </div>
 
