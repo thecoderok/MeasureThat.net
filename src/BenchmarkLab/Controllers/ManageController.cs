@@ -230,7 +230,8 @@ namespace BenchmarkLab.Controllers
         [HttpGet]
         public IActionResult SetPassword()
         {
-            return View();
+            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
+            /*return View();*/
         }
 
         //
@@ -239,7 +240,8 @@ namespace BenchmarkLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
-            if (!ModelState.IsValid)
+            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
+            /*if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -256,7 +258,7 @@ namespace BenchmarkLab.Controllers
                 AddErrors(result);
                 return View(model);
             }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });*/
         }
 
         //GET: /Manage/ManageLogins
