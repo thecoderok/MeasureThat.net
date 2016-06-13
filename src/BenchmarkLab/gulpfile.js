@@ -6,6 +6,7 @@ var gulp = require("gulp"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify");
+    bump = require("gulp-bump");
 
 var webroot = "./wwwroot/";
 
@@ -40,6 +41,12 @@ gulp.task("min:css", function () {
         .pipe(concat(paths.concatCssDest))
         .pipe(cssmin())
         .pipe(gulp.dest("."));
+});
+
+gulp.task("bump", function () {
+    gulp.src("./project.json")
+    .pipe(bump())
+    .pipe(gulp.dest("./"));
 });
 
 gulp.task("min", ["min:js", "min:css"]);

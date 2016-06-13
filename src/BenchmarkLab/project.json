@@ -76,6 +76,8 @@
     }
   },
 
+  "version": "1.0.0-*",
+
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -105,7 +107,7 @@
   },
 
   "scripts": {
-    "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min" ],
+    "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min", "gulp bump" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }

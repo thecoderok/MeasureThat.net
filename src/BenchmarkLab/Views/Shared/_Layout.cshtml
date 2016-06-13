@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using BenchmarkLab.Utility
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -60,7 +62,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2016 - BenchmarkLab</p>
+            <p>&copy; 2016 - BenchmarkLab (Version: @ApplicationVersionHelper.ApplicationVersion.Value)</p>
         </footer>
     </div>
 
