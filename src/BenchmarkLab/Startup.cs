@@ -83,7 +83,7 @@ namespace BenchmarkLab
             app.UseStaticFiles();
 
             app.UseIdentity();
-
+            
             // https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-how-to-configure-google-authentication/
             app.UseFacebookAuthentication(new FacebookOptions()
             {

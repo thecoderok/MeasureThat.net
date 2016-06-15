@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{cd2d633f-d144-4c5f-ae62-d74ae0b7e1b1}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureDatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -61,5 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Benchmark.sql" />
+    <Build Include="Tables\BenchmarkVersion.sql" />
+    <Build Include="Tables\BenchmarkTest.sql" />
   </ItemGroup>
 </Project>

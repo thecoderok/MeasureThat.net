@@ -1,0 +1,5 @@
+CREATE LOGIN benchmarklab_test_user WITH PASSWORD = 'tny!+Ntvppigtdkhsnwpm+uXmsFT7_&#$!~<c8aWL3c%rneF'
+
+CREATE USER benchmarklab_test_user FROM LOGIN benchmarklab_test_user;
+
+EXEC sp_addrolemember 'db_owner', 'benchmarklab_test_user';
