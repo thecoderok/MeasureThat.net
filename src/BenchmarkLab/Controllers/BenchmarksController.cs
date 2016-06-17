@@ -2,6 +2,7 @@ using BenchmarkLab.Data;
 using BenchmarkLab.Logic.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BenchmarkLab.Controllers
 {
@@ -22,9 +23,17 @@ namespace BenchmarkLab.Controllers
             return View();
         }
 
-        [ValidateReCaptcha]
-        public IActionResult Dummy()
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
+        public async Task<IActionResult> Dummy()
         {
+            if (ModelState.IsValid)
+            {
+                @ViewData["Message"] = "Model valid";
+            }
+            else
+            {
+                @ViewData["Message"] = "Invalid!!!";
+            }
             return View();
         }
     }

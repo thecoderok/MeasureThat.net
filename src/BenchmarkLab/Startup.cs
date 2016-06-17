@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using BenchmarkLab.Data;
 using BenchmarkLab.Models;
 using BenchmarkLab.Services;
+using BenchmarkLab.Logic.Web;
 
 namespace BenchmarkLab
 {
@@ -59,6 +60,8 @@ namespace BenchmarkLab
 
             services.AddSingleton<IConfigurationRoot>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddScoped<ValidateReCaptchaAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

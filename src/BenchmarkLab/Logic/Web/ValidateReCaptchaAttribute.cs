@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BenchmarkLab.Logic.Web
 {
@@ -10,9 +14,20 @@ namespace BenchmarkLab.Logic.Web
         private const string RecaptchaResponseTokenKey = "g-recaptcha-response";
         private const string ApiVerificationEndpoint = "https://www.google.com/recaptcha/api/siteverify";
         private readonly IConfiguration m_configuration;
-        private readonly Lazy<string> ReCaptchaSecret;
+        private readonly Lazy<string> m_reCaptchaSecret;
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public ValidateReCaptchaAttribute(IConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
+            this.m_configuration = configuration;
+            this.m_reCaptchaSecret = new Lazy<string>(() => m_configuration["ReCaptcha:Secret"]);
+        }
+
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             string token = context.HttpContext.Request.Form[RecaptchaResponseTokenKey];
 
@@ -22,22 +37,33 @@ namespace BenchmarkLab.Logic.Web
             }
             else
             {
-                /*
-                 * var postData = string.Format("&secret={0}&remoteip={1}&response={2}",
-                "58738UwyuasAAAAABe7C5s2HDGq3gmEHj2s2dGHGSp",
-                userIP,
-                Context.Request.Form["g-recaptcha-response"]);
-                var postDataAsBytes = Encoding.UTF8.GetBytes(postData);
-    
-                WebClient webClient = new WebClient();
-                webClient.Headers["Content-Type"] = "application/x-www-form-urlencoded";
-                var json = await webClient.UploadStringTaskAsync
-                (new System.Uri("https://www.google.com/recaptcha/api/siteverify"),"POST",postData); 
-                return JsonConvert.DeserializeObject<CaptchaResponse>(json).Success;
-                 */
+                await ValidateRecaptcha(context, token);
             }
 
-            base.OnActionExecuting(context);
+            await base.OnActionExecutionAsync(context, next);
+        }
+
+        private async Task ValidateRecaptcha(ActionExecutingContext context, string token)
+        {
+            using (var webClient = new HttpClient())
+            {
+                var content = new FormUrlEncodedContent(new[]
+                {
+                        new KeyValuePair<string, string>("secret", this.m_reCaptchaSecret.Value),
+                        new KeyValuePair<string, string>("response", token)
+                    });
+                HttpResponseMessage response = await webClient.PostAsync(ApiVerificationEndpoint, content);
+                string json = await response.Content.ReadAsStringAsync();
+                var reCaptchaResponse = JsonConvert.DeserializeObject<ReCaptchaResponse>(json);
+                if (reCaptchaResponse == null)
+                {
+                    context.ModelState.AddModelError(ReCaptchaModelErrorKey, ReCaptchaValidationErrors.UnableToReadResponseFromServer.ToString());
+                }
+                else if (!reCaptchaResponse.success)
+                {
+                    context.ModelState.AddModelError(ReCaptchaModelErrorKey, ReCaptchaValidationErrors.InvalidReCaptcha.ToString());
+                }
+            }
         }
     }
 
@@ -45,6 +71,17 @@ namespace BenchmarkLab.Logic.Web
     {
         None,
         NoReCaptchaTokenFound,
-        InvalidReCaptcha
+        InvalidReCaptcha,
+        UnableToReadResponseFromServer
     }
+
+
+    public class ReCaptchaResponse
+    {
+        public bool success { get; set; }
+        public string challenge_ts { get; set; }
+        public string hostname { get; set; }
+        public string[] errorcodes { get; set; }
+    }
+
 }
