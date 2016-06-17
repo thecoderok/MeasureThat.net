@@ -1,4 +1,5 @@
 using BenchmarkLab.Data;
+using BenchmarkLab.Logic.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,10 @@ namespace BenchmarkLab.Controllers
             return View();
         }
 
-
+        [ValidateReCaptcha]
+        public IActionResult Dummy()
+        {
+            return View();
+        }
     }
 }
