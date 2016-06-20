@@ -24,7 +24,7 @@ namespace BenchmarkLab.Controllers
         }
 
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Dummy()
+        public IActionResult Dummy()
         {
             if (ModelState.IsValid)
             {

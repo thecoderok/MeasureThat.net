@@ -244,3 +244,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /src/BenchmarkLab/wwwroot/lib
+/src/BenchmarkLab/Scripts/benchmarklab.js.map
+/src/BenchmarkLab/Scripts/benchmarklab.js

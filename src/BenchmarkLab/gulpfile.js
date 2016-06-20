@@ -9,9 +9,11 @@ var gulp = require("gulp"),
     bump = require("gulp-bump");
 
 var webroot = "./wwwroot/";
+var scriptsRoot = "./Scripts/"
 
 var paths = {
     js: webroot + "js/**/*.js",
+    scripts: [scriptsRoot + "**/*.ts", scriptsRoot + "**/*.js", scriptsRoot + "**/*.map"],
     minJs: webroot + "js/**/*.min.js",
     css: webroot + "css/**/*.css",
     minCss: webroot + "css/**/*.min.css",

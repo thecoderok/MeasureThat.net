@@ -29,18 +29,35 @@ namespace BenchmarkLab.Logic.Web
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            await DoReCaptchaValidation(context);
+
+            await base.OnActionExecutionAsync(context, next);
+        }
+
+        private async Task DoReCaptchaValidation(ActionExecutingContext context)
+        {
+            if (!context.HttpContext.Request.HasFormContentType)
+            {
+                // Get request? 
+                AddModelError(context, ReCaptchaValidationErrors.NoReCaptchaTokenFound);
+                return;
+            }
+
             string token = context.HttpContext.Request.Form[RecaptchaResponseTokenKey];
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                context.ModelState.AddModelError(ReCaptchaModelErrorKey, ReCaptchaValidationErrors.NoReCaptchaTokenFound.ToString());
+                AddModelError(context, ReCaptchaValidationErrors.NoReCaptchaTokenFound);
             }
             else
             {
                 await ValidateRecaptcha(context, token);
             }
+        }
 
-            await base.OnActionExecutionAsync(context, next);
+        private static void AddModelError(ActionExecutingContext context, ReCaptchaValidationErrors error)
+        {
+            context.ModelState.AddModelError(ReCaptchaModelErrorKey, error.ToString());
         }
 
         private async Task ValidateRecaptcha(ActionExecutingContext context, string token)
@@ -57,11 +74,11 @@ namespace BenchmarkLab.Logic.Web
                 var reCaptchaResponse = JsonConvert.DeserializeObject<ReCaptchaResponse>(json);
                 if (reCaptchaResponse == null)
                 {
-                    context.ModelState.AddModelError(ReCaptchaModelErrorKey, ReCaptchaValidationErrors.UnableToReadResponseFromServer.ToString());
+                    AddModelError(context, ReCaptchaValidationErrors.UnableToReadResponseFromServer);
                 }
                 else if (!reCaptchaResponse.success)
                 {
-                    context.ModelState.AddModelError(ReCaptchaModelErrorKey, ReCaptchaValidationErrors.InvalidReCaptcha.ToString());
+                    AddModelError(context, ReCaptchaValidationErrors.InvalidReCaptcha);
                 }
             }
         }
