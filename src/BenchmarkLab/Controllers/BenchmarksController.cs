@@ -1,5 +1,6 @@
 using BenchmarkLab.Data;
 using BenchmarkLab.Logic.Web;
+using BenchmarkLab.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -23,8 +24,15 @@ namespace BenchmarkLab.Controllers
             return View();
         }
 
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public IActionResult Dummy()
+        public IActionResult Add([FromBody] NewBenchmarkModel model)
         {
             if (ModelState.IsValid)
             {

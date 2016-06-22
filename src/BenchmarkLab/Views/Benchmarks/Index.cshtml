@@ -1,15 +1,12 @@
-﻿@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+﻿@using Microsoft.AspNetCore.Identity
 
-@{
-    ViewData["Title"] = "Benchmark";
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-default">Create new benchmark</a>
 }
-
-@using (Html.BeginForm("Dummy", "Benchmarks")) { 
-    <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
-    <br>
-    <input type="submit" value="Submit" />
-}
-
-@section Scripts {
-    <script src='https://www.google.com/recaptcha/api.js'></script>   
+else
+{
+    <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-default">Create new benchmark</a>
 }

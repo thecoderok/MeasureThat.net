@@ -246,3 +246,6 @@ ModelManifest.xml
 /src/BenchmarkLab/wwwroot/lib
 /src/BenchmarkLab/Scripts/benchmarklab.js.map
 /src/BenchmarkLab/Scripts/benchmarklab.js
+/src/BenchmarkLab/wwwroot/scripts/benchmarklab.ts
+/src/BenchmarkLab/wwwroot/scripts/benchmarklab.js.map
+/src/BenchmarkLab/wwwroot/scripts/benchmarklab.js

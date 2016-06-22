@@ -23,6 +23,8 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <title>@ViewData["Title"] - BenchmarkLab</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -51,8 +53,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a data-toggle="modal" data-target="#aboutModal" href="#">About</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -70,6 +71,9 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        @{
+// TODO: Load these only when needed
+        }
         <script src="~/lib/lodash/dist/lodash.js"></script>
         <script src="~/lib/platform/platform.js"></script>
         <script src="~/lib/benchmark/benchmark.js"></script>
@@ -91,5 +95,45 @@
     </environment>
 
     @RenderSection("scripts", required: false)
+
+    @{
+        //TODO: move about dialog into separate view
+    }
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModal-label">About</h4>
+                </div>
+                <div class="modal-body">
+                    <p>JavaScript performance benchmarks</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="authenticateModal" tabindex="-1" role="dialog" aria-labelledby="authenticateModal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="authenticateModal-label">Log in using external service:</h4>
+                </div>
+                <div class="modal-body" style="text-align: center">
+                    @await Html.PartialAsync("MiniLogin.cshtml")
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+
+
 </html>

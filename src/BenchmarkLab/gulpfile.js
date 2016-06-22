@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding Clean='clean' AfterBuild='default' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -6,7 +6,8 @@ var gulp = require("gulp"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
-    bump = require("gulp-bump");
+    bump = require("gulp-bump"),
+    del = require("del");
 
 var webroot = "./wwwroot/";
 var scriptsRoot = "./Scripts/"
@@ -23,6 +24,7 @@ var paths = {
 
 gulp.task("clean:js", function (cb) {
     rimraf(paths.concatJsDest, cb);
+    del(['wwwroot/scripts/**/*']);
 });
 
 gulp.task("clean:css", function (cb) {
@@ -52,3 +54,7 @@ gulp.task("bump", function () {
 });
 
 gulp.task("min", ["min:js", "min:css"]);
+
+gulp.task('default', function () {
+    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/scripts'))
+});
