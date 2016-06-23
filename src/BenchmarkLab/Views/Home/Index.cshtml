@@ -1,7 +1,17 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="row">
-    Yo
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-default">Create new benchmark</a>
+    }
+    else
+    {
+        <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-default">Create new benchmark</a>
+    }
 </div>
