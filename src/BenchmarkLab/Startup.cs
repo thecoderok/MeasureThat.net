@@ -54,10 +54,6 @@ namespace BenchmarkLab
 
             services.AddMvc();
 
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-
             services.AddSingleton<IConfigurationRoot>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
 
