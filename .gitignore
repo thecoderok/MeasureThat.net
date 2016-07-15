@@ -249,3 +249,4 @@ ModelManifest.xml
 /src/BenchmarkLab/wwwroot/scripts/benchmarklab.ts
 /src/BenchmarkLab/wwwroot/scripts/benchmarklab.js.map
 /src/BenchmarkLab/wwwroot/scripts/benchmarklab.js
+/src/BenchmarkLab/Properties/PublishProfiles/publish-module.psm1
