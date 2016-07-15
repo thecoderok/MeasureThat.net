@@ -10,6 +10,7 @@ using BenchmarkLab.Data;
 using BenchmarkLab.Models;
 using BenchmarkLab.Services;
 using BenchmarkLab.Logic.Web;
+using BenchmarkLab.Data.Dao;
 
 namespace BenchmarkLab
 {
@@ -54,10 +55,16 @@ namespace BenchmarkLab
 
             services.AddMvc();
 
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+
             services.AddSingleton<IConfigurationRoot>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddScoped<ValidateReCaptchaAttribute>();
+
+            services.AddSingleton<IEntityRepository<NewBenchmarkModel, int>, MockBenchmarksRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

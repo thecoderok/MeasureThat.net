@@ -1,6 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<NewBenchmarkModel>
 
 @inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Benchmarks";
+}
+
+<div class="page-header">
+    <h1>All benchmarks</h1>
+</div>
+
+<table class="table table-striped">
+@foreach (var b in Model)
+{
+<tr>
+    <td>@b.BenchmarkName</td>
+</tr>
+}
+</table>
 
 @if (SignInManager.IsSignedIn(User))
 {

@@ -1,9 +1,10 @@
 using BenchmarkLab.Data;
+using BenchmarkLab.Data.Dao;
 using BenchmarkLab.Logic.Web;
 using BenchmarkLab.Models;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BenchmarkLab.Controllers
 {
@@ -11,38 +12,39 @@ namespace BenchmarkLab.Controllers
     public class BenchmarksController : Controller
     {
         private ApplicationDbContext m_context;
+        private IEntityRepository<NewBenchmarkModel, int> m_benchmarkRepository;
 
-        public BenchmarksController(ApplicationDbContext context)
+        public BenchmarksController([NotNull] ApplicationDbContext context, [NotNull] IEntityRepository<NewBenchmarkModel, int> benchmarkRepository)
         {
             this.m_context = context;
+            this.m_benchmarkRepository = benchmarkRepository;
         }
 
         [AllowAnonymous]
         public IActionResult Index()
         {
-            var bencmmarks = this.m_context.Benchmark;
-            return View();
+            var list = m_benchmarkRepository.ListAll();
+            return View(list);
         }
 
         public IActionResult Add()
         {
-            return View();
+            return View(new NewBenchmarkModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public IActionResult Add([FromBody] NewBenchmarkModel model)
+        public IActionResult Add(NewBenchmarkModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                @ViewData["Message"] = "Model valid";
+                return View(model);
             }
-            else
-            {
-                @ViewData["Message"] = "Invalid!!!";
-            }
-            return View();
+
+            m_benchmarkRepository.Add(model);
+
+            return RedirectToAction("Index");
         }
     }
 }

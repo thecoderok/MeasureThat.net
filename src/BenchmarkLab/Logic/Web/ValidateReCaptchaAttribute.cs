@@ -39,7 +39,7 @@ namespace BenchmarkLab.Logic.Web
             if (!context.HttpContext.Request.HasFormContentType)
             {
                 // Get request? 
-                AddModelError(context, ReCaptchaValidationErrors.NoReCaptchaTokenFound);
+                AddModelError(context, "No reCaptcha token found");
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace BenchmarkLab.Logic.Web
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                AddModelError(context, ReCaptchaValidationErrors.NoReCaptchaTokenFound);
+                AddModelError(context, "No reCaptcha token found");
             }
             else
             {
@@ -55,9 +55,9 @@ namespace BenchmarkLab.Logic.Web
             }
         }
 
-        private static void AddModelError(ActionExecutingContext context, ReCaptchaValidationErrors error)
+        private static void AddModelError(ActionExecutingContext context, string error)
         {
-            context.ModelState.AddModelError(ReCaptchaModelErrorKey, error.ToString());
+            context.ModelState.AddModelError(ReCaptchaModelErrorKey, error);
         }
 
         private async Task ValidateRecaptcha(ActionExecutingContext context, string token)
@@ -74,24 +74,16 @@ namespace BenchmarkLab.Logic.Web
                 var reCaptchaResponse = JsonConvert.DeserializeObject<ReCaptchaResponse>(json);
                 if (reCaptchaResponse == null)
                 {
-                    AddModelError(context, ReCaptchaValidationErrors.UnableToReadResponseFromServer);
+                    // TODO: logging
+                    AddModelError(context, "Unable to read response from reCaptcha server");
                 }
                 else if (!reCaptchaResponse.success)
                 {
-                    AddModelError(context, ReCaptchaValidationErrors.InvalidReCaptcha);
+                    AddModelError(context, "Invalid reCaptcha");
                 }
             }
         }
     }
-
-    public enum ReCaptchaValidationErrors
-    {
-        None,
-        NoReCaptchaTokenFound,
-        InvalidReCaptcha,
-        UnableToReadResponseFromServer
-    }
-
 
     public class ReCaptchaResponse
     {
