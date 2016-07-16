@@ -25,6 +25,31 @@
         @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.HtmlPreparationCode)
+        @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ScriptPreparationCode)
+        @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.BenchmarkCode)
+        @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.BenchmarkCode)
+        @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+    </div>
+
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
     </div>
@@ -33,6 +58,20 @@
 
 
 @section Scripts {
+    @{
+        // TODO: local styles in separate section
+        // TODO: local debug (non min) versions in debug mode
+    }
     <script src='https://www.google.com/recaptcha/api.js'></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+            lineNumbers: true,
+            mode: 'javascript'
+      });
+    </script>
+                                                                 }

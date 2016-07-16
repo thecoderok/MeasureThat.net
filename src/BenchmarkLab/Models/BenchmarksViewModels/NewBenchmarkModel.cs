@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BenchmarkLab.Models
 {
@@ -13,5 +14,16 @@ namespace BenchmarkLab.Models
 
         [Required]
         public uint BenchmarkVersion { get; set; }
+
+        [Display(Name = "Html Preparation code")]
+        public string HtmlPreparationCode { get; set; }
+
+        [Required]
+        [Display(Name = "JavaScript preparation code")]
+        public string ScriptPreparationCode { get; set; }
+
+        [Required]
+        [Display(Name = "Benchmark code")]
+        public IEnumerable<string> BenchmarkCode { get; set; }        
     }
 }

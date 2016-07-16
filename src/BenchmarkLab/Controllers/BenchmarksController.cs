@@ -1,3 +1,4 @@
+using System.Linq;
 using BenchmarkLab.Data;
 using BenchmarkLab.Data.Dao;
 using BenchmarkLab.Logic.Web;
@@ -39,6 +40,14 @@ namespace BenchmarkLab.Controllers
         {
             if (!ModelState.IsValid)
             {
+                return View(model);
+            }
+
+            // Check if benchmark code was actually entered
+            if (model.BenchmarkCode.Count() < 2 || model.BenchmarkCode.Any(string.IsNullOrWhiteSpace))
+            {
+                // TODO: use correct error key
+                ModelState.AddModelError("BenchmarkCode", "Enter the benchmark code");
                 return View(model);
             }
 
