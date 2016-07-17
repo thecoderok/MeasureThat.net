@@ -64,7 +64,7 @@ namespace BenchmarkLab
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddSingleton<IEntityRepository<NewBenchmarkModel, int>, MockBenchmarksRepository>();
+            services.AddSingleton<IBenchmarksRepository, MockBenchmarksRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

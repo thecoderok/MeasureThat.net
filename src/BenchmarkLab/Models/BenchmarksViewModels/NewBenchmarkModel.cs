@@ -25,5 +25,7 @@ namespace BenchmarkLab.Models
         [Required]
         [Display(Name = "Benchmark code")]
         public IEnumerable<string> BenchmarkCode { get; set; }        
+
+        public int Id { get; set; }
     }
 }

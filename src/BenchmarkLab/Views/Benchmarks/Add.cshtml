@@ -15,46 +15,68 @@
 
     @Html.ValidationSummary();
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.BenchmarkName)
-        @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.BenchmarkName, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Description)
-        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.HtmlPreparationCode)
-        @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.ScriptPreparationCode)
-        @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
+    <div class="panel panel-default">
+        <div class="panel-heading">Benchmark name and description</div>
+        <div class="panel-body">
+            <div class="form-group">
+                @Html.LabelFor(m => m.BenchmarkName)
+                @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.BenchmarkName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.BenchmarkCode)
-        @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+    <div class="panel panel-default">
+        <div class="panel-heading">Preparation code</div>
+        <div class="panel-body">
+            <div class="form-group">
+                @Html.LabelFor(m => m.HtmlPreparationCode)
+                @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ScriptPreparationCode)
+                @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.BenchmarkCode)
-        @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Test cases</div>
+        <div class="panel-body">
+            <div class="form-group">
+                @Html.LabelFor(m => m.BenchmarkCode)
+                @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.BenchmarkCode)
+                @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <input type="button" class="btn btn-default" value="Add test case" />
+            </div>
+        </div>
     </div>
 
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
     </div>
     <input type="submit" class="btn btn-default" value="Submit" />
+    <input type="button" class="btn btn-info" value="Test before submit" />
 }
+
 
 
 @section Scripts {
@@ -65,13 +87,21 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/htmlmixed/htmlmixed.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.min.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript">
-        var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+        var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
             lineNumbers: true,
-            mode: 'javascript'
-      });
+            mode: 'htmlmixed',
+            theme: 'ambiance'
+        });
+
+        var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
+            lineNumbers: true,
+            mode: 'javascript',
+            theme: 'ambiance'
+        });
+
     </script>
                                                                  }
