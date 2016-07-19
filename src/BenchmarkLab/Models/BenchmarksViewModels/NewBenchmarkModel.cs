@@ -27,5 +27,7 @@ namespace BenchmarkLab.Models
         public IEnumerable<string> BenchmarkCode { get; set; }        
 
         public int Id { get; set; }
+
+        public string OwnerId { get; set; }
     }
 }

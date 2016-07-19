@@ -38,7 +38,12 @@ namespace BenchmarkLab.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public IActionResult Add(NewBenchmarkModel model)
+        public IActionResult Add([Bind(
+            "BenchmarkName",
+            "Description", 
+            "HtmlPreparationCode",
+            "ScriptPreparationCode",
+            "BenchmarkCode")] NewBenchmarkModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -56,20 +61,30 @@ namespace BenchmarkLab.Controllers
             // This is brand new benchmark
             model.BenchmarkVersion = 0;
 
+            model.OwnerId = 
+
             m_benchmarkRepository.Add(model);
 
             return RedirectToAction("Run", new { benchmarkId = model.Id, benchmarkVersion = model.BenchmarkVersion });
         }
 
+        [HttpGet]
         public IActionResult Run(int benchmarkId, int benchmarkVersion)
         {
             NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(benchmarkId, benchmarkVersion);
             if (benchmarkToRun == null)
             {
-                return View("Error", "Can't find benchmark to run.");
+                return NotFound();
             }
 
             return View(new NewBenchmarkModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //TODO: should aft be validated?
+        public IActionResult Fork(int benchmarkId, int benchmarkVersion)
+        {
+            return View();
         }
     }
 }

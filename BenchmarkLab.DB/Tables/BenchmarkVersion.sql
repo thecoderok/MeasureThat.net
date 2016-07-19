@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[BenchmarkVersion]
 (
 	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
-    [BenchmarkVersion] TINYINT NOT NULL, 
+    [Version] INT NOT NULL, 
     [BenchmarkId] INT NOT NULL, 
     [ScriptPreparationCode] NVARCHAR(MAX) NULL, 
     [HtmlPreparationCode] NVARCHAR(MAX) NULL, 
@@ -10,4 +10,4 @@
 
 GO
 
-CREATE INDEX [IX_BenchmarkVersion_Unique] ON [dbo].[BenchmarkVersion] (BenchmarkId, BenchmarkVersion)
+CREATE INDEX [IX_BenchmarkVersion_Unique] ON [dbo].[BenchmarkVersion] (BenchmarkId, [Version])

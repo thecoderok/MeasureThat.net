@@ -64,4 +64,7 @@
     <Build Include="Tables\BenchmarkVersion.sql" />
     <Build Include="Tables\BenchmarkTest.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BenchmarkLab.DB.refactorlog" />
+  </ItemGroup>
 </Project>
