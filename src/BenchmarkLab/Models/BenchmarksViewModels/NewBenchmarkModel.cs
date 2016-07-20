@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BenchmarkLab.Models
 {
     public class NewBenchmarkModel
     {
+        public NewBenchmarkModel()
+        {
+            this.BenchmarkCode = new List<string>();
+        }
+
         [Required]
         [Display(Name = "Benchmark Name")]
         [StringLength(60, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -24,6 +29,7 @@ namespace BenchmarkLab.Models
 
         [Required]
         [Display(Name = "Benchmark code")]
+        //[MinLength(2, ErrorMessage ="At least two test cases required")]
         public IEnumerable<string> BenchmarkCode { get; set; }        
 
         public int Id { get; set; }

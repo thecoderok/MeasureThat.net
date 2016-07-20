@@ -1,4 +1,4 @@
-﻿@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
 @using BenchmarkLab.Logic.Web
 @model NewBenchmarkModel
 
@@ -12,57 +12,78 @@
 
 @using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post))
 {
+    //@Html.ValidationSummary();
+
     @Html.AntiForgeryToken()
 
-    <div class="panel panel-default">
-        <div class="panel-heading">Benchmark name and description</div>
-        <div class="panel-body">
-            <div class="form-group">
-                @Html.LabelFor(m => m.BenchmarkName)
-                @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.BenchmarkName, "", new { @class = "text-danger" })
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Benchmark name and description
+                    </a>
+                </h4>
             </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Description)
-                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BenchmarkName)
+                        @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.BenchmarkName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                        Preparation code
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.HtmlPreparationCode)
+                        @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ScriptPreparationCode)
+                        @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                        Test cases
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body" id="test-case-list">
+                    
+                </div>
+                <div class="panel-footer">
+                    @Html.ValidationMessage("BenchmarkCode", "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <input type="button" class="btn btn-default" data-action="new-test" value="Add test case" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">Preparation code</div>
-        <div class="panel-body">
-            <div class="form-group">
-                @Html.LabelFor(m => m.HtmlPreparationCode)
-                @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.ScriptPreparationCode)
-                @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
-
-
-    <div class="panel panel-default">
-        <div class="panel-heading">Test cases</div>
-        <div class="panel-body" id="test-case-list">
-
-
-        </div>
-        <div class="panel-footer">
-            <div class="form-group">
-                <input type="button" class="btn btn-default" data-action="new-test" value="Add test case" />
-            </div>
-        </div>
-    </div>
-    <!--
-    TODO: in case of error keep the test state    
-    -->
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
         @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey, "", new { @class = "text-danger" })
@@ -83,10 +104,13 @@
 }
 
 <div class="hidden">
+@if (Model.BenchmarkCode != null && Model.BenchmarkCode.Count() > 0)
+{
 @foreach (var testCase in Model.BenchmarkCode)
 {
 // So tests that user already added not get lost
 <textarea data-content="existing-test">@testCase</textarea>
+}
 }
 </div>
 
@@ -114,29 +138,23 @@
 <script id="testCase" type="x-tmpl-mustache">
     <div class="form-group">
         <label for="BenchmarkCode">Benchmark code</label>
-        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode">{textCaseContent}</textarea>
+        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode">{{textCaseContent}}</textarea>
         <span class="field-validation-valid text-danger" data-valmsg-for="BenchmarkCode" data-valmsg-replace="true"></span>
         <button data-action="delete-test" class="btn btn-default">Delete</button>
     </div>
 </script>
 
     <script type="text/javascript">
-        var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
-            lineNumbers: true,
-            mode: 'xml'
-        });
-
-        var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
-            lineNumbers: true,
-            mode: 'javascript'
-        });
-
         function deleteTest() {
             $(this.parentNode).remove();
             return false;
         }
 
         function newTestCase(strTestCaseContent) {
+            if (!strTestCaseContent) {
+                strTestCaseContent = '';
+            }
+
             var template = $('#testCase').html();
             Mustache.parse(template);   // optional, speeds up future uses
             var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent });
@@ -149,15 +167,25 @@
             });
 
             newTestCase.find("[data-action='delete-test']").click(deleteTest);
-        }
+        }        
 
-        $("[data-action='new-test']").on("click", newTestCase);
+        $(document).ready(function () {
+            var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+                lineNumbers: true,
+                mode: 'xml'
+            });
 
-        $("[data-content='existing-test']").each(function (idx, el) {
-            debugger;
-            newTestCase(el.innerText());
+            var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
+                lineNumbers: true,
+                mode: 'javascript'
+            });
+
+            $("[data-action='new-test']").on("click", function () { newTestCase(''); });
+
+            $("[data-content='existing-test']").each(function (idx, el) {
+                newTestCase(el.textContent);
+            });
         });
         
-        newTestCase();
     </script>
 }
