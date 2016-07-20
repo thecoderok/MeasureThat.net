@@ -78,6 +78,7 @@ namespace BenchmarkLab.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Run(int benchmarkId, int benchmarkVersion)
         {
             NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(benchmarkId, benchmarkVersion);
@@ -86,7 +87,15 @@ namespace BenchmarkLab.Controllers
                 return NotFound();
             }
 
-            return View(new NewBenchmarkModel());
+            return View(benchmarkToRun);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ShowTest(int benchmarkId, int benchmarkVersion)
+        {
+            //  TODO: seo friendly name here
+            return View();
         }
 
         [HttpPost]

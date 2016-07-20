@@ -18,7 +18,7 @@ namespace BenchmarkLab.Models
         [Display(Name = "Html Preparation code")]
         public string HtmlPreparationCode { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "JavaScript preparation code")]
         public string ScriptPreparationCode { get; set; }
 

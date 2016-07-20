@@ -24,7 +24,7 @@
     <meta name="theme-color" content="#ffffff">
     <title>@ViewData["Title"] - BenchmarkLab</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    
+
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -38,8 +38,7 @@
     </environment>
     @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/theme/ambiance.min.css">
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -100,7 +99,7 @@
     @RenderSection("scripts", required: false)
 
     @{
-        //TODO: move about dialog into separate view
+//TODO: move about dialog into separate view
     }
     <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
         <div class="modal-dialog">

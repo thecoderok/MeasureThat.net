@@ -7,7 +7,7 @@
 }
 
 <div class="page-header">
-    <h1>Create new benchmark</h1>    
+    <h1>Create new benchmark</h1>
 </div>
 
 @using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post))
@@ -50,80 +50,102 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">Test cases</div>
-        <div class="panel-body">
-            <div class="form-group">
-                @Html.LabelFor(m => m.BenchmarkCode)
-                @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
-            </div>
+        <div class="panel-body" id="test-case-list">
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.BenchmarkCode)
-                @Html.TextAreaFor(m => m.BenchmarkCode, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.BenchmarkCode, "", new { @class = "text-danger" })
-            </div>
 
+        </div>
+        <div class="panel-footer">
             <div class="form-group">
-                <input type="button" class="btn btn-default" value="Add test case" />
+                <input type="button" class="btn btn-default" data-action="new-test" value="Add test case" />
             </div>
         </div>
     </div>
-
+    <!--
+    TODO: in case of error keep the test state    
+    -->
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
         @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey, "", new { @class = "text-danger" })
-    </div>    
+    </div>
 
     <input type="submit" class="btn btn-default" value="Submit" />
     <input type="button" class="btn btn-info" value="Test before submit" />
 }
 
+@section Styles{
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/code-mirror-themes/lib/codemirror.css">
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/theme/ambiance.min.css">
+    </environment>
+}
 
 
 @section Scripts {
-    @{
-        // TODO: local styles in separate section
-    }
 
-<script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 
-<environment names="Development">
-    <script src="~/lib/codemirror/lib/codemirror.js" asp-append-version="true"></script>
-    <script src="~/lib/codemirror/mode/xml/xml.js" asp-append-version="true"></script>
-    <script src="~/lib/codemirror/mode/javascript/javascript.js" asp-append-version="true"></script>
-    <script src="~/lib/mustache/mustache.js" asp-append-version="true"></script>
-</environment>
-<environment names="Staging,Production">
-    <script src="~/scripts/benchmarklab.min.js" asp-append-version="true"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/xml/xml.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.3/mustache.min.js"></script>
-</environment>  
+    <environment names="Development">
+        <script src="~/lib/codemirror/lib/codemirror.js" asp-append-version="true"></script>
+        <script src="~/lib/codemirror/mode/xml/xml.js" asp-append-version="true"></script>
+        <script src="~/lib/codemirror/mode/javascript/javascript.js" asp-append-version="true"></script>
+        <script src="~/lib/mustache/mustache.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/xml/xml.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.3/mustache.min.js"></script>
+    </environment>
 
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script type="text/javascript">
-        var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
-            lineNumbers: true,
-            mode: 'xml',
-            theme: 'ambiance'
-        });
-
-        var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
-            lineNumbers: true,
-            mode: 'javascript',
-            theme: 'ambiance'
-        });
-
-    </script>
 
 <script id="testCase" type="x-tmpl-mustache">
     <div class="form-group">
         <label for="BenchmarkCode">Benchmark code</label>
         <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode"></textarea>
         <span class="field-validation-valid text-danger" data-valmsg-for="BenchmarkCode" data-valmsg-replace="true"></span>
+        <button data-action="delete-test" class="btn btn-default">Delete</button>
     </div>
 </script>
+
+    <script type="text/javascript">
+        var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+            lineNumbers: true,
+            mode: 'xml'
+        });
+
+        var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
+            lineNumbers: true,
+            mode: 'javascript'
+        });
+
+        function deleteTest() {
+            $(this.parentNode).remove();
+            return false;
+        }
+
+        function newTestCase() {
+            var template = $('#testCase').html();
+            Mustache.parse(template);   // optional, speeds up future uses
+            var rendered = Mustache.render(template);
+            var newTestCase = $(rendered);
+            $("#test-case-list").append(newTestCase);
+            var editor = newTestCase.find("textarea");
+            var testCaseEditor = CodeMirror.fromTextArea(editor[0], {
+                lineNumbers: true,
+                mode: 'javascript'
+            });
+
+            newTestCase.find("[data-action='delete-test']").click(deleteTest);
+        }
+
+        $("[data-action='new-test']").on("click", newTestCase);
+        newTestCase();
+        newTestCase();
+    </script>
 }
