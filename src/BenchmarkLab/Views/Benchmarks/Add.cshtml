@@ -82,6 +82,13 @@
     </environment>
 }
 
+<div class="hidden">
+@foreach (var testCase in Model.BenchmarkCode)
+{
+// So tests that user already added not get lost
+<textarea data-content="existing-test">@testCase</textarea>
+}
+</div>
 
 @section Scripts {
 
@@ -107,7 +114,7 @@
 <script id="testCase" type="x-tmpl-mustache">
     <div class="form-group">
         <label for="BenchmarkCode">Benchmark code</label>
-        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode"></textarea>
+        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode">{textCaseContent}</textarea>
         <span class="field-validation-valid text-danger" data-valmsg-for="BenchmarkCode" data-valmsg-replace="true"></span>
         <button data-action="delete-test" class="btn btn-default">Delete</button>
     </div>
@@ -129,10 +136,10 @@
             return false;
         }
 
-        function newTestCase() {
+        function newTestCase(strTestCaseContent) {
             var template = $('#testCase').html();
             Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template);
+            var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent });
             var newTestCase = $(rendered);
             $("#test-case-list").append(newTestCase);
             var editor = newTestCase.find("textarea");
@@ -145,7 +152,12 @@
         }
 
         $("[data-action='new-test']").on("click", newTestCase);
-        newTestCase();
+
+        $("[data-content='existing-test']").each(function (idx, el) {
+            debugger;
+            newTestCase(el.innerText());
+        });
+        
         newTestCase();
     </script>
 }
