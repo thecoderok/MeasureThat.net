@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+@using BenchmarkLab.Logic.Web
 @model NewBenchmarkModel
 
 @{
@@ -12,8 +13,6 @@
 @using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
-    @Html.ValidationSummary();
 
     <div class="panel panel-default">
         <div class="panel-heading">Benchmark name and description</div>
@@ -73,6 +72,9 @@
     <div class="form-group">
         <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
     </div>
+
+    @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey)
+
     <input type="submit" class="btn btn-default" value="Submit" />
     <input type="button" class="btn btn-info" value="Test before submit" />
 }

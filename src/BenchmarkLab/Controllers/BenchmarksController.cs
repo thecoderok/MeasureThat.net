@@ -1,12 +1,15 @@
 using System.Linq;
+using System.Threading.Tasks;
 using BenchmarkLab.Data;
 using BenchmarkLab.Data.Dao;
 using BenchmarkLab.Logic.Web;
 using BenchmarkLab.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 
 namespace BenchmarkLab.Controllers
 {
@@ -14,13 +17,18 @@ namespace BenchmarkLab.Controllers
     public class BenchmarksController : Controller
     {
         private ApplicationDbContext m_context;
-        private IBenchmarksRepository m_benchmarkRepository;
+        private readonly IBenchmarksRepository m_benchmarkRepository;
         private readonly ILogger m_logger;
+        private readonly UserManager<ApplicationUser> m_userManager;
 
-        public BenchmarksController([NotNull] ApplicationDbContext context, [NotNull] IBenchmarksRepository benchmarkRepository)
+        public BenchmarksController(
+            [NotNull] ApplicationDbContext context,
+            [NotNull] IBenchmarksRepository benchmarkRepository,
+            [NotNull] UserManager<ApplicationUser> userManager)
         {
             this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
+            m_userManager = userManager;
         }
 
         [AllowAnonymous]
@@ -38,7 +46,7 @@ namespace BenchmarkLab.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public IActionResult Add([Bind(
+        public async Task<IActionResult> Add([Bind(
             "BenchmarkName",
             "Description", 
             "HtmlPreparationCode",
@@ -61,7 +69,8 @@ namespace BenchmarkLab.Controllers
             // This is brand new benchmark
             model.BenchmarkVersion = 0;
 
-            model.OwnerId = 
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            model.OwnerId = user.Id;
 
             m_benchmarkRepository.Add(model);
 
@@ -85,6 +94,11 @@ namespace BenchmarkLab.Controllers
         public IActionResult Fork(int benchmarkId, int benchmarkVersion)
         {
             return View();
+        }
+
+        private Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            return m_userManager.GetUserAsync(HttpContext.User);
         }
     }
 }

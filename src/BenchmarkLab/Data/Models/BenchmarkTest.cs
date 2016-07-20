@@ -8,6 +8,7 @@ namespace BenchmarkLab.Data.Models
         public int Id { get; set; }
         public int BenchmarkVersionId { get; set; }
         public string BenchmarkText { get; set; }
+        public DateTime WhenCreated { get; set; }
 
         public virtual BenchmarkVersion BenchmarkVersion { get; set; }
     }

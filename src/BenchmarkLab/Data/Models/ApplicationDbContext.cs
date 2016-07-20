@@ -29,11 +29,17 @@ namespace BenchmarkLab.Data
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(60);
+
+                entity.Property(e => e.OwnerId)
+                    .IsRequired()
+                    .HasMaxLength(450);
             });
 
             modelBuilder.Entity<BenchmarkTest>(entity =>
             {
                 entity.Property(e => e.BenchmarkText).IsRequired();
+
+                entity.Property(e => e.WhenCreated).HasDefaultValueSql("getdate()");
 
                 entity.HasOne(d => d.BenchmarkVersion)
                     .WithMany(p => p.BenchmarkTest)
@@ -44,10 +50,8 @@ namespace BenchmarkLab.Data
 
             modelBuilder.Entity<BenchmarkVersion>(entity =>
             {
-                entity.HasIndex(e => new { e.BenchmarkId, e.BenchmarkVersion1 })
+                entity.HasIndex(e => new { e.BenchmarkId, e.Version })
                     .HasName("IX_BenchmarkVersion_Unique");
-
-                entity.Property(e => e.BenchmarkVersion1).HasColumnName("BenchmarkVersion");
 
                 entity.HasOne(d => d.Benchmark)
                     .WithMany(p => p.BenchmarkVersion)
@@ -55,6 +59,8 @@ namespace BenchmarkLab.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BenchmarkVersion_ToBenchmark");
             });
+
+            
         }
         
         public virtual DbSet<Benchmark> Benchmark { get; set; }

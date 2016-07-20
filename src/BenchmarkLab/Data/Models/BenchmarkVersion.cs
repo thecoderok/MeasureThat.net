@@ -11,7 +11,7 @@ namespace BenchmarkLab.Data.Models
         }
 
         public int Id { get; set; }
-        public byte BenchmarkVersion1 { get; set; }
+        public int Version { get; set; }
         public int BenchmarkId { get; set; }
         public string ScriptPreparationCode { get; set; }
         public string HtmlPreparationCode { get; set; }
