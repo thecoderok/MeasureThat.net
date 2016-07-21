@@ -79,9 +79,9 @@ namespace BenchmarkLab.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Run(int benchmarkId, int benchmarkVersion)
+        public IActionResult Show(int id, int ver, string name)
         {
-            NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(benchmarkId, benchmarkVersion);
+            NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(id, ver);
             if (benchmarkToRun == null)
             {
                 return NotFound();

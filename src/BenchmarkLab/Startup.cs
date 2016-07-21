@@ -100,6 +100,10 @@ namespace BenchmarkLab
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "showTest",
+                    template: "{controller=Benchmarks}/{action=Show}/{id}/{ver}/{name?}");
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
