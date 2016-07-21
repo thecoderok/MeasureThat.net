@@ -1,4 +1,4 @@
-﻿@model NewBenchmarkModel
+@model NewBenchmarkModel
 
 @{
     ViewData["Title"] = "Run the benchmark: " + Model.BenchmarkName;
@@ -10,39 +10,56 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">HTML Preparation code</div>
-    <div class="panel-body">
-        <textarea class="form-control" readonly>@Model.HtmlPreparationCode</textarea>
-    </div>
+    @{
+        bool hasHtmlPreparationCode = !string.IsNullOrWhiteSpace(Model.HtmlPreparationCode);
+        bool hasScriptPreparationCode = !string.IsNullOrWhiteSpace(Model.ScriptPreparationCode);
+        string messageHtml = !hasHtmlPreparationCode ? "<Not specified>" : string.Empty;
+        string messageScript = !hasScriptPreparationCode ? "<Not specified>" : string.Empty;
+    }
+    <div class="panel-heading"><b>HTML Preparation code:</b> @messageHtml</div>
+    @if (hasHtmlPreparationCode)
+    {
+        <div class="panel-body">
+            <textarea class="form-control" readonly data-code="html">@Model.HtmlPreparationCode</textarea>
+        </div>
 
-    <ul class="list-group">
-        <li class="list-group-item">@Html.Raw(Model.HtmlPreparationCode)</li>
-    </ul>
+        <ul class="list-group">
+            <li class="list-group-item">@Html.Raw(Model.HtmlPreparationCode)</li>
+        </ul>
+    }
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">Script Preparation code</div>
+    <div class="panel-heading"><b>Script Preparation code: </b> @messageScript</div>
+@if (hasScriptPreparationCode)
+{
     <div class="panel-body">
-        <textarea class="form-control" readonly>@Model.ScriptPreparationCode</textarea>
+        <textarea class="form-control" readonly data-code="javascript">@Model.ScriptPreparationCode</textarea>
     </div>
+}
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">Tests (@Model.BenchmarkCode.Count())</div>
+    <div class="panel-heading"><b>Tests</b>: (@Model.BenchmarkCode.Count())</div>
 
     <ul class="list-group">
         @foreach (var test in Model.BenchmarkCode)
-        {
-            <li class="list-group-item"><textarea class="form-control" readonly>@test</textarea></li>
+            {
+            <li class="list-group-item"><textarea class="form-control" readonly data-code="javascript">@test</textarea></li>
         }
     </ul>
 </div>
 
-<div id="result"></div>
-
 <button class="btn btn-default" id="runTest">Run tests</button>
 
+<div id="result"></div>
+<script type="text/javascript">
 @Html.Raw(Model.ScriptPreparationCode)
+</script>
+
+@section Styles{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
 
 @section Scripts {
     <environment names="Development">
@@ -57,43 +74,65 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
     </environment>
 
+@{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+
     <script type="text/javascript">
         function runTests() {
             var content = $("#benchmark").html();
-            try
-            {
+            try {
                 eval(content);
             }
-            catch(e)
-            {
+            catch (e) {
                 alert(JSON.stringify(e));
                 throw e;
             }
         };
 
+        function createEditors() {
+            // Will enable codeMirror
+            $("[data-code='html']").each(function (index) {
+                var editor = CodeMirror.fromTextArea(this, {
+                    lineNumbers: true,
+                    mode: 'xml',
+                    readOnly: true,
+                    viewportMargin: Infinity
+                });
+            });
+
+            $("[data-code='javascript']").each(function (index) {
+                var editor = CodeMirror.fromTextArea(this, {
+                    lineNumbers: true,
+                    mode: 'javascript',
+                    readOnly: true,
+                    viewportMargin: Infinity
+                });
+            });
+        }
+
         $(document).ready(function () {
             $("#runTest").click(runTests);
+            createEditors();
         });
     </script>
 
-<script type="text/template" id="benchmark">
-    var suite = new Benchmark.Suite;
-    @foreach (var test in Model.BenchmarkCode)
-    {
-    @: suite.add('Test', function() {
-    @Html.Raw(test);
-    @: });
-    }
+    <script type="text/template" id="benchmark">
+        var suite = new Benchmark.Suite;
+        @foreach (var test in Model.BenchmarkCode)
+        {
+            @: suite.add('Test', function() {
+            @Html.Raw(test);
+            @: });
+        }
 
-    // add listeners
-    suite.on('cycle', function(event) {
-      console.log(String(event.target));
-    });
-    suite.on('complete', function() {
-      console.log('Fastest is ' + this.filter('fastest').map('name'));
-      $('#result').text('Fastest is ' + this.filter('fastest').map('name'));
-    });
-    // run async
-    suite.run({ 'async': true });
-</script>
+        // add listeners
+        suite.on('cycle', function(event) {
+        console.log(String(event.target));
+        });
+        suite.on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').map('name'));
+        $('#result').text('Fastest is ' + this.filter('fastest').map('name'));
+        });
+        // run async
+        suite.run({ 'async': true });
+    </script>
 }

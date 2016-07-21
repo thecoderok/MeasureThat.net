@@ -93,16 +93,6 @@
     <input type="button" class="btn btn-info" value="Test before submit" />
 }
 
-@section Styles{
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/code-mirror-themes/lib/codemirror.css">
-    </environment>
-    <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/theme/ambiance.min.css">
-    </environment>
-}
-
 <div class="hidden">
 @if (Model.BenchmarkCode != null && Model.BenchmarkCode.Count() > 0)
 {
@@ -114,23 +104,21 @@
 }
 </div>
 
+@section Styles{
+@{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
 @section Scripts {
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 
     <script src='https://www.google.com/recaptcha/api.js'></script>
 
     <environment names="Development">
-        <script src="~/lib/codemirror/lib/codemirror.js" asp-append-version="true"></script>
-        <script src="~/lib/codemirror/mode/xml/xml.js" asp-append-version="true"></script>
-        <script src="~/lib/codemirror/mode/javascript/javascript.js" asp-append-version="true"></script>
         <script src="~/lib/mustache/mustache.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/xml/xml.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.3/mustache.min.js"></script>
     </environment>
-
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 

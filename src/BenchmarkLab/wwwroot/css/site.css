@@ -1,4 +1,4 @@
-﻿body {
+body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -59,7 +59,7 @@
     font-family: monospace;
     position: relative;
     overflow: hidden;
-    height: auto;
+    height: auto!important;
 }
 
 .CodeMirror-focused {

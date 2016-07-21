@@ -1,0 +1,10 @@
+<environment names="Development">
+    <script src="~/lib/codemirror/lib/codemirror.js" asp-append-version="true"></script>
+    <script src="~/lib/codemirror/mode/xml/xml.js" asp-append-version="true"></script>
+    <script src="~/lib/codemirror/mode/javascript/javascript.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/xml/xml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.16.0/mode/javascript/javascript.min.js"></script>
+</environment>
