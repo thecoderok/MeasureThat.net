@@ -126,11 +126,16 @@
 
         // add listeners
         suite.on('cycle', function(event) {
-        console.log(String(event.target));
+            console.log(String(event.target));
+            var el = $('<div>');
+            el.text(String(event.target));
+            $('#result').append(el);
         });
         suite.on('complete', function() {
-        console.log('Fastest is ' + this.filter('fastest').map('name'));
-        $('#result').text('Fastest is ' + this.filter('fastest').map('name'));
+            console.log('Fastest is ' + this.filter('fastest').map('name'));
+            var el = $('<div>');
+            el.text('Fastest is ' + this.filter('fastest').map('name'));
+            $('#result').append(el);
         });
         // run async
         suite.run({ 'async': true });
