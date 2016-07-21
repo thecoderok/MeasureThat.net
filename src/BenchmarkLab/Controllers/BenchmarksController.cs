@@ -90,14 +90,6 @@ namespace BenchmarkLab.Controllers
             return View(benchmarkToRun);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult ShowTest(int benchmarkId, int benchmarkVersion)
-        {
-            //  TODO: seo friendly name here
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken] //TODO: should aft be validated?
         public IActionResult Fork(int benchmarkId, int benchmarkVersion)
