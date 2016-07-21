@@ -1,9 +1,13 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<div class="page-header">
+    <h1>BenchmarkLab: <small>Home page</small></h1>
+</div>
 
 <div class="row">
     @if (SignInManager.IsSignedIn(User))
