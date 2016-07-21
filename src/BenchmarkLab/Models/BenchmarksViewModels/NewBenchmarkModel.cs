@@ -27,6 +27,7 @@ namespace BenchmarkLab.Models
         [Display(Name = "JavaScript preparation code")]
         public string ScriptPreparationCode { get; set; }
 
+        // TODO: test must have name
         [Required]
         [Display(Name = "Benchmark code")]
         //[MinLength(2, ErrorMessage ="At least two test cases required")]

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using BenchmarkLab.Logic.Web
 @model IEnumerable<NewBenchmarkModel>
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -16,6 +17,7 @@
 {
 <tr>
     <td>@b.BenchmarkName</td>
+    <td><a asp-action="Show" asp-route-id="@b.Id" asp-route-ver="@b.BenchmarkVersion" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">Ta-da</a></td>    
 </tr>
 }
 </table>

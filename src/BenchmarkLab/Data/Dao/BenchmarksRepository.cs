@@ -23,7 +23,29 @@ namespace BenchmarkLab.Data.Dao
                 BenchmarkVersion = 1,
                 Description = "Mock Description",
                 Id = benchmarkId++
-            }
+            },
+
+            new NewBenchmarkModel()
+            {
+                BenchmarkName = "йо ватсап",
+                BenchmarkVersion = 1,
+                Description = "Mock Description",
+                Id = benchmarkId++
+            },
+
+            new NewBenchmarkModel()
+            {
+                BenchmarkName = "日本語",
+                BenchmarkVersion = 1,
+                Description = "Mock Description",
+                Id = benchmarkId++,
+                BenchmarkCode = new List<string>()
+                {
+                    "/o/.test('Hello World!');",
+                    "'Hello World!'.indexOf('o') > -1;",
+                    "!!'Hello World!'.match(/o/);"
+                }
+            },
         };
                
 

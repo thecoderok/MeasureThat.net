@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
+using BenchmarkLab.Logic.Text.Unidecode;
 
 namespace BenchmarkLab.Controllers
 {
@@ -74,14 +74,14 @@ namespace BenchmarkLab.Controllers
 
             m_benchmarkRepository.Add(model);
 
-            return RedirectToAction("Run", new { benchmarkId = model.Id, benchmarkVersion = model.BenchmarkVersion });
+            return RedirectToAction("Show", new { Id = model.Id, ver = model.BenchmarkVersion, name = model.BenchmarkName.Unidecode() });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Run(int benchmarkId, int benchmarkVersion)
+        public IActionResult Show(int id, int ver, string name)
         {
-            NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(benchmarkId, benchmarkVersion);
+            NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(id, ver);
             if (benchmarkToRun == null)
             {
                 return NotFound();
@@ -90,17 +90,9 @@ namespace BenchmarkLab.Controllers
             return View(benchmarkToRun);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult ShowTest(int benchmarkId, int benchmarkVersion)
-        {
-            //  TODO: seo friendly name here
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken] //TODO: should aft be validated?
-        public IActionResult Fork(int benchmarkId, int benchmarkVersion)
+        public IActionResult Fork(int id, int ver)
         {
             return View();
         }
