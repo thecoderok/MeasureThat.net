@@ -76,7 +76,7 @@
                     
                 </div>
                 <div class="panel-footer">
-                    @Html.ValidationMessage("BenchmarkCode", "", new { @class = "text-danger" })
+                    @Html.ValidationMessage("TestCases", "", new { @class = "text-danger" })
                     <div class="form-group">
                         <input type="button" class="btn btn-default" data-action="new-test" value="Add test case" />
                     </div>
@@ -93,13 +93,15 @@
     <input type="button" class="btn btn-info" value="Test before submit" />
 }
 
+@Html.EditorFor(m => m.TestCases[0].TestCaseName)
+
 <div class="hidden">
-@if (Model.BenchmarkCode != null && Model.BenchmarkCode.Count() > 0)
+@if (Model.TestCases != null && Model.TestCases.Count() > 0)
 {
-@foreach (var testCase in Model.BenchmarkCode)
+@foreach (var testCase in Model.TestCases)
 {
 // So tests that user already added not get lost
-<textarea data-content="existing-test">@testCase</textarea>
+<textarea data-content="existing-test" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
 }
 }
 </div>
@@ -125,27 +127,35 @@
 
 <script id="testCase" type="x-tmpl-mustache">
     <div class="form-group">
-        <label for="BenchmarkCode">Benchmark code</label>
-        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code field is required." id="BenchmarkCode" name="BenchmarkCode">{{textCaseContent}}</textarea>
-        <span class="field-validation-valid text-danger" data-valmsg-for="BenchmarkCode" data-valmsg-replace="true"></span>
+        <label for="TestCases.TestCaseName">Name your test:</label>
+        <input type="text" class="form-control" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseName" value="{{testCaseName}}">
+
+        <label for="TestCases.BenchmarkCode">Benchmark code</label>
+        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code is required." name="TestCases[{{testCaseId}}].BenchmarkCode">{{textCaseContent}}</textarea>
+        <span class="field-validation-valid text-danger" data-valmsg-for="TestCases.BenchmarkCode" data-valmsg-replace="true"></span>
         <button data-action="delete-test" class="btn btn-default">Delete</button>
     </div>
 </script>
 
     <script type="text/javascript">
+        var globalTestCaseCounter = 0;
         function deleteTest() {
             $(this.parentNode).remove();
             return false;
         }
 
-        function newTestCase(strTestCaseContent) {
+        function makeNewTestCase(strTestCaseContent, strTestCaseName) {
             if (!strTestCaseContent) {
                 strTestCaseContent = '';
             }
 
+            if (!strTestCaseName) {
+                strTestCaseName = '';
+            }
+
             var template = $('#testCase').html();
             Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent });
+            var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent, testCaseName: strTestCaseName, testCaseId: globalTestCaseCounter++ });
             var newTestCase = $(rendered);
             $("#test-case-list").append(newTestCase);
             var editor = newTestCase.find("textarea");
@@ -168,10 +178,10 @@
                 mode: 'javascript'
             });
 
-            $("[data-action='new-test']").on("click", function () { newTestCase(''); });
+            $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
 
             $("[data-content='existing-test']").each(function (idx, el) {
-                newTestCase(el.textContent);
+                makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
             });
         });
         

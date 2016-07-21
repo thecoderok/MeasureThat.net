@@ -1,4 +1,4 @@
-﻿using BenchmarkLab.Data.Models;
+using BenchmarkLab.Data.Models;
 using BenchmarkLab.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +38,10 @@ namespace BenchmarkLab.Data
             modelBuilder.Entity<BenchmarkTest>(entity =>
             {
                 entity.Property(e => e.BenchmarkText).IsRequired();
+
+                entity.Property(e => e.TestName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.WhenCreated).HasDefaultValueSql("getdate()");
 

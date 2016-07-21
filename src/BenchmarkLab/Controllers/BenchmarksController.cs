@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BenchmarkLab.Logic.Text.Unidecode;
+using System.Collections.Generic;
+using BenchmarkLab.Models.BenchmarksViewModels;
 
 namespace BenchmarkLab.Controllers
 {
@@ -40,29 +42,33 @@ namespace BenchmarkLab.Controllers
 
         public IActionResult Add()
         {
-            return View(new NewBenchmarkModel());
+            return View(new NewBenchmarkModel() { TestCases = new List<TestCase>()
+            {
+                new TestCase()
+            }
+            });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Add([Bind(
+        public async Task<IActionResult> Add(/*[Bind(
             "BenchmarkName",
             "Description", 
             "HtmlPreparationCode",
-            "ScriptPreparationCode",
-            "BenchmarkCode")] NewBenchmarkModel model)
+            "ScriptPreparationCode", Prefix = "TestCases")]*/ NewBenchmarkModel model)
         {
+            // TODO: bring back bind attribute
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             // Check if benchmark code was actually entered
-            if (model.BenchmarkCode.Count() < 2 || model.BenchmarkCode.Any(string.IsNullOrWhiteSpace))
+            if (model.TestCases.Count() < 2 || model.TestCases.Any(t=> string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 // TODO: use correct error key
-                ModelState.AddModelError("BenchmarkCode", "At least two test are cases required.");
+                ModelState.AddModelError("TestCases", "At least two test are cases required.");
                 return View(model);
             }
 

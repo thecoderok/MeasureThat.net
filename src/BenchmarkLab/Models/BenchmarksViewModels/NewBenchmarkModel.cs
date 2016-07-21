@@ -3,11 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BenchmarkLab.Models
 {
+    using BenchmarksViewModels;
+
     public class NewBenchmarkModel
     {
         public NewBenchmarkModel()
         {
-            this.BenchmarkCode = new List<string>();
+            this.TestCases = new List<TestCase>();
         }
 
         [Required]
@@ -15,6 +17,7 @@ namespace BenchmarkLab.Models
         [StringLength(60, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         public string BenchmarkName { get; set; }
 
+        [StringLength(60, ErrorMessage = "The {0} must be at max {1} characters long.")]
         public string Description { get; set; }
 
         [Required]
@@ -27,11 +30,9 @@ namespace BenchmarkLab.Models
         [Display(Name = "JavaScript preparation code")]
         public string ScriptPreparationCode { get; set; }
 
-        // TODO: test must have name
         [Required]
-        [Display(Name = "Benchmark code")]
-        //[MinLength(2, ErrorMessage ="At least two test cases required")]
-        public IEnumerable<string> BenchmarkCode { get; set; }        
+        [Display(Name = "Test Cases")]
+        public List<TestCase> TestCases { get; set; }        
 
         public int Id { get; set; }
 

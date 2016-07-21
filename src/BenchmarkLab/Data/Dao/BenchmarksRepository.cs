@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BenchmarkLab.Models;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace BenchmarkLab.Data.Dao
 {
+    using BenchmarkLab.Models.BenchmarksViewModels;
+
     public interface IBenchmarksRepository : IEntityRepository<NewBenchmarkModel, int>
     {
         NewBenchmarkModel FindBenchmark(int benchmarkId, int version);
@@ -39,11 +41,11 @@ namespace BenchmarkLab.Data.Dao
                 BenchmarkVersion = 1,
                 Description = "Mock Description",
                 Id = benchmarkId++,
-                BenchmarkCode = new List<string>()
+                TestCases = new List<TestCase>()
                 {
-                    "/o/.test('Hello World!');",
-                    "'Hello World!'.indexOf('o') > -1;",
-                    "!!'Hello World!'.match(/o/);"
+                    new TestCase() { BenchmarkCode = "/o/.test('Hello World!');", TestCaseName = "RegEx"},
+                    new TestCase() { BenchmarkCode = "'Hello World!'.indexOf('o') > -1;", TestCaseName = "indexOf"},
+                    new TestCase() { BenchmarkCode = "!!'Hello World!'.match(/o/);", TestCaseName = "match"}
                 }
             },
         };

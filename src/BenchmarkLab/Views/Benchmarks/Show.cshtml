@@ -40,12 +40,13 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading"><b>Tests</b>: (@Model.BenchmarkCode.Count())</div>
+    <div class="panel-heading"><b>Tests</b>: (@Model.TestCases.Count())</div>
 
     <ul class="list-group">
-        @foreach (var test in Model.BenchmarkCode)
-            {
-            <li class="list-group-item"><textarea class="form-control" readonly data-code="javascript">@test</textarea></li>
+        @foreach (var test in Model.TestCases)
+        {
+            <li class="list-group-item">@test.TestCaseName</li>
+            <li class="list-group-item"><textarea class="form-control" readonly data-code="javascript">@test.BenchmarkCode</textarea></li>
         }
     </ul>
 </div>
@@ -117,10 +118,10 @@
 
     <script type="text/template" id="benchmark">
         var suite = new Benchmark.Suite;
-        @foreach (var test in Model.BenchmarkCode)
+        @foreach (var test in Model.TestCases)
         {
-            @: suite.add('Test', function() {
-            @Html.Raw(test);
+            @: suite.add('@test.TestCaseName', function() {
+            @Html.Raw(test.BenchmarkCode);
             @: });
         }
 
