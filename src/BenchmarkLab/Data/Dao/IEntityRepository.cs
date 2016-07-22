@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 namespace BenchmarkLab.Data.Dao
 {
-    public interface IEntityRepository<TEntity, TKey>
+    using System.Threading.Tasks;
+
+    public interface IEntityRepository<TModel, TKey>
     {
-        void Add(TEntity entity);
+        Task<TKey> Add(TModel entity);
 
-        TEntity FindById(TKey id);
+        Task<TModel> FindById(TKey id);
 
-        void Delete(TEntity entity);
+        Task<TKey> DeleteById(TKey id);
 
-        void DeleteById(TKey id);
-
-        IEnumerable<TEntity> ListAll();
+        Task<IEnumerable<TModel>> ListAll(uint maxEntities);
     }    
 }

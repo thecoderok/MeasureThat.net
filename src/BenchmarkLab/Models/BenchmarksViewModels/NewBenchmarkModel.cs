@@ -31,7 +31,7 @@ namespace BenchmarkLab.Models
         [Display(Name = "Test Cases")]
         public List<TestCase> TestCases { get; set; }        
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string OwnerId { get; set; }
     }

@@ -7,7 +7,9 @@ using BenchmarkLab.Models.BenchmarksViewModels;
 
 namespace BenchmarkLab.Data.Dao
 {
-    public class MockBenchmarksRepository : IEntityRepository<NewBenchmarkModel, int>
+    using System.Threading.Tasks;
+
+    public class MockBenchmarksRepository : IEntityRepository<NewBenchmarkModel, long>
     {
         private static int benchmarkId = 0;
 
@@ -42,29 +44,30 @@ namespace BenchmarkLab.Data.Dao
         };
 
 
-        public void Add([NotNull] NewBenchmarkModel entity)
+        public async Task<long> Add([NotNull] NewBenchmarkModel entity)
         {
             entity.Id = benchmarkId++;
             this.m_repository.Add(entity);
+
+            // must be async
+            await Task.Delay(0);
+            return entity.Id;
         }
 
-        public void Delete(NewBenchmarkModel entity)
+        public async Task<long> DeleteById(long id)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteById(int id)
+        public async Task<NewBenchmarkModel> FindById(long id)
         {
-            throw new NotImplementedException();
-        }
-
-        public NewBenchmarkModel FindById(int id)
-        {
+            await Task.Delay(0);
             return this.m_repository.FirstOrDefault(t => t.Id == id);
         }
 
-        public IEnumerable<NewBenchmarkModel> ListAll()
+        public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
         {
+            await Task.Delay(0);
             return this.m_repository.AsReadOnly();
         }
     }

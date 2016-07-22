@@ -6,7 +6,7 @@ namespace BenchmarkLab.Models.BenchmarksViewModels
     {
         [Required]
         [Display(Name = "Test Case")]
-        [RegularExpression("[a-zA-Z0-9.`~!@#$%^&*()]+")]
+        [RegularExpression("[a-zA-Z0-9.`~!@#$%^&*()_\\s]+")]
         public string TestCaseName { get; set; }
 
         [StringLength(60, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]

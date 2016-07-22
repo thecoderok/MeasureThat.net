@@ -9,7 +9,7 @@
     <h3>@Model.Description</h3>
 </div>
 
-<div class="panel panel-default">
+<div class="panel panel-primary">
     @{
         bool hasHtmlPreparationCode = !string.IsNullOrWhiteSpace(Model.HtmlPreparationCode);
         bool hasScriptPreparationCode = !string.IsNullOrWhiteSpace(Model.ScriptPreparationCode);
@@ -45,8 +45,10 @@
     <ul class="list-group">
         @foreach (var test in Model.TestCases)
         {
-            <li class="list-group-item">@test.TestCaseName</li>
-            <li class="list-group-item"><textarea class="form-control" readonly data-code="javascript">@test.BenchmarkCode</textarea></li>
+            <li class="list-group-item">
+                <h3>@test.TestCaseName</h3>
+                <textarea class="form-control" readonly data-code="javascript">@test.BenchmarkCode</textarea>
+            </li>
         }
     </ul>
 </div>
@@ -54,9 +56,6 @@
 <button class="btn btn-default" id="runTest">Run tests</button>
 
 <div id="result"></div>
-<script type="text/javascript">
-@Html.Raw(Model.ScriptPreparationCode)
-</script>
 
 @section Styles{
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
@@ -79,66 +78,75 @@
 
     <script type="text/javascript">
         function runTests() {
+            var preparation = $("#jspreparation").html();
             var content = $("#benchmark").html();
             try {
+                eval(preparation);
                 eval(content);
-            }
-            catch (e) {
-                alert(JSON.stringify(e));
+            } catch (e) {
+                alert("Error:" + JSON.stringify(e));
                 throw e;
             }
         };
 
         function createEditors() {
             // Will enable codeMirror
-            $("[data-code='html']").each(function (index) {
-                var editor = CodeMirror.fromTextArea(this, {
-                    lineNumbers: true,
-                    mode: 'xml',
-                    readOnly: true,
-                    viewportMargin: Infinity
+            $("[data-code='html']")
+                .each(function(index) {
+                    var editor = CodeMirror.fromTextArea(this,
+                    {
+                        lineNumbers: true,
+                        mode: 'xml',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
                 });
-            });
 
-            $("[data-code='javascript']").each(function (index) {
-                var editor = CodeMirror.fromTextArea(this, {
-                    lineNumbers: true,
-                    mode: 'javascript',
-                    readOnly: true,
-                    viewportMargin: Infinity
+            $("[data-code='javascript']")
+                .each(function(index) {
+                    var editor = CodeMirror.fromTextArea(this,
+                    {
+                        lineNumbers: true,
+                        mode: 'javascript',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
                 });
-            });
         }
 
-        $(document).ready(function () {
-            $("#runTest").click(runTests);
-            createEditors();
-        });
+        $(document)
+            .ready(function() {
+                $("#runTest").click(runTests);
+                createEditors();
+            });
     </script>
 
-    <script type="text/template" id="benchmark">
-        var suite = new Benchmark.Suite;
-        @foreach (var test in Model.TestCases)
-        {
-            @: suite.add('@test.TestCaseName', function() {
-            @Html.Raw(test.BenchmarkCode);
-            @: });
-        }
 
-        // add listeners
-        suite.on('cycle', function(event) {
-            console.log(String(event.target));
-            var el = $('<div>');
-            el.text(String(event.target));
-            $('#result').append(el);
-        });
-        suite.on('complete', function() {
-            console.log('Fastest is ' + this.filter('fastest').map('name'));
-            var el = $('<div>');
-            el.text('Fastest is ' + this.filter('fastest').map('name'));
-            $('#result').append(el);
-        });
+    <script type="text/template" id="jspreparation">
+        @Html.Raw(Model.ScriptPreparationCode) 
+    </script>
+<script type="text/template" id="benchmark">
+    var suite = new Benchmark.Suite;
+    @foreach (var test in Model.TestCases)
+    {
+        @: suite.add('@test.TestCaseName', function() {
+            @Html.Raw(test.BenchmarkCode);
+        @: });
+    }
+    // add listeners
+    suite.on('cycle', function(event) {
+        console.log(String(event.target));
+        var el = $('<div>');
+        el.text(String(event.target));
+        $('#result').append(el);
+     });
+    suite.on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').map('name'));
+        var el = $('<div>');
+        el.text('Fastest is ' + this.filter('fastest').map('name'));
+        $('#result').append(el);
+    });
         // run async
         suite.run({ 'async': true });
-    </script>
+</script>
 }
