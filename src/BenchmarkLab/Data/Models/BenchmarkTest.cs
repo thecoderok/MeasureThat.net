@@ -5,8 +5,8 @@ namespace BenchmarkLab.Data.Models
 {
     public partial class BenchmarkTest
     {
-        public int Id { get; set; }
-        public int BenchmarkId { get; set; }
+        public long Id { get; set; }
+        public long BenchmarkId { get; set; }
         public string BenchmarkText { get; set; }
         public string TestName { get; set; }
 

@@ -1,6 +1,6 @@
 CREATE TABLE [dbo].[Benchmark]
 (
-	[Id] INT IDENTITY NOT NULL PRIMARY KEY, 
+	[Id] BIGINT IDENTITY NOT NULL PRIMARY KEY, 
     [Name] NVARCHAR(60) NOT NULL, 
     [Description] NVARCHAR(400) NULL, 
     [OwnerId] nvarchar(450) NOT NULL, 
