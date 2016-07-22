@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
   <Operation Name="Rename Refactor" Key="e9d9b3c2-4eac-48cd-9155-a4b06edda507" ChangeDateTime="07/18/2016 16:23:53">
     <Property Name="ElementName" Value="[dbo].[BenchmarkVersion].[BenchmarkVersion]" />
@@ -6,5 +6,12 @@
     <Property Name="ParentElementName" Value="[dbo].[BenchmarkVersion]" />
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Version" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9e40e7c7-20c1-44f5-98d0-5a4bab6f996f" ChangeDateTime="07/22/2016 00:01:43">
+    <Property Name="ElementName" Value="[dbo].[BenchmarkTest].[BenchmarkVersionId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[BenchmarkTest]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BenchmarkId" />
   </Operation>
 </Operations>

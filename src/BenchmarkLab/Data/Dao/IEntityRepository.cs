@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace BenchmarkLab.Data.Dao
 {
@@ -13,5 +13,5 @@ namespace BenchmarkLab.Data.Dao
         void DeleteById(TKey id);
 
         IEnumerable<TEntity> ListAll();
-    }
+    }    
 }

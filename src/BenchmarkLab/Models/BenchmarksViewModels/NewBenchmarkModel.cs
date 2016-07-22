@@ -21,7 +21,7 @@ namespace BenchmarkLab.Models
         public string Description { get; set; }
 
         [Required]
-        public uint BenchmarkVersion { get; set; }
+        public int BenchmarkVersion { get; set; }
 
         [Display(Name = "Html Preparation code")]
         public string HtmlPreparationCode { get; set; }

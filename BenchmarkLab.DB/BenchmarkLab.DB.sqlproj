@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Benchmark.sql" />
-    <Build Include="Tables\BenchmarkVersion.sql" />
     <Build Include="Tables\BenchmarkTest.sql" />
     <Build Include="Tables\AspNetUsers.sql" />
   </ItemGroup>
