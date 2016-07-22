@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BenchmarkLab.Data.Models
@@ -7,14 +7,17 @@ namespace BenchmarkLab.Data.Models
     {
         public Benchmark()
         {
-            BenchmarkVersion = new HashSet<BenchmarkVersion>();
+            BenchmarkTest = new HashSet<BenchmarkTest>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string OwnerId { get; set; }
+        public DateTime WhenCreated { get; set; }
+        public string ScriptPreparationCode { get; set; }
+        public string HtmlPreparationCode { get; set; }
 
-        public virtual ICollection<BenchmarkVersion> BenchmarkVersion { get; set; }
+        public virtual ICollection<BenchmarkTest> BenchmarkTest { get; set; }
     }
 }

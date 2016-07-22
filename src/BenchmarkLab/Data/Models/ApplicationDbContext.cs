@@ -10,7 +10,6 @@ namespace BenchmarkLab.Data
     {
         public ApplicationDbContext()
         {
-
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -24,7 +23,7 @@ namespace BenchmarkLab.Data
 
             modelBuilder.Entity<Benchmark>(entity =>
             {
-                entity.Property(e => e.Description).HasColumnType("nchar(400)");
+                entity.Property(e => e.Description).HasMaxLength(400);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -33,6 +32,8 @@ namespace BenchmarkLab.Data
                 entity.Property(e => e.OwnerId)
                     .IsRequired()
                     .HasMaxLength(450);
+
+                entity.Property(e => e.WhenCreated).HasDefaultValueSql("getdate()");
             });
 
             modelBuilder.Entity<BenchmarkTest>(entity =>
@@ -43,32 +44,15 @@ namespace BenchmarkLab.Data
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.WhenCreated).HasDefaultValueSql("getdate()");
-
-                entity.HasOne(d => d.BenchmarkVersion)
-                    .WithMany(p => p.BenchmarkTest)
-                    .HasForeignKey(d => d.BenchmarkVersionId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_BenchmarkTest_ToBenchmarkVersion");
-            });
-
-            modelBuilder.Entity<BenchmarkVersion>(entity =>
-            {
-                entity.HasIndex(e => new { e.BenchmarkId, e.Version })
-                    .HasName("IX_BenchmarkVersion_Unique");
-
                 entity.HasOne(d => d.Benchmark)
-                    .WithMany(p => p.BenchmarkVersion)
+                    .WithMany(p => p.BenchmarkTest)
                     .HasForeignKey(d => d.BenchmarkId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_BenchmarkVersion_ToBenchmark");
+                    .HasConstraintName("FK_BenchmarkTest_ToBenchmark");
             });
-
-            
         }
         
         public virtual DbSet<Benchmark> Benchmark { get; set; }
         public virtual DbSet<BenchmarkTest> BenchmarkTest { get; set; }
-        public virtual DbSet<BenchmarkVersion> BenchmarkVersion { get; set; }
     }
 }
