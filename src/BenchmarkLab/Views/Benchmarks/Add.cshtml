@@ -12,7 +12,7 @@
 
 @using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post))
 {
-    //@Html.ValidationSummary();
+    @Html.ValidationSummary();
 
     @Html.AntiForgeryToken()
 
@@ -92,8 +92,6 @@
     <input type="submit" class="btn btn-default" value="Submit" />
     <input type="button" class="btn btn-info" value="Test before submit" />
 }
-
-@Html.EditorFor(m => m.TestCases[0].TestCaseName)
 
 <div class="hidden">
 @if (Model.TestCases != null && Model.TestCases.Count() > 0)

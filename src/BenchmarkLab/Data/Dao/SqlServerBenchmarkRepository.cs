@@ -6,7 +6,7 @@ using BenchmarkLab.Data.Models;
 
 namespace BenchmarkLab.Data.Dao
 {
-    public class SqlServerBenchmarkRepository : IBenchmarksRepository
+    public class SqlServerBenchmarkRepository :  IEntityRepository<NewBenchmarkModel, int>
     {
         private readonly ApplicationDbContext m_db;
 
@@ -26,11 +26,6 @@ namespace BenchmarkLab.Data.Dao
         }
 
         public void DeleteById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public NewBenchmarkModel FindBenchmark(int benchmarkId, int version)
         {
             throw new NotImplementedException();
         }

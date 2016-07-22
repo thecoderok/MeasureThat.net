@@ -20,9 +20,6 @@ namespace BenchmarkLab.Models
         [StringLength(60, ErrorMessage = "The {0} must be at max {1} characters long.")]
         public string Description { get; set; }
 
-        [Required]
-        public int BenchmarkVersion { get; set; }
-
         [Display(Name = "Html Preparation code")]
         public string HtmlPreparationCode { get; set; }
 

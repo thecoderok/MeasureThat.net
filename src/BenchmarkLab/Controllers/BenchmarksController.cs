@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BenchmarkLab.Logic.Text.Unidecode;
-using System.Collections.Generic;
-using BenchmarkLab.Models.BenchmarksViewModels;
 
 namespace BenchmarkLab.Controllers
 {
@@ -19,34 +17,30 @@ namespace BenchmarkLab.Controllers
     public class BenchmarksController : Controller
     {
         private ApplicationDbContext m_context;
-        private readonly IBenchmarksRepository m_benchmarkRepository;
+        private readonly  IEntityRepository<NewBenchmarkModel, int> m_benchmarkRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
 
         public BenchmarksController(
             [NotNull] ApplicationDbContext context,
-            [NotNull] IBenchmarksRepository benchmarkRepository,
+            [NotNull] IEntityRepository<NewBenchmarkModel, int> benchmarkRepository,
             [NotNull] UserManager<ApplicationUser> userManager)
         {
             this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
-            m_userManager = userManager;
+            this.m_userManager = userManager;
         }
 
         [AllowAnonymous]
         public IActionResult Index()
         {
-            var list = m_benchmarkRepository.ListAll();
-            return View(list);
+            var list = this.m_benchmarkRepository.ListAll();
+            return this.View(list);
         }
 
         public IActionResult Add()
         {
-            return View(new NewBenchmarkModel() { TestCases = new List<TestCase>()
-            {
-                new TestCase()
-            }
-            });
+            return this.View(new NewBenchmarkModel());
         }
 
         [HttpPost]
@@ -59,53 +53,50 @@ namespace BenchmarkLab.Controllers
             "ScriptPreparationCode", Prefix = "TestCases")]*/ NewBenchmarkModel model)
         {
             // TODO: bring back bind attribute
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(model);
+                return this.View(model);
             }
 
             // Check if benchmark code was actually entered
             if (model.TestCases.Count() < 2 || model.TestCases.Any(t=> string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 // TODO: use correct error key
-                ModelState.AddModelError("TestCases", "At least two test are cases required.");
-                return View(model);
+                this.ModelState.AddModelError("TestCases", "At least two test are cases required.");
+                return this.View(model);
             }
-
-            // This is brand new benchmark
-            model.BenchmarkVersion = 0;
 
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.OwnerId = user.Id;
 
-            m_benchmarkRepository.Add(model);
+            this.m_benchmarkRepository.Add(model);
 
-            return RedirectToAction("Show", new { Id = model.Id, ver = model.BenchmarkVersion, name = model.BenchmarkName.Unidecode() });
+            return this.RedirectToAction("Show", new { Id = model.Id, name = model.BenchmarkName.Unidecode() });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Show(int id, int ver, string name)
+        public IActionResult Show(int id, string name)
         {
-            NewBenchmarkModel benchmarkToRun = m_benchmarkRepository.FindBenchmark(id, ver);
+            NewBenchmarkModel benchmarkToRun = this.m_benchmarkRepository.FindById(id);
             if (benchmarkToRun == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return View(benchmarkToRun);
+            return this.View(benchmarkToRun);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken] //TODO: should aft be validated?
-        public IActionResult Fork(int id, int ver)
+        public IActionResult Fork(int id)
         {
-            return View();
+            return this.View();
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
-            return m_userManager.GetUserAsync(HttpContext.User);
+            return this.m_userManager.GetUserAsync(this.HttpContext.User);
         }
     }
 }

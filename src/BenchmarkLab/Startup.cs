@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -64,7 +64,7 @@ namespace BenchmarkLab
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddSingleton<IBenchmarksRepository, MockBenchmarksRepository>();
+            services.AddSingleton<IEntityRepository<NewBenchmarkModel, int>, MockBenchmarksRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,7 +101,7 @@ namespace BenchmarkLab
             {
                 routes.MapRoute(
                     name: "showTest",
-                    template: "{controller=Benchmarks}/{action=Show}/{id}/{ver}/{name?}");
+                    template: "{controller=Benchmarks}/{action=Show}/{id}/{name?}");
 
                 routes.MapRoute(
                     name: "default",

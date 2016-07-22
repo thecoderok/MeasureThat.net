@@ -7,7 +7,7 @@ using BenchmarkLab.Models.BenchmarksViewModels;
 
 namespace BenchmarkLab.Data.Dao
 {
-    public class MockBenchmarksRepository : IBenchmarksRepository
+    public class MockBenchmarksRepository : IEntityRepository<NewBenchmarkModel, int>
     {
         private static int benchmarkId = 0;
 
@@ -16,7 +16,6 @@ namespace BenchmarkLab.Data.Dao
             new NewBenchmarkModel()
             {
                 BenchmarkName = "Mock Benchmark 1",
-                BenchmarkVersion = 1,
                 Description = "Mock Description",
                 Id = benchmarkId++
             },
@@ -24,7 +23,6 @@ namespace BenchmarkLab.Data.Dao
             new NewBenchmarkModel()
             {
                 BenchmarkName = "йо ватсап",
-                BenchmarkVersion = 1,
                 Description = "Mock Description",
                 Id = benchmarkId++
             },
@@ -32,7 +30,6 @@ namespace BenchmarkLab.Data.Dao
             new NewBenchmarkModel()
             {
                 BenchmarkName = "日本語",
-                BenchmarkVersion = 1,
                 Description = "Mock Description",
                 Id = benchmarkId++,
                 TestCases = new List<TestCase>()
@@ -61,15 +58,9 @@ namespace BenchmarkLab.Data.Dao
             throw new NotImplementedException();
         }
 
-        public NewBenchmarkModel FindBenchmark(int benchmarkId, int version)
-        {
-            var result = this.m_repository.FirstOrDefault(t => t.Id == benchmarkId && t.BenchmarkVersion == version);
-            return result;
-        }
-
         public NewBenchmarkModel FindById(int id)
         {
-            throw new NotImplementedException();
+            return this.m_repository.FirstOrDefault(t => t.Id == id);
         }
 
         public IEnumerable<NewBenchmarkModel> ListAll()
