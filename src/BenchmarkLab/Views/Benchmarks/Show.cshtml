@@ -53,9 +53,37 @@
     </ul>
 </div>
 
-<button class="btn btn-default" id="runTest">Run tests</button>
+<div class="form-group">
+    <button class="btn btn-default" id="runTest">Run tests</button>
+</div>
 
-<div id="result"></div>
+<div id="result">
+    <div class="panel panel-info">
+        <div class="panel-heading"><b>Results</b></div>
+        <div class="panel-body">
+            <h4><b>Suite status:</b> <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span></h4>
+        </div>
+        
+        <ul class="list-group">
+            <li class="list-group-item">
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Test case name</th>
+                        <th>Status</th>
+                    </tr>
+
+                    @foreach (var test in Model.TestCases)
+                    {
+                        <tr data-row-for="@test.TestCaseName">
+                            <td>@test.TestCaseName</td>
+                            <td data-role="status-label">&lt;idle&gt;</td>
+                        </tr>
+                    }
+                </table>
+            </li>
+        </ul>
+    </div>
+</div>
 
 @section Styles{
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
@@ -128,27 +156,42 @@
 
 <script type="text/javascript">
     function onStart() {
-        
+        var suiteStatusLabels = $("[data-role='suite-status']");
+        suiteStatusLabels.text('Running');
+        suiteStatusLabels.attr("class", "label label-info");
     }
 
     function onCycle() {
-        
+        debugger;
     }
 
     function onAbort() {
-
+        var suiteStatusLabels = $("[data-role='suite-status']");
+        suiteStatusLabels.text('Aborted');
+        suiteStatusLabels.attr("class","label label-warning");
+        //debugger;
     }
 
     function onError() {
-        
+        // TODO: report error properly
+        var suiteStatusLabels = $("[data-role='suite-status']");
+        suiteStatusLabels.text('Error');
+        suiteStatusLabels.attr("class", "label label-danger");
+        debugger;
     }
 
     function onReset() {
-        
+        var suiteStatusLabels = $("[data-role='suite-status']");
+        suiteStatusLabels.text('Reset');
+        suiteStatusLabels.attr("class", "label label-warning");
+        debugger;
     }
 
     function onComplete() {
-        
+        var suiteStatusLabels = $("[data-role='suite-status']");
+        suiteStatusLabels.text('Completed');
+        suiteStatusLabels.attr("class", "label label-success");
+        debugger;
     }
 
 </script>
@@ -159,21 +202,14 @@
         @: suite.add('@test.TestCaseName', function() {
             @Html.Raw(test.BenchmarkCode);
         @: });
-    }
-    // add listeners
-    suite.on('cycle', function(event) {
-        console.log(String(event.target));
-        var el = $('<div>');
-        el.text(String(event.target));
-        $('#result').append(el);
-     });
-    suite.on('complete', function() {
-        console.log('Fastest is ' + this.filter('fastest').map('name'));
-        var el = $('<div>');
-        el.text('Fastest is ' + this.filter('fastest').map('name'));
-        $('#result').append(el);
-    });
-        // run async
-        suite.run({ 'async': true });
+    }    
+    suite.on('start', onStart);
+    suite.on('cycle', onCycle);
+    suite.on('abort', onAbort);
+    suite.on('error', onError);
+    suite.on('reset', onReset);
+    suite.on('complete', onComplete);
+    // run async
+    suite.run({ 'async': true });
 </script>
 }
