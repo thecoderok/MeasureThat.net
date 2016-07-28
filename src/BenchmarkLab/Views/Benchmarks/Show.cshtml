@@ -76,55 +76,82 @@
 
 @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 
-    <script type="text/javascript">
-        function runTests() {
-            var preparation = $("#jspreparation").html();
-            var content = $("#benchmark").html();
-            try {
-                eval(preparation);
-                eval(content);
-            } catch (e) {
-                alert("Error:" + JSON.stringify(e));
-                throw e;
-            }
-        };
-
-        function createEditors() {
-            // Will enable codeMirror
-            $("[data-code='html']")
-                .each(function(index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        lineNumbers: true,
-                        mode: 'xml',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
-
-            $("[data-code='javascript']")
-                .each(function(index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        lineNumbers: true,
-                        mode: 'javascript',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
+<script type="text/javascript">
+    function runTests() {
+        var preparation = $("#jspreparation").html();
+        var content = $("#benchmark").html();
+        try {
+            eval(preparation);
+            eval(content);
+        } catch (e) {
+            alert("Error:" + JSON.stringify(e));
+            throw e;
         }
+    };
 
-        $(document)
-            .ready(function() {
-                $("#runTest").click(runTests);
-                createEditors();
+    function createEditors() {
+        // Will enable codeMirror
+        $("[data-code='html']")
+            .each(function(index) {
+                var editor = CodeMirror.fromTextArea(this,
+                {
+                    lineNumbers: true,
+                    mode: 'xml',
+                    readOnly: true,
+                    viewportMargin: Infinity
+                });
             });
-    </script>
+
+        $("[data-code='javascript']")
+            .each(function(index) {
+                var editor = CodeMirror.fromTextArea(this,
+                {
+                    lineNumbers: true,
+                    mode: 'javascript',
+                    readOnly: true,
+                    viewportMargin: Infinity
+                });
+            });
+    }
+
+    $(document)
+        .ready(function() {
+            $("#runTest").click(runTests);
+            createEditors();
+        });
+</script>
 
 
-    <script type="text/template" id="jspreparation">
-        @Html.Raw(Model.ScriptPreparationCode) 
-    </script>
+<script type="text/template" id="jspreparation">
+    @Html.Raw(Model.ScriptPreparationCode) 
+</script>
+
+<script type="text/javascript">
+    function onStart() {
+        
+    }
+
+    function onCycle() {
+        
+    }
+
+    function onAbort() {
+
+    }
+
+    function onError() {
+        
+    }
+
+    function onReset() {
+        
+    }
+
+    function onComplete() {
+        
+    }
+
+</script>
 <script type="text/template" id="benchmark">
     var suite = new Benchmark.Suite;
     @foreach (var test in Model.TestCases)
