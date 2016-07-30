@@ -80,8 +80,8 @@
                         </tr>
                     }
                 </table>
-                <h4>Fastest: </h4>
-                <h4>Slowest: </h4>
+                <h4><b>Fastest:</b> <span data-role="fastest-label">N/A</span></h4>
+                <h4><b>Slowest:</b> <span data-role="slowest-label">N/A</span></h4>
             </li>
         </ul>
     </div>
@@ -151,7 +151,6 @@
         });
 </script>
 
-
 <script type="text/template" id="jspreparation">
     @Html.Raw(Model.ScriptPreparationCode) 
 </script>
@@ -178,7 +177,6 @@
         var suiteStatusLabels = $("[data-role='suite-status']");
         suiteStatusLabels.text('Aborted');
         suiteStatusLabels.attr("class","label label-warning");
-        //debugger;
     }
 
     function onError() {
@@ -200,6 +198,8 @@
         var suiteStatusLabels = $("[data-role='suite-status']");
         suiteStatusLabels.text('Completed');
         suiteStatusLabels.attr("class", "label label-success");
+        $("[data-role='fastest-label']").text(this.filter('fastest').map('name'));
+        $("[data-role='slowest-label']").text(this.filter('fastest').map('name'));
         debugger;
     }
 
