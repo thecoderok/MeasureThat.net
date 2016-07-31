@@ -63,6 +63,8 @@
     <Build Include="Tables\Benchmark.sql" />
     <Build Include="Tables\BenchmarkTest.sql" />
     <Build Include="Tables\AspNetUsers.sql" />
+    <Build Include="Tables\Results.sql" />
+    <Build Include="Tables\ResultRow.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BenchmarkLab.DB.refactorlog" />
