@@ -86,6 +86,9 @@
         </ul>
     </div>
 </div>
+<div class="hidden" id="results-form">
+    @Html.AntiForgeryToken()
+</div>
 
 @section Styles{
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BenchmarkLab.Models;
 using JetBrains.Annotations;
-using BenchmarkLab.Models.BenchmarksViewModels;
 
 namespace BenchmarkLab.Data.Dao
 {

@@ -13,6 +13,7 @@ using BenchmarkLab.Logic.Text.Unidecode;
 
 namespace BenchmarkLab.Controllers
 {
+    using System;
     using System.Collections.Generic;
 
     [Authorize]
@@ -93,7 +94,15 @@ namespace BenchmarkLab.Controllers
         [ValidateAntiForgeryToken] //TODO: should aft be validated?
         public IActionResult Fork(int id)
         {
+            throw new NotImplementedException();
             return this.View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PublishResults()
+        {
+            throw new NotImplementedException();
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync()

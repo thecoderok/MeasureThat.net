@@ -1,4 +1,4 @@
-namespace BenchmarkLab.Models.BenchmarksViewModels
+namespace BenchmarkLab.Models
 {
     using System.ComponentModel.DataAnnotations;
 

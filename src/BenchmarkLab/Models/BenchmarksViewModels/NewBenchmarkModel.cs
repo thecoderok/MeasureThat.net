@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BenchmarkLab.Models
 {
-    using BenchmarksViewModels;
-
     public class NewBenchmarkModel
     {
         public NewBenchmarkModel()
