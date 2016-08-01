@@ -111,6 +111,10 @@
 
 <script type="text/javascript">
     function runTests() {
+        $('[data-role="result-label"]').text('');
+        $('[data-role="fastest-label"]').text('');
+        $('[data-role="slowest-label"]').text('');
+
         var preparation = $("#jspreparation").html();
         var content = $("#benchmark").html();
         try {
@@ -202,7 +206,7 @@
         suiteStatusLabels.text('Completed');
         suiteStatusLabels.attr("class", "label label-success");
         $("[data-role='fastest-label']").text(this.filter('fastest').map('name'));
-        $("[data-role='slowest-label']").text(this.filter('fastest').map('name'));
+        $("[data-role='slowest-label']").text(this.filter('slowest').map('name'));
         debugger;
     }
 
