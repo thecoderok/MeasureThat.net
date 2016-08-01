@@ -1,6 +1,6 @@
-using BenchmarkLab.Logic.Text.Unidecode;
 using JetBrains.Annotations;
 using System.Text.RegularExpressions;
+using Unidecode.NET;
 
 namespace BenchmarkLab.Logic.Web
 {

@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Logic.Text.Unidecode;
 
 namespace BenchmarkLab.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using Unidecode.NET;
 
     [Authorize]
     public class BenchmarksController : Controller
