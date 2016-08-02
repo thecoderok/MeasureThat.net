@@ -90,6 +90,11 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
+        public Task<IEnumerable<PublishResultsModel>> ListByUser(uint maxEntities, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         private PublishResultsModel DbEntityToModel([NotNull] Result entity)
         {
             var result = new PublishResultsModel()

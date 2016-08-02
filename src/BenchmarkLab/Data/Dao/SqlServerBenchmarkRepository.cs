@@ -77,7 +77,10 @@ namespace BenchmarkLab.Data.Dao
 
         public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
         {
-            var entities = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).Take((int)maxEntities).ToListAsync();
+            var entities = await this.m_db.Benchmark
+                .Include(b => b.BenchmarkTest)
+                .Take((int)maxEntities)
+                .ToListAsync();
             var result = new List<NewBenchmarkModel>();
             foreach (var benchmark in entities)
             {
@@ -151,6 +154,23 @@ namespace BenchmarkLab.Data.Dao
                 };
                 result.TestCases.Add(testCase);
             }
+            return result;
+        }
+
+        public async Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        {
+            var entities = await this.m_db.Benchmark
+                .Where(t=> t.OwnerId == userId)
+                .Include(b => b.BenchmarkTest)
+                .Take((int)maxEntities)
+                .ToListAsync();
+            var result = new List<NewBenchmarkModel>();
+            foreach (var benchmark in entities)
+            {
+                NewBenchmarkModel model = DbEntityToModel(benchmark);
+                result.Add(model);
+            }
+
             return result;
         }
     }

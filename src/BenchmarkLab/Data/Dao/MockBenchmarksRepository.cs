@@ -69,5 +69,10 @@ namespace BenchmarkLab.Data.Dao
             await Task.Delay(0);
             return this.m_repository.AsReadOnly();
         }
+
+        public Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

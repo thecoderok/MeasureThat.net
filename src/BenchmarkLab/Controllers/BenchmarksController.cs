@@ -45,10 +45,10 @@ namespace BenchmarkLab.Controllers
             this.m_publishResultRepository = publishResultRepository;
         }
 
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<NewBenchmarkModel> list = await this.m_benchmarkRepository.ListAll(20);
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            IEnumerable<NewBenchmarkModel> list = await this.m_benchmarkRepository.ListByUser(20, user.Id);
             return this.View(list);
         }
 

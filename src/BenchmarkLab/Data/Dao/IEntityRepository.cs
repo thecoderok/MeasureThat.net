@@ -13,5 +13,7 @@ namespace BenchmarkLab.Data.Dao
         Task<TKey> DeleteById(TKey id);
 
         Task<IEnumerable<TModel>> ListAll(uint maxEntities);
+
+        Task<IEnumerable<TModel>> ListByUser(uint maxEntities, string userId);
     }    
 }
