@@ -11,6 +11,7 @@ using BenchmarkLab.Models;
 using BenchmarkLab.Services;
 using BenchmarkLab.Logic.Web;
 using BenchmarkLab.Data.Dao;
+using BenchmarkLab.Logic.Options;
 
 namespace BenchmarkLab
 {
@@ -65,6 +66,9 @@ namespace BenchmarkLab
             services.AddScoped<ValidateReCaptchaAttribute>();
 
             services.AddSingleton<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
+
+            services.AddOptions();
+            services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
