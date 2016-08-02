@@ -239,7 +239,9 @@ namespace BenchmarkLab.Controllers
         // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
             /*if (!ModelState.IsValid)

@@ -10,6 +10,8 @@ namespace BenchmarkLab.Data.Models
             AspNetUserClaims = new HashSet<AspNetUserClaims>();
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
+            Benchmark = new HashSet<Benchmark>();
+            Result = new HashSet<Result>();
         }
 
         public string Id { get; set; }
@@ -31,5 +33,7 @@ namespace BenchmarkLab.Data.Models
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
+        public virtual ICollection<Benchmark> Benchmark { get; set; }
+        public virtual ICollection<Result> Result { get; set; }
     }
 }
