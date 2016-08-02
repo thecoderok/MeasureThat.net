@@ -53,20 +53,18 @@ namespace BenchmarkLab.Data
 
             modelBuilder.Entity<Result>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Browser).HasMaxLength(50);
+                entity.Property(e => e.Browser).HasMaxLength(100);
 
                 entity.Property(e => e.Created).HasDefaultValueSql("getdate()");
 
-                entity.Property(e => e.DevicePlatform).HasMaxLength(50);
+                entity.Property(e => e.DevicePlatform).HasMaxLength(100);
 
-                entity.Property(e => e.OperatingSystem).HasMaxLength(50);
+                entity.Property(e => e.OperatingSystem).HasMaxLength(100);
 
                 entity.Property(e => e.RawUastring)
                     .IsRequired()
                     .HasColumnName("RawUAString")
-                    .HasMaxLength(100);
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.UserId).HasMaxLength(450);
 
@@ -79,8 +77,6 @@ namespace BenchmarkLab.Data
 
             modelBuilder.Entity<ResultRow>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.TestName)
                     .IsRequired()
                     .HasMaxLength(50);

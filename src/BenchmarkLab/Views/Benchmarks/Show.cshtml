@@ -188,6 +188,7 @@
             var suiteStatusLabels = $("[data-role='suite-status']");
             suiteStatusLabels.text('Running');
             suiteStatusLabels.attr("class", "label label-info");
+            $("#runTest").attr("disabled", true);
         }
 
         function onCycle(targets) {
@@ -205,6 +206,7 @@
             var suiteStatusLabels = $("[data-role='suite-status']");
             suiteStatusLabels.text('Aborted');
             suiteStatusLabels.attr("class", "label label-warning");
+            $("#runTest").removeAttr("disabled");
         }
 
         function onError() {
@@ -212,6 +214,7 @@
             var suiteStatusLabels = $("[data-role='suite-status']");
             suiteStatusLabels.text('Error');
             suiteStatusLabels.attr("class", "label label-danger");
+            $("#runTest").removeAttr("disabled");
             debugger;
         }
 
@@ -219,6 +222,7 @@
             var suiteStatusLabels = $("[data-role='suite-status']");
             suiteStatusLabels.text('Reset');
             suiteStatusLabels.attr("class", "label label-warning");
+            $("#runTest").removeAttr("disabled");
             debugger;
         }
 
@@ -259,6 +263,7 @@
             });
 
             drawChart();
+            $("#runTest").removeAttr("disabled");
 
             function drawChart() {
                 var data = google.visualization.arrayToDataTable(chartData);

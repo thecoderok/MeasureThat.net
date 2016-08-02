@@ -30,8 +30,6 @@ namespace BenchmarkLab.Models
 
     public class ResultsRowModel
     {
-        public long Id { get; set; }
-
         [Required]
         public string TestName { get; set; }
 
@@ -39,9 +37,9 @@ namespace BenchmarkLab.Models
         public int NumberOfSamples { get; set; }
 
         [Required]
-        public double ExecutionsPerSecond { get; set; }
+        public float ExecutionsPerSecond { get; set; }
 
         [Required]
-        public double RelativeMarginOfError { get; set; }
+        public float RelativeMarginOfError { get; set; }
     }
 }

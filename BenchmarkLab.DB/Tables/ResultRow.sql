@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ResultRow]
 (
-	[Id] BIGINT NOT NULL PRIMARY KEY, 
+	[Id] BIGINT IDENTITY NOT NULL PRIMARY KEY, 
     [ResultId] BIGINT NOT NULL, 
     [ExecutionsPerSecond] REAL NOT NULL, 
     [RelativeMarginOfError] REAL NOT NULL, 

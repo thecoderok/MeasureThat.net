@@ -77,19 +77,12 @@ namespace BenchmarkLab.Data.Dao
 
         public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
         {
-            var entities = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).ToListAsync();
+            var entities = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).Take((int)maxEntities).ToListAsync();
             var result = new List<NewBenchmarkModel>();
-            uint counter = 0;
             foreach (var benchmark in entities)
             {
                 NewBenchmarkModel model = DbEntityToModel(benchmark);
                 result.Add(model);
-                counter++;
-                if (counter >= maxEntities)
-                {
-                    // Safety measure
-                    break;
-                }
             }
 
             return result;

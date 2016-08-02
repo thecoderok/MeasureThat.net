@@ -65,7 +65,8 @@ namespace BenchmarkLab
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddSingleton<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
+            services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
+            services.AddTransient<IEntityRepository<PublishResultsModel, long>, SqlServerResultsRepository>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));

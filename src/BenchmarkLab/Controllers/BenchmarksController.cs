@@ -24,6 +24,7 @@ namespace BenchmarkLab.Controllers
     {
         private ApplicationDbContext m_context;
         private readonly  IEntityRepository<NewBenchmarkModel, long> m_benchmarkRepository;
+        private readonly IEntityRepository<PublishResultsModel, long> m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
@@ -33,13 +34,15 @@ namespace BenchmarkLab.Controllers
             [NotNull] IEntityRepository<NewBenchmarkModel, long> benchmarkRepository,
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
-            [NotNull] ILoggerFactory loggerFactory)
+            [NotNull] ILoggerFactory loggerFactory,
+            [NotNull] IEntityRepository<PublishResultsModel, long> publishResultRepository)
         {
             this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
             this.m_resultsConfig = resultsConfig;
             this.m_logger = loggerFactory.CreateLogger<BenchmarksController>();
+            this.m_publishResultRepository = publishResultRepository;
         }
 
         [AllowAnonymous]
@@ -145,22 +148,29 @@ namespace BenchmarkLab.Controllers
                 model.OS = clientInfo.OS.ToString();
             }
 
-            // TODO: store it in database
             if (this.m_resultsConfig.Value.UploadResultsToDb)
             {
-                //await UploadResultsToDb(model, user);
+                if (user != null || this.m_resultsConfig.Value.UploadGuestUserResultsToDb)
+                {
+                    long id = await this.m_publishResultRepository.Add(model);
+                    model.Id = id;
+                }
             }
 
             return this.PartialView(model);
         }
 
-        /*private Task UploadResultsToDb(PublishResultsModel model, ApplicationUser user)
+        [AllowAnonymous]
+        public async Task<IActionResult> ShowResult(long id)
         {
-            if (user != null || this.m_resultsConfig.Value.UploadGuestUserResultsToDb)
+            PublishResultsModel model = await this.m_publishResultRepository.FindById(id);
+            if (model == null)
             {
-                
+                return NotFound();
             }
-        }*/
+
+            return View(model);
+        }
 
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
