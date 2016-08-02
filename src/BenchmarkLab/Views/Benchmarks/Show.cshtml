@@ -103,6 +103,7 @@
 }
 
 <div id="results-placeholder"></div>
+<div id="chart_div"></div>
 
 @section Styles
 {
@@ -122,9 +123,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
     </environment>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 
     <script type="text/javascript">
+        google.charts.load('current', { packages: ['corechart', 'bar'] });
+
         function runTests() {
             $('[data-role="result-label"]').text('');
             $('[data-role="fastest-label"]').text('');
@@ -225,11 +230,20 @@
             $("[data-role='slowest-label']").text(this.filter('slowest').map('name'));
 
             var form = $('#results-form');
+            var chartData = [];
+            var header = ['Test case', 'Executions Per Second'];
+            chartData.push(header);
             for (var i = 0; i < suites.currentTarget.length; i++) {
                 form.find("[name='ResultRows[" + i +"].TestName']").val(suites.currentTarget[i].name);
                 form.find("[name='ResultRows[" + i + "].NumberOfSamples']").val(suites.currentTarget[i].stats.sample.length);
                 form.find("[name='ResultRows[" + i + "].ExecutionsPerSecond']").val(suites.currentTarget[i].hz);
                 form.find("[name='ResultRows[" + i + "].RelativeMarginOfError']").val(suites.currentTarget[i].stats.rme);
+
+                var chartItem = [];
+                chartItem.push(suites.currentTarget[i].name);
+                chartItem.push(suites.currentTarget[i].hz);
+                chartData.push(chartItem);
+
             }
 
             var url = "/Benchmarks/PublishResults";
@@ -243,6 +257,24 @@
                     $("#results-placeholder").html(data);
                 }
             });
+
+            drawChart();
+
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable(chartData);
+                var options = {
+                    title: "Benchmark results",
+                    width: 600,
+                    height: 400,
+                    bar: { groupWidth: '95%' },
+                    legend: { position: 'none' },
+                    vAxis: {
+                        minValue: 0
+                    }
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
         }
 
     </script>

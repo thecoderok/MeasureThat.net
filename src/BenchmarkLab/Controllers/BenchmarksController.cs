@@ -138,7 +138,7 @@ namespace BenchmarkLab.Controllers
 
             if (clientInfo != null)
             {
-                model.Browser = clientInfo.UserAgent.ToString();
+                model.Browser = clientInfo.UserAgent.Family + " " + clientInfo.UserAgent.Major;
                 model.DevicePlatform = clientInfo.Device.ToString();
                 model.OS = clientInfo.OS.ToString();
             }
