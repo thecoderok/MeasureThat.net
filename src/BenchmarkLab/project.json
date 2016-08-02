@@ -1,6 +1,6 @@
 {
   "userSecretsId": "aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "dependencies": {
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",

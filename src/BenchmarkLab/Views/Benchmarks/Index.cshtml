@@ -5,11 +5,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
-    ViewData["Title"] = "Benchmarks";
+    ViewData["Title"] = "Your benchmarks";
 }
 
 <div class="page-header">
-    <h1>All benchmarks</h1>
+    <h1>Your benchmarks</h1>
 </div>
 
 <table class="table table-striped">
@@ -17,7 +17,7 @@
 {
 <tr>
     <td>@b.BenchmarkName</td>
-    <td><a asp-action="Show" asp-route-id="@b.Id" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">Ta-da</a></td>    
+    <td><a asp-action="Show" asp-route-id="@b.Id" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">Show</a></td>    
 </tr>
 }
 </table>
