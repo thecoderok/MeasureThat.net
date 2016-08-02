@@ -94,6 +94,10 @@ namespace BenchmarkLab
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseSecurityHeadersMiddleware(new SecurityHeadersBuilder()
+              .AddDefaultSecurePolicy()
+            );
+
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
