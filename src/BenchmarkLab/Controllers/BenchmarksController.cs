@@ -102,11 +102,20 @@ namespace BenchmarkLab.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] //TODO: should aft be validated?
-        public IActionResult Fork(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Fork(int id)
         {
-            throw new NotImplementedException();
-            return this.View();
+            NewBenchmarkModel benchmark = await this.m_benchmarkRepository.FindById(id);
+            if (benchmark == null)
+            {
+                return this.NotFound();
+            }
+
+            var user = await GetCurrentUserAsync();
+            benchmark.OwnerId = user.Id;
+            benchmark.Id = 0;
+
+            return View("Add", benchmark);
         }
 
         [HttpPost]

@@ -18,12 +18,15 @@
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <h4><b>Suite status:</b> <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span></h4>
                 </div>
-                <div class="col-md-4 text-right">
-                        <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
-                        <button class="btn btn-default" disabled>Previous results</button>
+                <div class="col-md-6 text-right">
+                    <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
+                    <button class="btn btn-default" disabled>Previous results</button>
+                    <button class="btn btn-default" id="fork-btn">
+                        <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -63,6 +66,12 @@
         <input name="ResultRows[@counter].RelativeMarginOfError" type="hidden" />
         counter++;
     }
+}
+
+@using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
+{
+    @Html.AntiForgeryToken()
+    <input name="id" type="hidden" value="@Model.Id" />
 }
 
 <div id="chart_div"></div>
@@ -140,6 +149,9 @@
         $(document)
             .ready(function () {
                 $("#runTest").click(runTests);
+                $("#fork-btn").click(function() {
+                    $("#fork-form").submit();
+                });
                 $("#runTest").removeAttr("disabled");
                 createEditors();
             });
