@@ -24,7 +24,7 @@ namespace BenchmarkLab.Controllers
     {
         private ApplicationDbContext m_context;
         private readonly  IEntityRepository<NewBenchmarkModel, long> m_benchmarkRepository;
-        private readonly IEntityRepository<PublishResultsModel, long> m_publishResultRepository;
+        private readonly IResultsRepository m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
@@ -35,7 +35,7 @@ namespace BenchmarkLab.Controllers
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
-            [NotNull] IEntityRepository<PublishResultsModel, long> publishResultRepository)
+            [NotNull] IResultsRepository publishResultRepository)
         {
             this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
@@ -163,7 +163,7 @@ namespace BenchmarkLab.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ShowResult(long id)
         {
-            PublishResultsModel model = await this.m_publishResultRepository.FindById(id);
+            ShowResultModel model = await this.m_publishResultRepository.GetResultWithBenchmark(id);
             if (model == null)
             {
                 return NotFound();

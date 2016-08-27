@@ -67,6 +67,7 @@ namespace BenchmarkLab
 
             services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
             services.AddTransient<IEntityRepository<PublishResultsModel, long>, SqlServerResultsRepository>();
+            services.AddTransient<IResultsRepository, SqlServerResultsRepository>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));

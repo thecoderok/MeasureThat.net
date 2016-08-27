@@ -10,7 +10,7 @@ using BenchmarkLab.Logic.Exceptions;
 
 namespace BenchmarkLab.Data.Dao
 {
-    public class SqlServerResultsRepository : IEntityRepository<PublishResultsModel, long>
+    public class SqlServerResultsRepository : IResultsRepository
     {
         private readonly ApplicationDbContext m_db;
 
@@ -75,6 +75,24 @@ namespace BenchmarkLab.Data.Dao
             var result = DbEntityToModel(entity);
 
             return result;
+        }
+
+        public async Task<ShowResultModel> GetResultWithBenchmark(long id)
+        {
+            var entity = await this.m_db.Result
+                .Include(b => b.ResultRow)
+                .Include(b => b.Benchmark)
+                .Include(b => b.Benchmark.BenchmarkTest)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            PublishResultsModel result = DbEntityToModel(entity);
+            NewBenchmarkModel benchmark = SqlServerBenchmarkRepository.DbEntityToModel(entity.Benchmark);
+
+            return new ShowResultModel(result, benchmark);
         }
 
         public async Task<IEnumerable<PublishResultsModel>> ListAll(uint maxEntities)

@@ -1,3 +1,116 @@
-﻿@model BenchmarkLab.Models.PublishResultsModel
+﻿@model BenchmarkLab.Models.ShowResultModel
 
-@Model.Id + " " @Model.RawUserAgenString
+@{
+    ViewData["Title"] = "Run results for: " + Model.Benchmark.BenchmarkName;
+}
+
+<div class="page-header">
+    <h2>Run results for: <small>@Model.Benchmark.BenchmarkName</small></h2>
+    <h3>@Model.Benchmark.Description</h3>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Run details:</b></div>
+    <div class="panel-body">
+        <div class="form-group">
+            @Html.Label("User agent:")
+            <span>@Model.ResultModel.RawUserAgenString</span>
+        </div>
+        
+        <div class="form-group">
+            @Html.Label("Browser:")
+            <span>@Model.ResultModel.Browser</span>
+        </div>
+        
+        <div class="form-group">
+            @Html.Label("Operating system:")
+            <span>@Model.ResultModel.OS</span>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Device Platform:")
+            <span>@Model.ResultModel.DevicePlatform</span>
+        </div>
+    </div>
+</div>
+
+<div id="chart_div"></div>
+
+@await Html.PartialAsync("_ShowBenchmark", Model.Benchmark)
+
+@section Styles
+{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+@{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+@{
+    // TODO: duplicated code, DRY it
+}
+<script type="text/javascript">
+        function createEditors() {
+            // Will enable codeMirror
+            $("[data-code='html']")
+                .each(function (index) {
+                    var editor = CodeMirror.fromTextArea(this,
+                    {
+                        lineNumbers: true,
+                        mode: 'xml',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
+                });
+
+            $("[data-code='javascript']")
+                .each(function (index) {
+                    var editor = CodeMirror.fromTextArea(this,
+                    {
+                        //lineNumbers: true,
+                        mode: 'javascript',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
+                });
+        }
+
+        var chartData = [];
+        var chartItem = [];
+        var header = ['Test case', 'Executions Per Second'];
+        chartData.push(header);
+        @foreach (var row in Model.ResultModel.ResultRows)
+        {
+            <text>
+            chartItem = [];
+            chartItem.push('@row.TestName');
+            chartItem.push(@row.ExecutionsPerSecond);
+            chartData.push(chartItem);
+    </text>
+        }
+
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(chartData);
+            var options = {
+                title: "Benchmark results",
+                width: 800,
+                height: 400,
+                bar: { groupWidth: '95%' },
+                legend: { position: 'none' },
+                vAxis: {
+                    minValue: 0
+                }
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        $(document)
+            .ready(function () {
+                createEditors();
+            });
+</script>
+                                                                                                               }

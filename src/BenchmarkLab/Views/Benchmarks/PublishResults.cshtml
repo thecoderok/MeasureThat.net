@@ -1,26 +1,19 @@
 ﻿@using BenchmarkLab.Models
 @model PublishResultsModel
 
-<h1>Results</h1>
-@Model.BenchmarkId
-<br>
-
-@Model.UserId
-<br>
-
-@Model.DevicePlatform
-<br>
-
-@Model.Browser
-<br>
-
-@Model.RawUserAgenString
-<br>
-
-@Model.OS
-<br>
-
-@Model.ResultRows.Count
-
-<br>
-Published result id: @Model.Id
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Results were published to the server.</b></div>
+    <div class="panel-body">
+        <div class="form-group">
+            <a asp-action="ShowResult" asp-route-id="@Model.Id" target="_blank" class="btn btn-default">View result in another tab</a>
+        </div>
+        <div class="form-group">
+            @Html.Label("Browser:")
+            <span>@Model.RawUserAgenString</span>
+        </div>
+        <div class="form-group">
+            @Html.Label("Result URL:")
+            <input type="text" class="form-control" value="@Url.Action("ShowResult", "Benchmarks", new {id = Model.Id}, this.Context.Request.Scheme)" onfocus="this.select();" onmouseup="return false;" />
+        </div>
+    </div>
+</div>

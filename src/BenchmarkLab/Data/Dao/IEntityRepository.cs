@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BenchmarkLab.Models;
 
 namespace BenchmarkLab.Data.Dao
 {
@@ -15,5 +16,11 @@ namespace BenchmarkLab.Data.Dao
         Task<IEnumerable<TModel>> ListAll(uint maxEntities);
 
         Task<IEnumerable<TModel>> ListByUser(uint maxEntities, string userId);
-    }    
+    }
+
+    // TODO: generalize that iterface, do I even need it?
+    public interface IResultsRepository : IEntityRepository<PublishResultsModel, long>
+    {
+        Task<ShowResultModel> GetResultWithBenchmark(long id);
+    }
 }

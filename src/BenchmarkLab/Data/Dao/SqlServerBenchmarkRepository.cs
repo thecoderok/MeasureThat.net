@@ -132,7 +132,7 @@ namespace BenchmarkLab.Data.Dao
             }
         }
 
-        private static NewBenchmarkModel DbEntityToModel([NotNull] Benchmark entity)
+        public static NewBenchmarkModel DbEntityToModel([NotNull] Benchmark entity)
         {
             var result = new NewBenchmarkModel()
             {
