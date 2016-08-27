@@ -1,0 +1,6 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+There were validation errors:
+@foreach (var modelState in ViewData.ModelState.Values)
+{
+    <p>@modelState.RawValue.ToString()</p>
+}

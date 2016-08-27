@@ -181,6 +181,26 @@ namespace BenchmarkLab.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TestBeforeSubmit(NewBenchmarkModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View("ValidationErrors");
+            }
+
+            // Check if benchmark code was actually entered
+            if (model.TestCases.Count() < 2 || model.TestCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
+            {
+                // TODO: use correct error key
+                this.ModelState.AddModelError("TestCases", "At least two test are cases required.");
+                return this.View("ValidationErrors");
+            }
+
+            return this.View("Show", model);
+        }
+
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return this.m_userManager.GetUserAsync(this.HttpContext.User);
