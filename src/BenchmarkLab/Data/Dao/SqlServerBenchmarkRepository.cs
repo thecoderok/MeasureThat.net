@@ -20,7 +20,7 @@ namespace BenchmarkLab.Data.Dao
             this.m_db = db;
         }
 
-        public async Task<long> Add([NotNull] NewBenchmarkModel entity)
+        public virtual async Task<long> Add([NotNull] NewBenchmarkModel entity)
         {
             var newEntity = new Benchmark()
             {
@@ -50,7 +50,7 @@ namespace BenchmarkLab.Data.Dao
             return newEntity.Id;
         }
 
-        public async Task<long> DeleteById(long id)
+        public virtual async Task<long> DeleteById(long id)
         {
             var entity = await this.m_db.Benchmark.SingleOrDefaultAsync(m => m.Id == id);
             if (entity != null)
@@ -62,7 +62,7 @@ namespace BenchmarkLab.Data.Dao
             return id;
         }
 
-        public async Task<NewBenchmarkModel> FindById(long id)
+        public virtual async Task<NewBenchmarkModel> FindById(long id)
         {
             var entity = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).FirstOrDefaultAsync(m => m.Id == id);
             if (entity == null)
@@ -75,7 +75,7 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
-        public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
+        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
         {
             var entities = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
@@ -157,7 +157,7 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
-        public async Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)

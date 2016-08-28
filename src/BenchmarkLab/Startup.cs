@@ -44,6 +44,8 @@ namespace BenchmarkLab
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -65,8 +67,8 @@ namespace BenchmarkLab
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
-            services.AddTransient<IEntityRepository<PublishResultsModel, long>, SqlServerResultsRepository>();
+            services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, CachingBenchmarkRepository>();
+            services.AddTransient<IEntityRepository<PublishResultsModel, long>, CachingResultsRepository>();
             services.AddTransient<IResultsRepository, SqlServerResultsRepository>();
 
             services.AddOptions();

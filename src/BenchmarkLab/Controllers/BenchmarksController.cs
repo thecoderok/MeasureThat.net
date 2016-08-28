@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using UAParser;
@@ -22,22 +23,19 @@ namespace BenchmarkLab.Controllers
     [Authorize]
     public class BenchmarksController : Controller
     {
-        private ApplicationDbContext m_context;
-        private readonly  IEntityRepository<NewBenchmarkModel, long> m_benchmarkRepository;
+        private readonly IEntityRepository<NewBenchmarkModel, long> m_benchmarkRepository;
         private readonly IResultsRepository m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
 
         public BenchmarksController(
-            [NotNull] ApplicationDbContext context,
             [NotNull] IEntityRepository<NewBenchmarkModel, long> benchmarkRepository,
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
             [NotNull] IResultsRepository publishResultRepository)
         {
-            this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
             this.m_resultsConfig = resultsConfig;

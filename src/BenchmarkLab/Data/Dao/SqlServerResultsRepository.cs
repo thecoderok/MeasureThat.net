@@ -19,7 +19,7 @@ namespace BenchmarkLab.Data.Dao
             this.m_db = db;
         }
 
-        public async Task<long> Add(PublishResultsModel entity)
+        public virtual async Task<long> Add(PublishResultsModel entity)
         {
             var newEntity = new Result()
             {
@@ -52,7 +52,7 @@ namespace BenchmarkLab.Data.Dao
             return newEntity.Id;
         }
 
-        public async Task<long> DeleteById(long id)
+        public virtual async Task<long> DeleteById(long id)
         {
             var entity = await this.m_db.Result.SingleOrDefaultAsync(m => m.Id == id);
             if (entity != null)
@@ -64,7 +64,7 @@ namespace BenchmarkLab.Data.Dao
             return id;
         }
 
-        public async Task<PublishResultsModel> FindById(long id)
+        public virtual async Task<PublishResultsModel> FindById(long id)
         {
             var entity = await this.m_db.Result.Include(b => b.ResultRow).FirstOrDefaultAsync(m => m.Id == id);
             if (entity == null)
@@ -77,7 +77,7 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
-        public async Task<ShowResultModel> GetResultWithBenchmark(long id)
+        public virtual async Task<ShowResultModel> GetResultWithBenchmark(long id)
         {
             var entity = await this.m_db.Result
                 .Include(b => b.ResultRow)
@@ -95,7 +95,7 @@ namespace BenchmarkLab.Data.Dao
             return new ShowResultModel(result, benchmark);
         }
 
-        public async Task<IEnumerable<PublishResultsModel>> ListAll(uint maxEntities)
+        public virtual async Task<IEnumerable<PublishResultsModel>> ListAll(uint maxEntities)
         {
             var entities = await this.m_db.Result.Include(b => b.ResultRow).Take((int)maxEntities).ToListAsync();
             var result = new List<PublishResultsModel>();

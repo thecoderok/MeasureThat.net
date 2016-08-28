@@ -1,0 +1,24 @@
+﻿@{
+  ViewBag.Title = "Admin page";
+}
+
+<div class="page-header">
+    <h1>Admin page</h1>
+</div>
+
+<body ng-app="adminApplication">
+    <div ng-controller="usersController">
+        <strong>First Name:</strong> {{firstName}} <br />
+        <strong>Last Name:</strong> {{lastName}} <br />
+        <input ng-click="sayName()" type="button" value="Say Name" />
+    </div>
+</body>
+
+
+@section Scripts{
+    <!-- AngularJS-->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-resource.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+
+}
