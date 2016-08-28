@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Run the benchmark: " + Model.BenchmarkName;
+    if (this.Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+    {
+        // No chrome for ajax requests
+        Layout = null;
+    }
 }
 
 <div class="page-header">

@@ -10,9 +10,9 @@
     <h1>Create new benchmark</h1>
 </div>
 
-@using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post))
+@using (Html.BeginForm("Add", "Benchmarks", null, FormMethod.Post, true, new {id = "new-benchmark-form"}))
 {
-    @Html.ValidationSummary();
+    @Html.ValidationSummary()
 
     @Html.AntiForgeryToken()
 
@@ -90,13 +90,13 @@
     </div>
 
     <input type="submit" class="btn btn-default" value="Submit" />
-    <input type="button" class="btn btn-info" id="test-button" value="Test before submit" />
+    <!--<input type="button" class="btn btn-info" id="test-button" value="Test before submit" />-->
 }
 
 <div class="hidden">
-@if (Model.TestCases != null && Model.TestCases.Count() > 0)
+@if (Model.TestCases != null && Model.TestCases.Any())
 {
-@foreach (var testCase in Model.TestCases)
+foreach (var testCase in Model.TestCases)
 {
 // So tests that user already added not get lost
 <textarea data-content="existing-test" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
@@ -157,34 +157,61 @@
             var newTestCase = $(rendered);
             $("#test-case-list").append(newTestCase);
             var editor = newTestCase.find("textarea");
-            var testCaseEditor = CodeMirror.fromTextArea(editor[0], {
+            var ed = CodeMirror.fromTextArea(editor[0], {
                 lineNumbers: true,
                 mode: 'javascript'
+            });
+            ed.on("blur", function (instance) {
+                instance.save();
             });
 
             newTestCase.find("[data-action='delete-test']").click(deleteTest);
         }        
 
         $(document).ready(function () {
-            var htmlPreparationEditor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+            var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
                 lineNumbers: true,
                 mode: 'xml'
             });
+            editor.on("blur", function (instance) {
+                instance.save();
+            });
 
-            var scriptPreparationEditor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
+            editor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
                 lineNumbers: true,
                 mode: 'javascript'
+            });
+            editor.on("blur", function (instance) {
+                instance.save();
             });
 
             $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
 
+            // Preserve tests previously entered by user
             $("[data-content='existing-test']").each(function (idx, el) {
                 makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
             });
 
+            // Test before submit handler
             $("#test-button").click(function() {
                 $("#test-button").attr("disabled", "disabled");
+                $("#test-placeholder").empty();
+                $("#test-progress").show();
                 $('#test-before-submit-modal').modal();
+
+                var url = "/Benchmarks/TestBeforeSubmit";
+                var form = $("#new-benchmark-form");
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    cache: false,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function (data) {
+                        $("#test-button").removeAttr("disabled", "disabled");
+                        $("#test-progress").hide();
+                        $("#test-placeholder").html(data);
+                    }
+                });
             });
         });
         
@@ -200,7 +227,14 @@
                 <h4 class="modal-title" id="authenticateModal-label">Sending data to server</h4>
             </div>
             <div class="modal-body" style="text-align: center">
-                <progress class="progress"></progress>
+                <div id="test-placeholder"></div>
+                <div id="test-progress">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            <span class="sr-only">100% Complete</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

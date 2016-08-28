@@ -76,7 +76,7 @@ namespace BenchmarkLab.Controllers
             if (model.TestCases.Count() < 2 || model.TestCases.Any(t=> string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 // TODO: use correct error key
-                this.ModelState.AddModelError("TestCases", "At least two test are cases required.");
+                this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
                 return this.View(model);
             }
 
