@@ -1,20 +1,18 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BenchmarkLab.Data;
-using BenchmarkLab.Data.Dao;
-using BenchmarkLab.Logic.Options;
-using BenchmarkLab.Logic.Web;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Options;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using UAParser;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     using System;
     using System.Collections.Generic;

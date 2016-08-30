@@ -1,8 +1,7 @@
-﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
-@model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Identity
+@model MeasureThat.Net.Models.AccountViewModels.LoginViewModel
+@inject SignInManager<MeasureThat.Net.Models.ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Log in";

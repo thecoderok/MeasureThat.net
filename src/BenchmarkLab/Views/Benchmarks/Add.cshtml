@@ -1,6 +1,8 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration configuration
-@using BenchmarkLab.Logic.Web
-@model NewBenchmarkModel
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
+@model MeasureThat.Net.Models.NewBenchmarkModel
 
 @{
     ViewData["Title"] = "Create new benchmark";

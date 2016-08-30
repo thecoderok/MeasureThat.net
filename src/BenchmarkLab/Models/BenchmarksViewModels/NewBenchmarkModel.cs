@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BenchmarkLab.Models
+namespace MeasureThat.Net.Models
 {
     public class NewBenchmarkModel
     {

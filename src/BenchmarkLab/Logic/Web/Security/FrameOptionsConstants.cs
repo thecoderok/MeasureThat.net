@@ -1,4 +1,4 @@
-﻿namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     /// <summary>
     /// X-Frame-Options-related constants.

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 
-namespace BenchmarkLab.Data.Dao
+namespace MeasureThat.Net.Data.Dao
 {
     using System.Threading.Tasks;
 

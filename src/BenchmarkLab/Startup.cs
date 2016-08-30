@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Data;
-using BenchmarkLab.Models;
-using BenchmarkLab.Services;
-using BenchmarkLab.Logic.Web;
-using BenchmarkLab.Data.Dao;
-using BenchmarkLab.Logic.Options;
+using MeasureThat.Net.Data;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Services;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Options;
 
-namespace BenchmarkLab
+namespace MeasureThat.Net
 {
     public class Startup
     {

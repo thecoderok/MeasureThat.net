@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Models;
-using BenchmarkLab.Models.AccountViewModels;
-using BenchmarkLab.Services;
-using BenchmarkLab.Utility;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Models.AccountViewModels;
+using MeasureThat.Net.Services;
+using MeasureThat.Net.Utility;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     [Authorize]
     public class AccountController : Controller

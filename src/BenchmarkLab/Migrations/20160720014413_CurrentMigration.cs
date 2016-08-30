@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace BenchmarkLab.Migrations
+namespace MeasureThat.Net.Migrations
 {
     public partial class CurrentMigration : Migration
     {

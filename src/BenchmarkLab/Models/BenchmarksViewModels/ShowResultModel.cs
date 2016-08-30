@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
-namespace BenchmarkLab.Models
+namespace MeasureThat.Net.Models
 {
     public class ShowResultModel
     {

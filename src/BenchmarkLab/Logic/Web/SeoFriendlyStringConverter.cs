@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 using System.Text.RegularExpressions;
 using Unidecode.NET;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     public class SeoFriendlyStringConverter
     {

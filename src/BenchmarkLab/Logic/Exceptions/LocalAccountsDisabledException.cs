@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace BenchmarkLab.Utility
+namespace MeasureThat.Net.Utility
 {
     public class LocalAccountsDisabledException : Exception
     {

@@ -1,4 +1,4 @@
-﻿namespace BenchmarkLab.Logic.Web.Security
+namespace MeasureThat.Net.Logic.Web.Security
 {
     /// <summary>
     /// Strict-Transport-Security-related constants.

@@ -1,4 +1,4 @@
-namespace BenchmarkLab.Models
+namespace MeasureThat.Net.Models
 {
     using System.ComponentModel.DataAnnotations;
 

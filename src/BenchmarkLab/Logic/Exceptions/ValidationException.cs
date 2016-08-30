@@ -1,4 +1,4 @@
-namespace BenchmarkLab.Logic.Exceptions
+namespace MeasureThat.Net.Logic.Exceptions
 {
     using System;
 

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace BenchmarkLab.Models.ManageViewModels
+namespace MeasureThat.Net.Models.ManageViewModels
 {
     public class ChangePasswordViewModel
     {

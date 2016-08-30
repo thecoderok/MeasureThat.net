@@ -1,5 +1,8 @@
-@using BenchmarkLab.Logic.Web
-@model IEnumerable<NewBenchmarkModel>
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<MeasureThat.Net.Models.NewBenchmarkModel>
 
 @inject SignInManager<ApplicationUser> SignInManager
 

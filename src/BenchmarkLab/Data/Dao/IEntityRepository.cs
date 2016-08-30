@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Models;
 
-namespace BenchmarkLab.Data.Dao
+namespace MeasureThat.Net.Data.Dao
 {
     using System.Threading.Tasks;
 

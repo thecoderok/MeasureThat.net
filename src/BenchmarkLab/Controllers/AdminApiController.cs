@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     [Produces("application/json")]
     [Route("api/AdminApi")]

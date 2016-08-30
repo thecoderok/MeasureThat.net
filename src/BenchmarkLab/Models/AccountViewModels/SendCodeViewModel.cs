@@ -1,10 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BenchmarkLab.Models.AccountViewModels
+namespace MeasureThat.Net.Models.AccountViewModels
 {
     public class SendCodeViewModel
     {

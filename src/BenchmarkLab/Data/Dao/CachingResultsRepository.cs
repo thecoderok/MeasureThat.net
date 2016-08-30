@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using BenchmarkLab.Models;
+using System.Threading.Tasks;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-namespace BenchmarkLab.Data.Dao
+namespace MeasureThat.Net.Data.Dao
 {
     public class CachingResultsRepository : SqlServerResultsRepository
     {

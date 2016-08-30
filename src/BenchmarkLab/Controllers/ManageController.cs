@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Models;
-using BenchmarkLab.Models.ManageViewModels;
-using BenchmarkLab.Services;
-using BenchmarkLab.Utility;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Models.ManageViewModels;
+using MeasureThat.Net.Services;
+using MeasureThat.Net.Utility;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     [Authorize]
     public class ManageController : Controller
