@@ -59,7 +59,7 @@ body {
     font-family: monospace;
     position: relative;
     overflow: hidden;
-    height: auto!important;
+    /*height: auto!important;*/
 }
 
 .CodeMirror-focused {

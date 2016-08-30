@@ -10,7 +10,7 @@
     <h1>Create new benchmark</h1>
 </div>
 
-@using (Html.BeginForm("Add", "Benchmarks", null, FormMethod.Post, true, new {id = "new-benchmark-form"}))
+@using (Html.BeginForm("Add", "Benchmarks", null, FormMethod.Post, true, new { id = "new-benchmark-form" }))
 {
     @Html.ValidationSummary()
 
@@ -29,12 +29,12 @@
                 <div class="panel-body">
                     <div class="form-group">
                         @Html.LabelFor(m => m.BenchmarkName)
-                        @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.BenchmarkName, new { @class = "form-control", placeholder = "Name of the benchmark" })
                         @Html.ValidationMessageFor(m => m.BenchmarkName, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(m => m.Description)
-                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "Benchmark description" })
                         @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -72,9 +72,7 @@
                 </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
-                <div class="panel-body" id="test-case-list">
-                    
-                </div>
+                <ul class="list-group" id="test-case-list"></ul>
                 <div class="panel-footer">
                     @Html.ValidationMessage("TestCases", "", new { @class = "text-danger" })
                     <div class="form-group">
@@ -94,18 +92,18 @@
 }
 
 <div class="hidden">
-@if (Model.TestCases != null && Model.TestCases.Any())
-{
-foreach (var testCase in Model.TestCases)
-{
-// So tests that user already added not get lost
-<textarea data-content="existing-test" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
-}
-}
+    @if (Model.TestCases != null && Model.TestCases.Any())
+    {
+        foreach (var testCase in Model.TestCases)
+        {
+            // So tests that user already added not get lost
+            <textarea data-content="existing-test" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
+        }
+    }
 </div>
 
 @section Styles{
-@{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
 @section Scripts {
@@ -124,98 +122,102 @@ foreach (var testCase in Model.TestCases)
 
 
 <script id="testCase" type="x-tmpl-mustache">
-    <div class="form-group">
-        <label for="TestCases.TestCaseName">Name your test:</label>
-        <input type="text" class="form-control" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseName" value="{{testCaseName}}">
+    <li class="list-group-item">
+        <div class="form-group">
+            <label for="TestCases.TestCaseName">Name your test:</label>
+            <input type="text" class="form-control" placeholder="Name of the test case" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseName" value="{{testCaseName}}">
 
-        <label for="TestCases.BenchmarkCode">Benchmark code</label>
-        <textarea class="form-control" data-val="true" data-val-required="The Benchmark code is required." name="TestCases[{{testCaseId}}].BenchmarkCode">{{textCaseContent}}</textarea>
-        <span class="field-validation-valid text-danger" data-valmsg-for="TestCases.BenchmarkCode" data-valmsg-replace="true"></span>
-        <button data-action="delete-test" class="btn btn-default">Delete</button>
-    </div>
+            <label for="TestCases.BenchmarkCode">Benchmark code</label>
+            <textarea class="form-control" data-val="true" placeholder="Benchmark code" data-val-required="The Benchmark code is required." name="TestCases[{{testCaseId}}].BenchmarkCode">{{textCaseContent}}</textarea>
+            <span class="field-validation-valid text-danger" data-valmsg-for="TestCases.BenchmarkCode" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group text-right">
+            <button data-action="delete-test" class="btn btn-default">Delete test case</button>
+        </div>
+    </li>
 </script>
 
-    <script type="text/javascript">
-        var globalTestCaseCounter = 0;
-        function deleteTest() {
-            $(this.parentNode).remove();
-            return false;
+<script type="text/javascript">
+    var globalTestCaseCounter = 0;
+    function deleteTest() {
+        $(this.parentNode.parentNode).remove();
+        return false;
+    }
+
+    function makeNewTestCase(strTestCaseContent, strTestCaseName) {
+        if (!strTestCaseContent) {
+            strTestCaseContent = '';
         }
 
-        function makeNewTestCase(strTestCaseContent, strTestCaseName) {
-            if (!strTestCaseContent) {
-                strTestCaseContent = '';
-            }
+        if (!strTestCaseName) {
+            strTestCaseName = '';
+        }
 
-            if (!strTestCaseName) {
-                strTestCaseName = '';
-            }
+        var template = $('#testCase').html();
+        Mustache.parse(template);   // optional, speeds up future uses
+        var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent, testCaseName: strTestCaseName, testCaseId: globalTestCaseCounter++ });
+        var newTestCase = $(rendered);
+        $("#test-case-list").append(newTestCase);
+        var editor = newTestCase.find("textarea");
+        var ed = CodeMirror.fromTextArea(editor[0], {
+            lineNumbers: true,
+            mode: 'javascript'
+        });
+        ed.on("blur", function (instance) {
+            instance.save();
+        });
 
-            var template = $('#testCase').html();
-            Mustache.parse(template);   // optional, speeds up future uses
-            var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent, testCaseName: strTestCaseName, testCaseId: globalTestCaseCounter++ });
-            var newTestCase = $(rendered);
-            $("#test-case-list").append(newTestCase);
-            var editor = newTestCase.find("textarea");
-            var ed = CodeMirror.fromTextArea(editor[0], {
-                lineNumbers: true,
-                mode: 'javascript'
-            });
-            ed.on("blur", function (instance) {
-                instance.save();
-            });
+        newTestCase.find("[data-action='delete-test']").click(deleteTest);
+    }
 
-            newTestCase.find("[data-action='delete-test']").click(deleteTest);
-        }        
+    $(document).ready(function () {
+        var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
+            lineNumbers: true,
+            mode: 'xml'
+        });
+        editor.on("blur", function (instance) {
+            instance.save();
+        });
 
-        $(document).ready(function () {
-            var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
-                lineNumbers: true,
-                mode: 'xml'
-            });
-            editor.on("blur", function (instance) {
-                instance.save();
-            });
+        editor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
+            lineNumbers: true,
+            mode: 'javascript'
+        });
+        editor.on("blur", function (instance) {
+            instance.save();
+        });
 
-            editor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
-                lineNumbers: true,
-                mode: 'javascript'
-            });
-            editor.on("blur", function (instance) {
-                instance.save();
-            });
+        $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
 
-            $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
+        // Preserve tests previously entered by user
+        $("[data-content='existing-test']").each(function (idx, el) {
+            makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
+        });
 
-            // Preserve tests previously entered by user
-            $("[data-content='existing-test']").each(function (idx, el) {
-                makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
-            });
+        // Test before submit handler
+        $("#test-button").click(function () {
+            $("#test-button").attr("disabled", "disabled");
+            $("#test-placeholder").empty();
+            $("#test-progress").show();
+            $('#test-before-submit-modal').modal();
 
-            // Test before submit handler
-            $("#test-button").click(function() {
-                $("#test-button").attr("disabled", "disabled");
-                $("#test-placeholder").empty();
-                $("#test-progress").show();
-                $('#test-before-submit-modal').modal();
-
-                var url = "/Benchmarks/TestBeforeSubmit";
-                var form = $("#new-benchmark-form");
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    cache: false,
-                    data: form.serialize(), // serializes the form's elements.
-                    success: function (data) {
-                        $("#test-button").removeAttr("disabled", "disabled");
-                        $("#test-progress").hide();
-                        $("#test-placeholder").html(data);
-                    }
-                });
+            var url = "/Benchmarks/TestBeforeSubmit";
+            var form = $("#new-benchmark-form");
+            $.ajax({
+                type: "POST",
+                url: url,
+                cache: false,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    $("#test-button").removeAttr("disabled", "disabled");
+                    $("#test-progress").hide();
+                    $("#test-placeholder").html(data);
+                }
             });
         });
-        
-    </script>
+    });
+
+</script>
 }
 
 
