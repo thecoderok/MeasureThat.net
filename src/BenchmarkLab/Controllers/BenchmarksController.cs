@@ -78,6 +78,17 @@ namespace BenchmarkLab.Controllers
                 return this.View(model);
             }
 
+            // Check that there are no test cases with the same name
+            var set = new HashSet<string>();
+            foreach (var testCase in model.TestCases)
+            {
+                if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
+                {
+                    this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
+                    return this.View(model);
+                }
+            }
+
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.OwnerId = user.Id;
 

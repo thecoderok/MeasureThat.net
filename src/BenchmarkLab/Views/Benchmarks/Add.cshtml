@@ -88,6 +88,7 @@
     </div>
 
     <input type="submit" class="btn btn-default" value="Submit" />
+    <a href="@Url.Action("Index")" class="btn btn-link">Cancel</a>
     <!--<input type="button" class="btn btn-info" id="test-button" value="Test before submit" />-->
 }
 
@@ -161,7 +162,8 @@
         var editor = newTestCase.find("textarea");
         var ed = CodeMirror.fromTextArea(editor[0], {
             lineNumbers: true,
-            mode: 'javascript'
+            mode: 'javascript',
+            value: '\n\n\n'
         });
         ed.on("blur", function (instance) {
             instance.save();
@@ -173,7 +175,8 @@
     $(document).ready(function () {
         var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
             lineNumbers: true,
-            mode: 'xml'
+            mode: 'xml',
+            value: '\n\n\n'
         });
         editor.on("blur", function (instance) {
             instance.save();
@@ -182,10 +185,14 @@
         editor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
             lineNumbers: true,
             mode: 'javascript'
+            /*value: ' \n \n \n',
+            lineWrapping: true,
+            gutter: true*/
         });
         editor.on("blur", function (instance) {
             instance.save();
         });
+        //editor.setValue(' \n \n \n');
 
         $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
 
