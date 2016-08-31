@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Page not found";
+    if (this.Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+    {
+        // No chrome for ajax requests
+        Layout = null;
+    }
+}
+<div class="page-header">
+    <h2>
+        Oops! Page not found!
+    </h2>
+</div>

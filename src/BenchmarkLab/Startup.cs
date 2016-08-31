@@ -97,6 +97,8 @@ namespace MeasureThat.Net
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
+
             app.UseSecurityHeadersMiddleware(new SecurityHeadersBuilder()
               .AddDefaultSecurePolicy()
             );
