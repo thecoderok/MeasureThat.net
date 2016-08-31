@@ -8,42 +8,47 @@
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>MeasureThat.net&nbsp;<i class="fa fa-bar-chart" aria-hidden="true"></i></h1>
+    <p class="lead">MeasureThat.net is the website to create and run JavaScript benchmarks. It uses <a target="_blank" href="https://benchmarkjs.com/">BenchmarkJS (v.2.1.1)</a> as a test runner.</p>
+    <p>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg">Create benchmark</a>
+        }
+        else
+        {
+            <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus" aria-hidden="true"></i>Create new benchmark (Sign in needed)</a>
+        }
+        
+        <a asp-controller="Benchmarks" asp-action="Latest" class="btn btn-default btn-lg">Latest benchmarks</a>
+    </p>
 </div>
 
 <div class="row">
     <div class="col-md-4">
         <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <p>Just click "Create benchmark" button.</p>
+        <p>This site is free to use and is mainained by single person. So to protect it against spam and DOS attacks users need to sign in before they can create benchmark. This requirement may be lifted in future.</p>
     </div>
     <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        <h2>Help to improve this website</h2>
+        <p>Please report any issues or make suggestions on the projec'ts GitHub page. Also feel free to join development effort, source code available on GitHub.</p>
+        <p><a target="_blank" class="btn btn-default" href="https://github.com/thecoderok/MeasureThat.net">GitHub/MeasureThat.net &raquo;</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        <h2>Open Source & Cross platform</h2>
+        <p>This website was built using Microsoft .Net Core and can be ran & developed on Windows/Linux/Mac. (instructions about how to get started in building and running it locally will be posted later)</p>
     </div>
 </div>
 
 <div class="row">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-default">Create new benchmark</a>
-    }
-    else
-    {
-        <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-default">Create new benchmark</a>
-    }
-
-    <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default">Show benchmarks</a>
+    <h2>Sample benchmarks:</h2>
+    <ul>
+        <li>
+            <a href="https://www.measurethat.net/Benchmarks/Show/1/demo-benchmark">Demo benchmark (example from benchmarkjs.com)</a>
+        </li>
+        <li>
+            <a href="https://www.measurethat.net/Benchmarks/Show/2/caching-length-property-vs-getting-it-each-ti">Caching length property vs getting it each time in the loop</a>
+        </li>
+    </ul>
 </div>
