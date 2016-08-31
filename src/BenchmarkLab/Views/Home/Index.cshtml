@@ -11,14 +11,7 @@
     <h1>MeasureThat.net&nbsp;<i class="fa fa-bar-chart" aria-hidden="true"></i></h1>
     <p class="lead">MeasureThat.net is the website to create and run JavaScript benchmarks. It uses <a target="_blank" href="https://benchmarkjs.com/">BenchmarkJS (v.2.1.1)</a> as a test runner.</p>
     <p>
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg">Create benchmark</a>
-        }
-        else
-        {
-            <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus" aria-hidden="true"></i>Create new benchmark (Sign in needed)</a>
-        }
+        @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
         
         <a asp-controller="Benchmarks" asp-action="Latest" class="btn btn-default btn-lg">Latest benchmarks</a>
     </p>

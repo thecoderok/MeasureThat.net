@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MeasureThat.Net.Models
 {
+    using System;
+
     public class NewBenchmarkModel
     {
         public NewBenchmarkModel()
@@ -32,5 +34,7 @@ namespace MeasureThat.Net.Models
         public long Id { get; set; }
 
         public string OwnerId { get; set; }
+
+        public DateTime WhenCreated { get; set; }
     }
 }

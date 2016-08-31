@@ -1,0 +1,12 @@
+@using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg">Create benchmark</a>
+}
+else
+{
+    <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus" aria-hidden="true"></i>Create new benchmark (Sign in needed)</a>
+}

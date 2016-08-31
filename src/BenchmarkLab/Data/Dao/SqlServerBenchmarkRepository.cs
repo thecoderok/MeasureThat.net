@@ -136,7 +136,8 @@ namespace MeasureThat.Net.Data.Dao
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 OwnerId = entity.OwnerId,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
-                TestCases = new List<TestCase>()
+                TestCases = new List<TestCase>(),
+                WhenCreated = entity.WhenCreated
             };
 
             foreach (var test in entity.BenchmarkTest)
