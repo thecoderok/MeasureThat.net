@@ -221,5 +221,13 @@ namespace MeasureThat.Net.Controllers
 
             return View(latestBenchmarks);
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ListResults(int id)
+        {
+            const int numOfItems = 25;
+            IEnumerable<PublishResultsModel> model = await this.m_publishResultRepository.ListBenchmarkResults(numOfItems, id);
+            return View(model);
+        }
     }
 }

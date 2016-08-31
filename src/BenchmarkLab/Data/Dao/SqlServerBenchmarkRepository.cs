@@ -74,12 +74,12 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
+        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListAll(int maxEntities)
         {
             // TODO: is this method really needed now?
             var entities = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
-                .Take((int)maxEntities)
+                .Take(maxEntities)
                 .ToListAsync();
 
             return ProcessQueryResult(entities);
@@ -152,7 +152,7 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListByUser(int maxEntities, string userId)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)

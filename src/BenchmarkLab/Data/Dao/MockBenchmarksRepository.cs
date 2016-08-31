@@ -64,13 +64,13 @@ namespace MeasureThat.Net.Data.Dao
             return this.m_repository.FirstOrDefault(t => t.Id == id);
         }
 
-        public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
+        public async Task<IEnumerable<NewBenchmarkModel>> ListAll(int maxEntities)
         {
             await Task.Delay(0);
             return this.m_repository.AsReadOnly();
         }
 
-        public Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        public Task<IEnumerable<NewBenchmarkModel>> ListByUser(int maxEntities, string userId)
         {
             throw new NotImplementedException();
         }

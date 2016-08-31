@@ -1,0 +1,28 @@
+@using System.Threading.Tasks
+@model System.Collections.Generic.IEnumerable<MeasureThat.Net.Models.PublishResultsModel>
+
+@{
+    ViewBag.Title = "Listing latest benchmark result";
+}
+
+<div class="page-header">
+    <h1>Listing latest benchmark result</h1>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User Agent</th>
+            <th>When Created</th>
+        </tr>
+    </thead>
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>
+                <a asp-action="ShowResult" asp-route-id="@b.Id">@b.RawUserAgenString</a>
+            </td>
+            <td>@b.WhenCreated</td>
+        </tr>
+    }
+</table>

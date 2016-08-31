@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-md-6 text-right">
                     <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
-                    <button class="btn btn-default" data-toggle="popover" title="Not implemented yet" data-content="This functionality is coming soon">Previous results</button>
+                    <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
                     <button class="btn btn-default" id="fork-btn">
                         <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
                     </button>
@@ -269,6 +269,22 @@
             }
         }
 
+        // Requires jQuery of course.
+        $(document).ready(function () {
+            $('.show-comments').on('click', function () {
+                var disqus_shortname = 'https-www-measurethat-net'; // Replace this value with *your* username.
+
+                // ajax request to load the disqus javascript
+                $.ajax({
+                    type: "GET",
+                    url: "http://" + disqus_shortname + ".disqus.com/embed.js",
+                    dataType: "script",
+                    cache: true
+                });
+                // hide the button once comments load
+                $(this).fadeOut();
+            });
+        });
     </script>
     <script type="text/template" id="benchmark">
         var suite = new Benchmark.Suite;
@@ -305,3 +321,10 @@
         </div>
     </div>
 </div>
+<hr />
+<div class="text-center">
+    <!-- An element a visitor can click if they <3 comments! -->
+    <button class="show-comments btn btn-default">Load Disqus comments</button>
+</div>
+<!-- The empty element required for Disqus to loads comments into -->
+<div id="disqus_thread"></div>

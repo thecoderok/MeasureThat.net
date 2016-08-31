@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MeasureThat.Net.Data.Dao
 {
     using System;
+    using System.Collections.Generic;
 
     public class CachingResultsRepository : SqlServerResultsRepository
     {
@@ -33,6 +34,14 @@ namespace MeasureThat.Net.Data.Dao
             string key ="result+benchmark_" + id;
             Func<Task<ShowResultModel>> dbLookup = async () => await base.GetResultWithBenchmark(id);
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
+        }
+
+        public override async Task<IEnumerable<PublishResultsModel>> ListBenchmarkResults(int maxEntities, int benchmarkId)
+        {
+            string key = "result+list_" + benchmarkId + "_" + maxEntities;
+            Func<Task<IEnumerable<PublishResultsModel>>> dbLookup = async () => await base.ListBenchmarkResults(maxEntities, benchmarkId);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions);
         }
     }
 }

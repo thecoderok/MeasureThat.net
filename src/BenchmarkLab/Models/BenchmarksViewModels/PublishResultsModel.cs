@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MeasureThat.Net.Models
 {
+    using System;
+
     public class PublishResultsModel
     {
         public PublishResultsModel()
@@ -26,6 +28,8 @@ namespace MeasureThat.Net.Models
         public string OS { get; set; }
 
         public List<ResultsRowModel> ResultRows { get; set; }
+
+        public DateTime WhenCreated { get; set; }
     }
 
     public class ResultsRowModel

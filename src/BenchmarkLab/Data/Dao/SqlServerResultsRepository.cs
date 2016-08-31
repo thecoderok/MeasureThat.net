@@ -95,9 +95,24 @@ namespace MeasureThat.Net.Data.Dao
             return new ShowResultModel(result, benchmark);
         }
 
-        public virtual async Task<IEnumerable<PublishResultsModel>> ListAll(uint maxEntities)
+        public virtual async Task<IEnumerable<PublishResultsModel>> ListBenchmarkResults(int maxEntities, int benchmarkId)
         {
-            var entities = await this.m_db.Result.Include(b => b.ResultRow).Take((int)maxEntities).ToListAsync();
+            var list = await this.m_db.Result
+                .Where(t => t.BenchmarkId == benchmarkId)
+                .OrderByDescending(t => t.Created)
+                .ToListAsync();
+
+            return ProcessQueryResult(list);
+        }
+
+        public virtual async Task<IEnumerable<PublishResultsModel>> ListAll(int maxEntities)
+        {
+            var entities = await this.m_db.Result.Include(b => b.ResultRow).Take(maxEntities).ToListAsync();
+            return ProcessQueryResult(entities);
+        }
+
+        private IEnumerable<PublishResultsModel> ProcessQueryResult(List<Result> entities)
+        {
             var result = new List<PublishResultsModel>();
             foreach (var benchmark in entities)
             {
@@ -108,7 +123,7 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public Task<IEnumerable<PublishResultsModel>> ListByUser(uint maxEntities, string userId)
+        public Task<IEnumerable<PublishResultsModel>> ListByUser(int maxEntities, string userId)
         {
             throw new NotImplementedException();
         }
@@ -129,7 +144,8 @@ namespace MeasureThat.Net.Data.Dao
                 OS = entity.OperatingSystem,
                 RawUserAgenString = entity.RawUastring,
                 UserId = entity.UserId,
-                ResultRows = new List<ResultsRowModel>()
+                ResultRows = new List<ResultsRowModel>(),
+                WhenCreated = entity.Created
             };
 
             foreach(var row in entity.ResultRow)

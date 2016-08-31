@@ -13,9 +13,9 @@ namespace MeasureThat.Net.Data.Dao
 
         Task<TKey> DeleteById(TKey id);
 
-        Task<IEnumerable<TModel>> ListAll(uint maxEntities);
+        Task<IEnumerable<TModel>> ListAll(int maxEntities);
 
-        Task<IEnumerable<TModel>> ListByUser(uint maxEntities, string userId);
+        Task<IEnumerable<TModel>> ListByUser(int maxEntities, string userId);
         Task<IEnumerable<TModel>> GetLatest(int numOfItems);
     }
 
@@ -23,5 +23,7 @@ namespace MeasureThat.Net.Data.Dao
     public interface IResultsRepository : IEntityRepository<PublishResultsModel, long>
     {
         Task<ShowResultModel> GetResultWithBenchmark(long id);
+
+        Task<IEnumerable<PublishResultsModel>> ListBenchmarkResults(int maxEntities, int benchmarkId);
     }
 }
