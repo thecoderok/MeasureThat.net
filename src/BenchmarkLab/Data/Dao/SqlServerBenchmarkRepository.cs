@@ -76,18 +76,13 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
         {
+            // TODO: is this method really needed now?
             var entities = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
                 .Take((int)maxEntities)
                 .ToListAsync();
-            var result = new List<NewBenchmarkModel>();
-            foreach (var benchmark in entities)
-            {
-                NewBenchmarkModel model = DbEntityToModel(benchmark);
-                result.Add(model);
-            }
 
-            return result;
+            return ProcessQueryResult(entities);
         }
 
         private void Validate(Benchmark newEntity)
@@ -163,6 +158,22 @@ namespace MeasureThat.Net.Data.Dao
                 .Include(b => b.BenchmarkTest)
                 .Take((int)maxEntities)
                 .ToListAsync();
+
+            return ProcessQueryResult(entities);
+        }
+
+        public virtual async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
+        {
+            var entities = await this.m_db.Benchmark
+                .Include(t => t.BenchmarkTest)
+                .OrderByDescending(t => t.WhenCreated)
+                .Take(numOfItems).ToListAsync();
+
+            return ProcessQueryResult(entities);
+        }
+
+        private static IEnumerable<NewBenchmarkModel> ProcessQueryResult(List<Benchmark> entities)
+        {
             var result = new List<NewBenchmarkModel>();
             foreach (var benchmark in entities)
             {

@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace MeasureThat.Net.Data.Dao
 {
+    using System;
+
     public class CachingResultsRepository : SqlServerResultsRepository
     {
         private readonly IMemoryCache m_memoryCache;
         private readonly ILogger<CachingResultsRepository> m_logger;
-        private const string CacheKeyPrefix = "result_";
 
         public CachingResultsRepository([NotNull] ApplicationDbContext db,
             IMemoryCache mMemoryCache,
@@ -22,36 +23,16 @@ namespace MeasureThat.Net.Data.Dao
 
         public override async Task<PublishResultsModel> FindById(long id)
         {
-            string key = CacheKeyPrefix + id;
-            PublishResultsModel result = null;
-            if (!m_memoryCache.TryGetValue(key, out result))
-            {
-                m_logger.LogInformation($"Cache miss for key {key}. Doing lookup.");
-                result = await base.FindById(id);
-                if (result != null)
-                {
-                    m_memoryCache.Set(key, result);
-                    m_logger.LogInformation($"Item with key {key} was added to the cache");
-                }
-            }
-            return result;
+            string key = "result_" + id;
+            Func<Task<PublishResultsModel>> dbLookup = async () => await base.FindById(id);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
         }
 
         public override async Task<ShowResultModel> GetResultWithBenchmark(long id)
         {
             string key ="result+benchmark_" + id;
-            ShowResultModel result = null;
-            if (!m_memoryCache.TryGetValue(key, out result))
-            {
-                m_logger.LogInformation($"Cache miss for key {key}. Doing lookup.");
-                result = await base.GetResultWithBenchmark(id);
-                if (result != null)
-                {
-                    m_memoryCache.Set(key, result);
-                    m_logger.LogInformation($"Item with key {key} was added to the cache");
-                }
-            }
-            return result;
+            Func<Task<ShowResultModel>> dbLookup = async () => await base.GetResultWithBenchmark(id);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
         }
     }
 }

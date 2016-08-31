@@ -16,9 +16,10 @@ namespace MeasureThat.Net.Data.Dao
         Task<IEnumerable<TModel>> ListAll(uint maxEntities);
 
         Task<IEnumerable<TModel>> ListByUser(uint maxEntities, string userId);
+        Task<IEnumerable<TModel>> GetLatest(int numOfItems);
     }
 
-    // TODO: generalize that iterface, do I even need it?
+    // TODO: generalize that interface, do I even need it?
     public interface IResultsRepository : IEntityRepository<PublishResultsModel, long>
     {
         Task<ShowResultModel> GetResultWithBenchmark(long id);

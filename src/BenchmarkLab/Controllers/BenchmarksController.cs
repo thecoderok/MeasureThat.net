@@ -212,5 +212,14 @@ namespace MeasureThat.Net.Controllers
         {
             return this.m_userManager.GetUserAsync(this.HttpContext.User);
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Latest()
+        {
+            const int numOfItems = 25;
+            IEnumerable<NewBenchmarkModel> latestBenchmarks = await m_benchmarkRepository.GetLatest(numOfItems);
+
+            return View(latestBenchmarks);
+        }
     }
 }

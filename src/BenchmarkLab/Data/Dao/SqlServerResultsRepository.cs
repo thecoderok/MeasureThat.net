@@ -113,6 +113,11 @@ namespace MeasureThat.Net.Data.Dao
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<PublishResultsModel>> GetLatest(int numOfItems)
+        {
+            throw new NotImplementedException();
+        }
+
         private PublishResultsModel DbEntityToModel([NotNull] Result entity)
         {
             var result = new PublishResultsModel()

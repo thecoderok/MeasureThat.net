@@ -1,0 +1,26 @@
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@model System.Collections.Generic.IEnumerable<MeasureThat.Net.Models.NewBenchmarkModel>
+
+@{
+    ViewBag.Title = "Latest benchmarks";
+}
+
+<div class="page-header">
+    <h2>
+        Latest benchmarks
+    </h2>
+    <h3>(Refreshed every 5 minutes)</h3>
+</div>
+
+
+<div class="row">
+    <ul>
+        @foreach (var b in Model)
+        {
+            <li>
+                <h4><a asp-action="Show" asp-route-id="@b.Id" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a></h4>
+            </li>
+        }
+    </ul>
+</div>

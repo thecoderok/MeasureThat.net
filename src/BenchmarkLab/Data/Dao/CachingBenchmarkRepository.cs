@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MeasureThat.Net.Data.Dao
 {
+    using System;
+    using System.Collections.Generic;
+
     public class CachingBenchmarkRepository : SqlServerBenchmarkRepository
     {
         private readonly IMemoryCache m_memoryCache;
@@ -22,20 +25,16 @@ namespace MeasureThat.Net.Data.Dao
         public override async Task<NewBenchmarkModel> FindById(long id)
         {
             string key = CacheKeyPrefix + id;
-            NewBenchmarkModel result = null;
-            if (!m_memoryCache.TryGetValue(key, out result))
-            {
-                m_logger.LogInformation($"Cache miss for key {key}. Doing lookup.");
+            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
+        }
 
-                result = await base.FindById(id);
-                if (result != null)
-                {
-                    m_memoryCache.Set(key, result);
-                    m_logger.LogInformation($"Item with key {key} was added to the cache");
-                }
-            }
-
-            return result;
+        public override async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
+        {
+            const string key = "latest_benchmarks";
+            Func<Task<IEnumerable<NewBenchmarkModel>>> dbLookup = async () => await base.GetLatest(numOfItems);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions);
         }
     }
 }

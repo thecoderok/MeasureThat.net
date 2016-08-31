@@ -74,5 +74,10 @@ namespace MeasureThat.Net.Data.Dao
         {
             throw new NotImplementedException();
         }
+
+        public Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
