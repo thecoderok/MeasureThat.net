@@ -21,5 +21,7 @@ namespace MeasureThat.Net.Data.Models
 
         public virtual ICollection<ResultRow> ResultRow { get; set; }
         public virtual Benchmark Benchmark { get; set; }
+
+        //public int Version { get; set; }
     }
 }

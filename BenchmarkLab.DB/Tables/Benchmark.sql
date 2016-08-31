@@ -7,5 +7,6 @@ CREATE TABLE [dbo].[Benchmark]
     [WhenCreated] DATETIME2 NOT NULL DEFAULT getdate(), 
     [ScriptPreparationCode] NVARCHAR(MAX) NULL, 
     [HtmlPreparationCode] NVARCHAR(MAX) NULL, 
+    [Version] INT NOT NULL DEFAULT 1, 
     CONSTRAINT [FK_Benchmark_ToUsers] FOREIGN KEY (OwnerId) REFERENCES [AspNetUsers]([Id])
 )

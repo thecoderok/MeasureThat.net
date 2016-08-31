@@ -1,5 +1,5 @@
 ﻿user_agent_parsers:
-  #### SPECIAL CASES TOP ####
+  #### SPECIAL CASES TOP #$###
 
   # HbbTV standard defines what features the browser should understand.
   # but it's like targeting "HTML5 browsers", effective browser support depends on the model
