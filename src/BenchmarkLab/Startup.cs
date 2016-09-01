@@ -73,6 +73,8 @@ namespace MeasureThat.Net
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));
+
+            services.AddSingleton<StaticSiteConfigProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

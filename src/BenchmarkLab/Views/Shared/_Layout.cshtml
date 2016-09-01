@@ -1,5 +1,8 @@
 ﻿@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
 @using Microsoft.ApplicationInsights.Extensibility
+@inject StaticSiteConfigProvider staticConfig
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,5 +92,13 @@
     @RenderSection("scripts", required: false)
 
     @await Html.PartialAsync("_SharedDialogs.cshtml")
+    
+    @{
+        GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
+        if (gaconfig != null && gaconfig.Enabled)
+        {
+            @await Html.PartialAsync("_GoogleAnalytics.cshtml", gaconfig);
+        }
+    }
 </body>
 </html>
