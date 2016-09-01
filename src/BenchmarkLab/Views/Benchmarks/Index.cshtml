@@ -15,25 +15,32 @@
     <h1>Your benchmarks</h1>
 </div>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Benchmark name</th>
-        <th>Description</th>
-        <th>When Created</th>
-    </tr>
-    </thead>
-    @foreach (var b in Model)
-    {
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <td>
-                <a asp-action="Show" asp-route-id="@b.Id" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
-            </td>
-            <td>@b.Description</td>
-            <td>@b.WhenCreated.Humanize()</td>
+            <th>Benchmark name</th>
+            <th>Description</th>
+            <th>When Created</th>
         </tr>
-    }
-</table>
+        </thead>
+        @foreach (var b in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Show" asp-route-id="@b.Id" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                </td>
+                <td>@b.Description</td>
+                <td>@b.WhenCreated.Humanize()</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <h3>You don't have any benchmarks yet.</h3>
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
