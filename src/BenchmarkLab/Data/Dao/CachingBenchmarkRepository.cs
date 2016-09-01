@@ -25,16 +25,16 @@ namespace MeasureThat.Net.Data.Dao
         public override async Task<NewBenchmarkModel> FindById(long id)
         {
             string key = CacheKeyPrefix + id;
-            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id);
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
+            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache).ConfigureAwait(false);
         }
 
         public override async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
         {
             const string key = "latest_benchmarks";
-            Func<Task<IEnumerable<NewBenchmarkModel>>> dbLookup = async () => await base.GetLatest(numOfItems);
-            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions);
+            Func<Task<IEnumerable<NewBenchmarkModel>>> dbLookup = async () => await base.GetLatest(numOfItems).ConfigureAwait(false);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
     }
 }

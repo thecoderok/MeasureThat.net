@@ -47,18 +47,18 @@ namespace MeasureThat.Net.Data.Dao
             this.Validate(newEntity);
 
             this.m_db.Result.Add(newEntity);
-            await this.m_db.SaveChangesAsync();
+            await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             return newEntity.Id;
         }
 
         public virtual async Task<long> DeleteById(long id)
         {
-            var entity = await this.m_db.Result.SingleOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Result.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
             if (entity != null)
             {
                 this.m_db.Result.Remove(entity);
-                await this.m_db.SaveChangesAsync();
+                await this.m_db.SaveChangesAsync().ConfigureAwait(false);
             }
 
             return id;
@@ -66,7 +66,10 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<PublishResultsModel> FindById(long id)
         {
-            var entity = await this.m_db.Result.Include(b => b.ResultRow).FirstOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Result
+                .Include(b => b.ResultRow)
+                .FirstOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity == null)
             {
                 return null;
@@ -83,7 +86,8 @@ namespace MeasureThat.Net.Data.Dao
                 .Include(b => b.ResultRow)
                 .Include(b => b.Benchmark)
                 .Include(b => b.Benchmark.BenchmarkTest)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity == null)
             {
                 return null;
@@ -100,14 +104,19 @@ namespace MeasureThat.Net.Data.Dao
             var list = await this.m_db.Result
                 .Where(t => t.BenchmarkId == benchmarkId)
                 .OrderByDescending(t => t.Created)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return ProcessQueryResult(list);
         }
 
         public virtual async Task<IEnumerable<PublishResultsModel>> ListAll(int maxEntities)
         {
-            var entities = await this.m_db.Result.Include(b => b.ResultRow).Take(maxEntities).ToListAsync();
+            var entities = await this.m_db.Result
+                .Include(b => b.ResultRow)
+                .Take(maxEntities)
+                .ToListAsync()
+                .ConfigureAwait(false);
             return ProcessQueryResult(entities);
         }
 

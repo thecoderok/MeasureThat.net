@@ -44,18 +44,20 @@ namespace MeasureThat.Net.Data.Dao
             this.Validate(newEntity);
 
             this.m_db.Benchmark.Add(newEntity);
-            await this.m_db.SaveChangesAsync();
+            await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             return newEntity.Id;
         }
 
         public virtual async Task<long> DeleteById(long id)
         {
-            var entity = await this.m_db.Benchmark.SingleOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Benchmark
+                .SingleOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity != null)
             {
                 this.m_db.Benchmark.Remove(entity);
-                await this.m_db.SaveChangesAsync();
+                await this.m_db.SaveChangesAsync().ConfigureAwait(false);
             }
 
             return id;
@@ -63,7 +65,10 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<NewBenchmarkModel> FindById(long id)
         {
-            var entity = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).FirstOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Benchmark
+                .Include(b => b.BenchmarkTest)
+                .FirstOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity == null)
             {
                 return null;
@@ -80,7 +85,7 @@ namespace MeasureThat.Net.Data.Dao
             var entities = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
                 .Take(maxEntities)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
 
             return ProcessQueryResult(entities);
         }
@@ -158,7 +163,8 @@ namespace MeasureThat.Net.Data.Dao
                 .Where(t=> t.OwnerId == userId)
                 .Include(b => b.BenchmarkTest)
                 .Take((int)maxEntities)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return ProcessQueryResult(entities);
         }
@@ -168,7 +174,9 @@ namespace MeasureThat.Net.Data.Dao
             var entities = await this.m_db.Benchmark
                 .Include(t => t.BenchmarkTest)
                 .OrderByDescending(t => t.WhenCreated)
-                .Take(numOfItems).ToListAsync();
+                .Take(numOfItems)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return ProcessQueryResult(entities);
         }

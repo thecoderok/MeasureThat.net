@@ -14,7 +14,7 @@ namespace MeasureThat.Net.Data.Dao
             T result;
             if (!memoryCache.TryGetValue(key, out result))
             {
-                result = await lookupWhenNotFound();
+                result = await lookupWhenNotFound().ConfigureAwait(false);
                 CacheEntryIfNeeded(key, memoryCache, cacheOptions, result);
             }
 

@@ -25,23 +25,23 @@ namespace MeasureThat.Net.Data.Dao
         public override async Task<PublishResultsModel> FindById(long id)
         {
             string key = "result_" + id;
-            Func<Task<PublishResultsModel>> dbLookup = async () => await base.FindById(id);
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
+            Func<Task<PublishResultsModel>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache).ConfigureAwait(false);
         }
 
         public override async Task<ShowResultModel> GetResultWithBenchmark(long id)
         {
             string key ="result+benchmark_" + id;
-            Func<Task<ShowResultModel>> dbLookup = async () => await base.GetResultWithBenchmark(id);
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache);
+            Func<Task<ShowResultModel>> dbLookup = async () => await base.GetResultWithBenchmark(id).ConfigureAwait(false);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache).ConfigureAwait(false);
         }
 
         public override async Task<IEnumerable<PublishResultsModel>> ListBenchmarkResults(int maxEntities, int benchmarkId)
         {
             string key = "result+list_" + benchmarkId + "_" + maxEntities;
-            Func<Task<IEnumerable<PublishResultsModel>>> dbLookup = async () => await base.ListBenchmarkResults(maxEntities, benchmarkId);
+            Func<Task<IEnumerable<PublishResultsModel>>> dbLookup = async () => await base.ListBenchmarkResults(maxEntities, benchmarkId).ConfigureAwait(false);
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions);
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
     }
 }
