@@ -1,0 +1,49 @@
+@using System.Threading.Tasks
+@using Humanizer
+@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<MeasureThat.Net.Models.NewBenchmarkModel>
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Your benchmarks";
+}
+
+<div class="page-header">
+    <h1>Your benchmarks</h1>
+</div>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Benchmark name</th>
+            <th>Description</th>
+            <th>When Created</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        @foreach (var b in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                </td>
+                <td>@b.Description</td>
+                <td>@b.WhenCreated.Humanize()</td>
+                <td>
+                    <a class="btn btn-default" asp-action="Edit" asp-route-id="@b.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <h3>You don't have any benchmarks yet.</h3>
+}
+
+@{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }

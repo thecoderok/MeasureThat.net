@@ -14,7 +14,7 @@
         @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
         
         <a asp-controller="Benchmarks" asp-action="Latest" class="btn btn-default btn-lg">Latest benchmarks</a>
-        <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Your benchmarks</a>
+        <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
     </p>
 </div>
 
@@ -51,3 +51,27 @@
         </li>
     </ul>
 </div>
+<hr/>
+<div class="row">
+    <h2>Change log:</h2>
+    <h3>v1.0.34.0 (9/2/2016)</h3>
+    <ul>
+        <li>
+            Ability to edit own benchmarks (user must be authenticated)
+        </li>
+    </ul>
+    <br>
+    <h3>v1.0.33.0 (9/1/2016)</h3>
+    <ul>
+        <li>
+            Authentication not needed to create benchmarks
+        </li>
+        <li>
+            Fixed bug when test case parsing (Server was unable to read input provided by user when user delted some test case.)
+        </li>
+        <li>
+            "My" benchmarks now ordered by date when they were created.
+        </li>
+    </ul>
+</div>
+

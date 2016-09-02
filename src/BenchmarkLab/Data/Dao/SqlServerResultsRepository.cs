@@ -142,6 +142,11 @@ namespace MeasureThat.Net.Data.Dao
             throw new NotImplementedException();
         }
 
+        public Task<long> Update(PublishResultsModel model, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         private PublishResultsModel DbEntityToModel([NotNull] Result entity)
         {
             var result = new PublishResultsModel()

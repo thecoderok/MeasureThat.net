@@ -36,5 +36,7 @@ namespace MeasureThat.Net.Models
         public string OwnerId { get; set; }
 
         public DateTime WhenCreated { get; set; }
+
+        public int Version { get; set; }
     }
 }

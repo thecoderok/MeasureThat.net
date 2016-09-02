@@ -16,24 +16,26 @@ namespace MeasureThat.Net.Data.Dao
         private const string CacheKeyPrefix = "benchmark_";
 
         public CachingBenchmarkRepository(IMemoryCache mMemoryCache,
-            [NotNull] ApplicationDbContext db, ILogger<CachingBenchmarkRepository> mLogger): base(db)
+            [NotNull] ApplicationDbContext db,
+            ILogger<CachingBenchmarkRepository> mLogger): base(db)
         {
             m_memoryCache = mMemoryCache;
             m_logger = mLogger;
         }
-
-        public override async Task<NewBenchmarkModel> FindById(long id)
-        {
-            string key = CacheKeyPrefix + id;
-            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache).ConfigureAwait(false);
-        }
-
+        
         public override async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
         {
             const string key = "latest_benchmarks";
             Func<Task<IEnumerable<NewBenchmarkModel>>> dbLookup = async () => await base.GetLatest(numOfItems).ConfigureAwait(false);
-            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
+        }
+
+        public async Task<NewBenchmarkModel> FindByIdAndVersion(int id, int version)
+        {
+            string key = CacheKeyPrefix + id + "_ver_" + version;
+            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
     }

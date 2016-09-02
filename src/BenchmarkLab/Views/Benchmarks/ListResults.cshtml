@@ -1,4 +1,5 @@
 @using System.Threading.Tasks
+@using Humanizer
 @model System.Collections.Generic.IEnumerable<MeasureThat.Net.Models.PublishResultsModel>
 
 @{
@@ -11,18 +12,22 @@
 
 <table class="table table-striped">
     <thead>
-        <tr>
-            <th>User Agent</th>
-            <th>When Created</th>
-        </tr>
+    <tr>
+        <th>Browser</th>
+        <th>OS</th>
+        <th>User Agent</th>
+        <th>When Created</th>
+    </tr>
     </thead>
     @foreach (var b in Model)
     {
         <tr>
+            <td>@b.Browser</td>
+            <td>@b.OS</td>
             <td>
                 <a asp-action="ShowResult" asp-route-id="@b.Id">@b.RawUserAgenString</a>
             </td>
-            <td>@b.WhenCreated</td>
+            <td>@b.WhenCreated.Humanize()</td>
         </tr>
     }
 </table>

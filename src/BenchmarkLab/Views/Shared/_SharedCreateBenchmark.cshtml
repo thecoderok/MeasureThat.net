@@ -1,8 +1,10 @@
 @using MeasureThat.Net.Models
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Configuration
 @inject SignInManager<ApplicationUser> SignInManager
+@inject IConfiguration config
 
-@if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User) || bool.Parse(config["AllowGuestUsersToCreateBenchmarks"]))
 {
     <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg">Create benchmark</a>
 }

@@ -12,6 +12,7 @@ using MeasureThat.Net.Services;
 using MeasureThat.Net.Logic.Web;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeasureThat.Net
 {
@@ -67,7 +68,7 @@ namespace MeasureThat.Net
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, CachingBenchmarkRepository>();
+            services.AddTransient<CachingBenchmarkRepository>();
             services.AddTransient<IEntityRepository<PublishResultsModel, long>, CachingResultsRepository>();
             services.AddTransient<IResultsRepository, CachingResultsRepository>();
 
@@ -75,6 +76,17 @@ namespace MeasureThat.Net
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));
 
             services.AddSingleton<StaticSiteConfigProvider>();
+
+            bool allowGuestUsersToCreateBenchmarks = bool.Parse(Configuration["AllowGuestUsersToCreateBenchmarks"]);
+
+            services.AddSingleton<IAuthorizationHandler, ConfigurableAuthorizationHandler>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AllowGuests",
+                    policy => policy.Requirements.Add(
+                        new ConfigurableAuthorizationRequirement(
+                            allowGuestUsersToCreateBenchmarks)));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,6 +109,7 @@ namespace MeasureThat.Net
             {
                 m_logger.LogInformation("Running in production mode");
                 app.UseExceptionHandler("/Home/Error");
+                
             }
 
             app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
@@ -117,7 +130,7 @@ namespace MeasureThat.Net
             {
                 routes.MapRoute(
                     name: "showTest",
-                    template: "{controller=Benchmarks}/{action=Show}/{id}/{name?}");
+                    template: "{controller=Benchmarks}/{action=Show}/{id}/{version}/{name?}");
 
                 routes.MapRoute(
                     name: "default",

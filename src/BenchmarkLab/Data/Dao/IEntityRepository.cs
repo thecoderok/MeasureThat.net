@@ -17,6 +17,8 @@ namespace MeasureThat.Net.Data.Dao
 
         Task<IEnumerable<TModel>> ListByUser(int maxEntities, string userId);
         Task<IEnumerable<TModel>> GetLatest(int numOfItems);
+
+        Task<TKey> Update(TModel model, string userId);
     }
 
     // TODO: generalize that interface, do I even need it?

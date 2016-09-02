@@ -14,7 +14,7 @@
 <div class="page-header">
     <h2>
         <a href="@Url.Action("Latest")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
-        &nbsp;Run the benchmark: <small>@Model.BenchmarkName</small>
+        &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
     <h3>@Model.Description</h3>
 </div>
@@ -215,6 +215,11 @@
 
         function onComplete(suites) {
             var suiteStatusLabels = $("[data-role='suite-status']");
+            if (suites.target.aborted === true) {
+                suiteStatusLabels.text('Aborted');
+                suiteStatusLabels.attr("class", "label label-warning");
+                return;
+            } 
             suiteStatusLabels.text('Completed');
             suiteStatusLabels.attr("class", "label label-success");
             $("[data-role='fastest-label']").text(this.filter('fastest').map('name'));

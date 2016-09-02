@@ -1,6 +1,6 @@
 {
   "userSecretsId": "aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297",
-  "version": "1.0.33",
+  "version": "1.0.35",
   "dependencies": {
     "Microsoft.Extensions.Caching.Memory": "1.0.0",
     "Microsoft.AspNetCore.Razor.Tools": {

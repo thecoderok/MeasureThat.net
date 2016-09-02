@@ -17,7 +17,7 @@ namespace MeasureThat.Net.Logic.Web
             str = InvalidCharsRegex.Replace(str, "");
             str = RemoveMultipleSpacesRegex.Replace(str, " ").Trim();
             // cut and trim 
-            str = str.Substring(0, str.Length <= 45 ? str.Length : 45).Trim();
+            str = str.Substring(0, str.Length <= 55 ? str.Length : 55).Trim();
             str = SpaceRegex.Replace(str, "-"); // hyphens   
             return str;
         }

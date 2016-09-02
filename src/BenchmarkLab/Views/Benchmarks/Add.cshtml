@@ -5,18 +5,24 @@
 @model MeasureThat.Net.Models.NewBenchmarkModel
 
 @{
-    ViewData["Title"] = "Create new benchmark";
+    string action = Model.Id == 0 ? "Add new" : "Edit";
+    string verb = Model.Id == 0 ? "Create" : "Edit";
+}
+
+@{
+    ViewData["Title"] = verb + " benchmark";
 }
 
 <div class="page-header">
-    <h1>Create new benchmark</h1>
+    <h1>@verb benchmark</h1>
 </div>
-
-@using (Html.BeginForm("Add", "Benchmarks", null, FormMethod.Post, true, new { id = "new-benchmark-form" }))
+@using (Html.BeginForm(action, "Benchmarks", null, FormMethod.Post, true, new { id = "new-benchmark-form" }))
 {
     @Html.ValidationSummary()
 
     @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
