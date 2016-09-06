@@ -2,7 +2,9 @@
 @using System.Threading.Tasks
 @using MeasureThat.Net.Logic.Web
 @using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
 @model MeasureThat.Net.Models.NewBenchmarkModel
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     string action = Model.Id == 0 ? "Add new" : "Edit";
@@ -11,11 +13,24 @@
 
 @{
     ViewData["Title"] = verb + " benchmark";
+    ViewData["ReturnUrl"] = Url.Action("Add");
 }
 
 <div class="page-header">
     <h1>@verb benchmark</h1>
 </div>
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <div class="alert alert-warning" role="alert">
+        <b>Consider signing in before you create benchmark.</b> Then you will be able to edit it later.
+        Benchmarks created by guest users <b>can't be edited</b>, only forked.
+        <br><br>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#authenticateModal">Log in</button>
+    </div>
+    <hr/>
+}
+
 @using (Html.BeginForm(action, "Benchmarks", null, FormMethod.Post, true, new { id = "new-benchmark-form" }))
 {
     @Html.ValidationSummary()
