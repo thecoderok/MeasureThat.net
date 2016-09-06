@@ -29,7 +29,8 @@ namespace MeasureThat.Net.Data.Dao
                 OperatingSystem = entity.OS,
                 RawUastring = entity.RawUserAgenString,
                 UserId = entity.UserId,
-                ResultRow = new List<ResultRow>()
+                ResultRow = new List<ResultRow>(),
+                Version = entity.BenchmarkVersion
             };
 
             foreach(var row in entity.ResultRows)
