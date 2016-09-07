@@ -1,6 +1,10 @@
 @using System.Threading.Tasks
 @using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
 @model MeasureThat.Net.Models.NewBenchmarkModel
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 
 @{
     ViewData["Title"] = "Run the benchmark: " + Model.BenchmarkName;
@@ -9,327 +13,340 @@
         // No chrome for ajax requests
         Layout = null;
     }
+    bool showEditButton = false;
+    if (SignInManager.IsSignedIn(User))
+    {
+        string userId = UserManager.GetUserId(User);
+        if (string.Equals(Model.OwnerId, userId))
+        {
+            showEditButton = true;
+        }
+    }
 }
+    <div class="page-header">
+        <h2>
+            <a href="@Url.Action("Latest")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+            &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
+        </h2>
+        <h3>@Model.Description</h3>
+    </div>
 
-<div class="page-header">
-    <h2>
-        <a href="@Url.Action("Latest")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
-        &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
-    </h2>
-    <h3>@Model.Description</h3>
-</div>
+    @await Html.PartialAsync("_ShowBenchmark", Model)
 
-@await Html.PartialAsync("_ShowBenchmark", Model)
-
-<div id="result">
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4><b>Suite status:</b> <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span></h4>
-                </div>
-                <div class="col-md-6 text-right">
-                    <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
-                    <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
-                    <button class="btn btn-default" id="fork-btn">
-                        <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
-                    </button>
+    <div id="result">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><b>Suite status:</b> <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span></h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
+                        <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
+                        @if (showEditButton)
+                        {
+                            <a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                        }
+                        <button class="btn btn-default" id="fork-btn">
+                            <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <table class="table table-striped table-bordered table-hover">
-                    <tr>
-                        <th>Test case name</th>
-                        <th>Result</th>
-                    </tr>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <th>Test case name</th>
+                            <th>Result</th>
+                        </tr>
 
+                        @foreach (var test in Model.TestCases)
+                        {
+                            <tr data-row-for="@test.TestCaseName">
+                                <td>@test.TestCaseName</td>
+                                <td data-role="result-label"></td>
+                            </tr>
+                        }
+                    </table>
+                    <h4><b>Fastest:</b> <span data-role="fastest-label">N/A</span></h4>
+                    <h4><b>Slowest:</b> <span data-role="slowest-label">N/A</span></h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "results-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <input name="BenchmarkId" type="hidden" value="@Model.Id" />
+        <input name="BenchmarkVersion" type="hidden" value="@Model.Version" />
+        var counter = 0;
+        @foreach (var testCase in Model.TestCases)
+        {
+            <input name="ResultRows[@counter].TestName" type="hidden" />
+            <input name="ResultRows[@counter].NumberOfSamples" type="hidden" />
+            <input name="ResultRows[@counter].ExecutionsPerSecond" type="hidden" />
+            <input name="ResultRows[@counter].RelativeMarginOfError" type="hidden" />
+            counter++;
+        }
+    }
+
+    @using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <input name="id" type="hidden" value="@Model.Id" />
+    }
+
+    <div id="chart_div"></div>
+    <div id="results-placeholder"></div>
+
+    @section Styles
+{
+        @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+    }
+
+            @section Scripts {
+                <environment names="Development">
+                    <script src="~/lib/lodash/dist/lodash.js"></script>
+                    <script src="~/lib/platform/platform.js"></script>
+                    <script src="~/lib/benchmark/benchmark.js"></script>
+                    <script src="~/scripts/benchmarklab.js" asp-append-version="true"></script>
+                </environment>
+                <environment names="Staging,Production">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.1/platform.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
+                </environment>
+
+                <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+                @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+
+                <script type="text/javascript">
+                    google.charts.load('current', { packages: ['corechart', 'bar'] });
+
+                    function runTests() {
+                        // Clean up any previous status
+                        $('[data-role="result-label"]').text('');
+                        $('[data-role="fastest-label"]').text('');
+                        $('[data-role="slowest-label"]').text('');
+                        $('#results-placeholder').empty();
+                        $('#results-placeholder').fadeIn();
+
+                        var preparation = $("#jspreparation").html();
+                        var content = $("#benchmark").html();
+                        try {
+                            eval(preparation);
+                            eval(content);
+                        } catch (e) {
+                            alert("Error:" + JSON.stringify(e));
+                            throw e;
+                        }
+                    };
+
+                    function createEditors() {
+                        // Will enable codeMirror
+                        $("[data-code='html']")
+                            .each(function (index) {
+                                var editor = CodeMirror.fromTextArea(this,
+                                {
+                                    lineNumbers: true,
+                                    mode: 'xml',
+                                    readOnly: true,
+                                    viewportMargin: Infinity
+                                });
+                            });
+
+                        $("[data-code='javascript']")
+                            .each(function (index) {
+                                var editor = CodeMirror.fromTextArea(this,
+                                {
+                                    //lineNumbers: true,
+                                    mode: 'javascript',
+                                    readOnly: true,
+                                    viewportMargin: Infinity
+                                });
+                            });
+                    }
+
+                    $(document)
+                        .ready(function () {
+                            $("#runTest").click(runTests);
+                            $("#fork-btn").click(function () {
+                                $("#fork-form").submit();
+                            });
+                            $("#runTest").removeAttr("disabled");
+                            createEditors();
+                        });
+                </script>
+
+                <script type="text/template" id="jspreparation">
+                    @Html.Raw(Model.ScriptPreparationCode)
+                </script>
+
+                <script type="text/javascript">
+                    function onStart() {
+                        var suiteStatusLabels = $("[data-role='suite-status']");
+                        suiteStatusLabels.text('Running');
+                        suiteStatusLabels.attr("class", "label label-info");
+                        $("#runTest").attr("disabled", true);
+                    }
+
+                    function onCycle(targets) {
+                        var completedTarget = targets.target;
+                        var testName = completedTarget.name;
+                        var row = $("[data-row-for='" + testName + "']");
+                        if (row.length != 1) {
+                            throw "Unable to find where to report result"
+                        }
+                        row.find('[data-role="result-label"]').text(completedTarget.toString());
+                    }
+
+                    function onAbort() {
+                        var suiteStatusLabels = $("[data-role='suite-status']");
+                        suiteStatusLabels.text('Aborted');
+                        suiteStatusLabels.attr("class", "label label-warning");
+                        $("#runTest").removeAttr("disabled");
+                    }
+
+                    function onError(evt) {
+                        var message = 'Some error occurred.';
+                        if (evt && evt.target && evt.target.error) {
+                            message = evt.target.error;
+                        }
+                        $('#error-message').text(message);
+                        $("#errorDuringExecution").modal();
+                        var suiteStatusLabels = $("[data-role='suite-status']");
+                        suiteStatusLabels.text('Error');
+                        suiteStatusLabels.attr("class", "label label-danger");
+                        $("#runTest").removeAttr("disabled");
+                    }
+
+                    function onReset() {
+                        var suiteStatusLabels = $("[data-role='suite-status']");
+                        suiteStatusLabels.text('Reset');
+                        suiteStatusLabels.attr("class", "label label-warning");
+                        $("#runTest").removeAttr("disabled");
+                    }
+
+                    function onComplete(suites) {
+                        var suiteStatusLabels = $("[data-role='suite-status']");
+                        if (suites.target.aborted === true) {
+                            suiteStatusLabels.text('Aborted');
+                            suiteStatusLabels.attr("class", "label label-warning");
+                            return;
+                        }
+                        suiteStatusLabels.text('Completed');
+                        suiteStatusLabels.attr("class", "label label-success");
+                        $("[data-role='fastest-label']").text(this.filter('fastest').map('name'));
+                        $("[data-role='slowest-label']").text(this.filter('slowest').map('name'));
+
+                        var form = $('#results-form');
+                        var chartData = [];
+                        var header = ['Test case', 'Executions Per Second'];
+                        chartData.push(header);
+                        for (var i = 0; i < suites.currentTarget.length; i++) {
+                            form.find("[name='ResultRows[" + i + "].TestName']").val(suites.currentTarget[i].name);
+                            form.find("[name='ResultRows[" + i + "].NumberOfSamples']").val(suites.currentTarget[i].stats.sample.length);
+                            form.find("[name='ResultRows[" + i + "].ExecutionsPerSecond']").val(suites.currentTarget[i].hz);
+                            form.find("[name='ResultRows[" + i + "].RelativeMarginOfError']").val(suites.currentTarget[i].stats.rme);
+
+                            var chartItem = [];
+                            chartItem.push(suites.currentTarget[i].name);
+                            chartItem.push(suites.currentTarget[i].hz);
+                            chartData.push(chartItem);
+
+                        }
+
+                        var url = "/Benchmarks/PublishResults";
+
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            cache: false,
+                            data: form.serialize(), // serializes the form's elements.
+                            success: function (data) {
+                                $("#results-placeholder").html(data);
+                            }
+                        });
+
+                        drawChart();
+                        $("#runTest").removeAttr("disabled");
+
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable(chartData);
+                            var options = {
+                                title: "Benchmark results",
+                                width: 800,
+                                height: 400,
+                                bar: { groupWidth: '95%' },
+                                legend: { position: 'none' },
+                                vAxis: {
+                                    minValue: 0
+                                }
+                            };
+                            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                            chart.draw(data, options);
+                        }
+                    }
+
+                    // Requires jQuery of course.
+                    $(document).ready(function () {
+                        $('.show-comments').on('click', function () {
+                            var disqus_shortname = 'https-www-measurethat-net'; // Replace this value with *your* username.
+
+                            // ajax request to load the disqus javascript
+                            $.ajax({
+                                type: "GET",
+                                url: "https://" + disqus_shortname + ".disqus.com/embed.js",
+                                dataType: "script",
+                                cache: true
+                            });
+                            // hide the button once comments load
+                            $(this).fadeOut();
+                        });
+                    });
+                </script>
+                <script type="text/template" id="benchmark">
+                    var suite = new Benchmark.Suite;
                     @foreach (var test in Model.TestCases)
                     {
-                        <tr data-row-for="@test.TestCaseName">
-                            <td>@test.TestCaseName</td>
-                            <td data-role="result-label"></td>
-                        </tr>
-                    }
-                </table>
-                <h4><b>Fastest:</b> <span data-role="fastest-label">N/A</span></h4>
-                <h4><b>Slowest:</b> <span data-role="slowest-label">N/A</span></h4>
-            </li>
-        </ul>
-    </div>
-</div>
-
-@using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post, new { @class="hidden", id= "results-form" }))
-{
-    @Html.AntiForgeryToken()
-    <input name="BenchmarkId" type="hidden" value="@Model.Id" />
-    var counter = 0;
-    @foreach (var testCase in Model.TestCases)
-    {
-        <input name="ResultRows[@counter].TestName" type="hidden" />
-        <input name="ResultRows[@counter].NumberOfSamples" type="hidden" />
-        <input name="ResultRows[@counter].ExecutionsPerSecond" type="hidden" />
-        <input name="ResultRows[@counter].RelativeMarginOfError" type="hidden" />
-        counter++;
+                        @: suite.add('@test.TestCaseName', function() {
+                        @Html.Raw(test.BenchmarkCode);
+                        @: });
     }
-}
-
-@using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
-{
-    @Html.AntiForgeryToken()
-    <input name="id" type="hidden" value="@Model.Id" />
-}
-
-<div id="chart_div"></div>
-<div id="results-placeholder"></div>
-
-@section Styles
-{
-    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
-}
-
-@section Scripts {
-    <environment names="Development">
-        <script src="~/lib/lodash/dist/lodash.js"></script>
-        <script src="~/lib/platform/platform.js"></script>
-        <script src="~/lib/benchmark/benchmark.js"></script>
-        <script src="~/scripts/benchmarklab.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.1/platform.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
-    </environment>
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
-
-    <script type="text/javascript">
-        google.charts.load('current', { packages: ['corechart', 'bar'] });
-
-        function runTests() {
-            // Clean up any previous status
-            $('[data-role="result-label"]').text('');
-            $('[data-role="fastest-label"]').text('');
-            $('[data-role="slowest-label"]').text('');
-            $('#results-placeholder').empty();
-            $('#results-placeholder').fadeIn();
-
-            var preparation = $("#jspreparation").html();
-            var content = $("#benchmark").html();
-            try {
-                eval(preparation);
-                eval(content);
-            } catch (e) {
-                alert("Error:" + JSON.stringify(e));
-                throw e;
-            }
-        };
-
-        function createEditors() {
-            // Will enable codeMirror
-            $("[data-code='html']")
-                .each(function (index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        lineNumbers: true,
-                        mode: 'xml',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
-
-            $("[data-code='javascript']")
-                .each(function (index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        //lineNumbers: true,
-                        mode: 'javascript',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
-        }
-
-        $(document)
-            .ready(function () {
-                $("#runTest").click(runTests);
-                $("#fork-btn").click(function() {
-                    $("#fork-form").submit();
-                });
-                $("#runTest").removeAttr("disabled");
-                createEditors();
-            });
-    </script>
-
-    <script type="text/template" id="jspreparation">
-        @Html.Raw(Model.ScriptPreparationCode)
-    </script>
-
-    <script type="text/javascript">
-        function onStart() {
-            var suiteStatusLabels = $("[data-role='suite-status']");
-            suiteStatusLabels.text('Running');
-            suiteStatusLabels.attr("class", "label label-info");
-            $("#runTest").attr("disabled", true);
-        }
-
-        function onCycle(targets) {
-            var completedTarget = targets.target;
-            var testName = completedTarget.name;
-            var row = $("[data-row-for='" + testName + "']");
-            if (row.length != 1) {
-                throw "Unable to find where to report result"
-            }
-            row.find('[data-role="result-label"]').text(completedTarget.toString());
-        }
-
-        function onAbort() {
-            var suiteStatusLabels = $("[data-role='suite-status']");
-            suiteStatusLabels.text('Aborted');
-            suiteStatusLabels.attr("class", "label label-warning");
-            $("#runTest").removeAttr("disabled");
-        }
-
-        function onError(evt) {
-            var message = 'Some error occurred.';
-            if (evt && evt.target && evt.target.error) {
-                message = evt.target.error;
-            }
-            $('#error-message').text(message);
-            $("#errorDuringExecution").modal();
-            var suiteStatusLabels = $("[data-role='suite-status']");
-            suiteStatusLabels.text('Error');
-            suiteStatusLabels.attr("class", "label label-danger");
-            $("#runTest").removeAttr("disabled");
-        }
-
-        function onReset() {
-            var suiteStatusLabels = $("[data-role='suite-status']");
-            suiteStatusLabels.text('Reset');
-            suiteStatusLabels.attr("class", "label label-warning");
-            $("#runTest").removeAttr("disabled");
-        }
-
-        function onComplete(suites) {
-            var suiteStatusLabels = $("[data-role='suite-status']");
-            if (suites.target.aborted === true) {
-                suiteStatusLabels.text('Aborted');
-                suiteStatusLabels.attr("class", "label label-warning");
-                return;
-            } 
-            suiteStatusLabels.text('Completed');
-            suiteStatusLabels.attr("class", "label label-success");
-            $("[data-role='fastest-label']").text(this.filter('fastest').map('name'));
-            $("[data-role='slowest-label']").text(this.filter('slowest').map('name'));
-
-            var form = $('#results-form');
-            var chartData = [];
-            var header = ['Test case', 'Executions Per Second'];
-            chartData.push(header);
-            for (var i = 0; i < suites.currentTarget.length; i++) {
-                form.find("[name='ResultRows[" + i +"].TestName']").val(suites.currentTarget[i].name);
-                form.find("[name='ResultRows[" + i + "].NumberOfSamples']").val(suites.currentTarget[i].stats.sample.length);
-                form.find("[name='ResultRows[" + i + "].ExecutionsPerSecond']").val(suites.currentTarget[i].hz);
-                form.find("[name='ResultRows[" + i + "].RelativeMarginOfError']").val(suites.currentTarget[i].stats.rme);
-
-                var chartItem = [];
-                chartItem.push(suites.currentTarget[i].name);
-                chartItem.push(suites.currentTarget[i].hz);
-                chartData.push(chartItem);
-
+                    suite.on('start', onStart);
+                    suite.on('cycle', onCycle);
+                    suite.on('abort', onAbort);
+                    suite.on('error', onError);
+                    suite.on('reset', onReset);
+                    suite.on('complete', onComplete);
+                    suite.run({ 'async': true });
+                </script>
             }
 
-            var url = "/Benchmarks/PublishResults";
 
-            $.ajax({
-                type: "POST",
-                url: url,
-                cache: false,
-                data: form.serialize(), // serializes the form's elements.
-                success: function (data) {
-                    $("#results-placeholder").html(data);
-                }
-            });
+                    <div class="modal fade" id="errorDuringExecution" tabindex="-1" role="dialog" aria-labelledby="authenticateModal-label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="authenticateModal-label">Error occurred during benchmark execution:</h4>
+                                </div>
+                                <div class="modal-body" style="text-align: center" id="error-message">
 
-            drawChart();
-            $("#runTest").removeAttr("disabled");
-
-            function drawChart() {
-                var data = google.visualization.arrayToDataTable(chartData);
-                var options = {
-                    title: "Benchmark results",
-                    width: 800,
-                    height: 400,
-                    bar: { groupWidth: '95%' },
-                    legend: { position: 'none' },
-                    vAxis: {
-                        minValue: 0
-                    }
-                };
-                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-                chart.draw(data, options);
-            }
-        }
-
-        // Requires jQuery of course.
-        $(document).ready(function () {
-            $('.show-comments').on('click', function () {
-                var disqus_shortname = 'https-www-measurethat-net'; // Replace this value with *your* username.
-
-                // ajax request to load the disqus javascript
-                $.ajax({
-                    type: "GET",
-                    url: "https://" + disqus_shortname + ".disqus.com/embed.js",
-                    dataType: "script",
-                    cache: true
-                });
-                // hide the button once comments load
-                $(this).fadeOut();
-            });
-        });
-    </script>
-    <script type="text/template" id="benchmark">
-        var suite = new Benchmark.Suite;
-        @foreach (var test in Model.TestCases)
-        {
-            @: suite.add('@test.TestCaseName', function() {
-            @Html.Raw(test.BenchmarkCode);
-            @: });
-    }
-        suite.on('start', onStart);
-        suite.on('cycle', onCycle);
-        suite.on('abort', onAbort);
-        suite.on('error', onError);
-        suite.on('reset', onReset);
-        suite.on('complete', onComplete);
-        suite.run({ 'async': true });
-    </script>
-}
-
-
-<div class="modal fade" id="errorDuringExecution" tabindex="-1" role="dialog" aria-labelledby="authenticateModal-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="authenticateModal-label">Error occurred during benchmark execution:</h4>
-            </div>
-            <div class="modal-body" style="text-align: center" id="error-message">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<hr />
-<div class="text-center">
-    <!-- An element a visitor can click if they <3 comments! -->
-    <button class="show-comments btn btn-default">Load Disqus comments</button>
-</div>
-<!-- The empty element required for Disqus to loads comments into -->
-<div id="disqus_thread"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <!-- An element a visitor can click if they <3 comments! -->
+                        <button class="show-comments btn btn-default"><i class="fa fa-comments" aria-hidden="true"></i>&nbsp;Load Disqus comments</button>
+                    </div>
+                    <!-- The empty element required for Disqus to loads comments into -->
+                    <div id="disqus_thread"></div>

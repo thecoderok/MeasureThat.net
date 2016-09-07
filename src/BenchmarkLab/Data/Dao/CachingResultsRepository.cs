@@ -40,7 +40,7 @@ namespace MeasureThat.Net.Data.Dao
         {
             string key = "result+list_" + benchmarkId + "_" + maxEntities;
             Func<Task<IEnumerable<PublishResultsModel>>> dbLookup = async () => await base.ListBenchmarkResults(maxEntities, benchmarkId).ConfigureAwait(false);
-            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
     }

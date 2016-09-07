@@ -250,3 +250,6 @@ ModelManifest.xml
 /src/BenchmarkLab/wwwroot/scripts/benchmarklab.js.map
 /src/BenchmarkLab/wwwroot/scripts/benchmarklab.js
 /src/BenchmarkLab/Properties/PublishProfiles/publish-module.psm1
+/src/BenchmarkLab/wwwroot/scripts/admin-app.ts
+/src/BenchmarkLab/wwwroot/scripts/admin-app.js.map
+/src/BenchmarkLab/wwwroot/scripts/admin-app.js

@@ -30,6 +30,8 @@ namespace MeasureThat.Net.Models
         public List<ResultsRowModel> ResultRows { get; set; }
 
         public DateTime WhenCreated { get; set; }
+
+        public int BenchmarkVersion { get; set; }
     }
 
     public class ResultsRowModel
