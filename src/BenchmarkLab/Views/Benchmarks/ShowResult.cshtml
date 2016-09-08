@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div id="chart_div"></div>
+<div id="chart_div" style="width: 90%; height: 35%;"></div>
 
 @await Html.PartialAsync("_ShowBenchmark", Model.Benchmark)
 
@@ -49,72 +49,23 @@
 
 @section Scripts {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+    <script src="~/scripts/benchmarklab.js" asp-append-version="true"></script>
 @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
-@{
-    // TODO: duplicated code, DRY it
-}
+
 <script type="text/javascript">
-        function createEditors() {
-            // Will enable codeMirror
-            $("[data-code='html']")
-                .each(function (index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        lineNumbers: true,
-                        mode: 'xml',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
-
-            $("[data-code='javascript']")
-                .each(function (index) {
-                    var editor = CodeMirror.fromTextArea(this,
-                    {
-                        //lineNumbers: true,
-                        mode: 'javascript',
-                        readOnly: true,
-                        viewportMargin: Infinity
-                    });
-                });
-        }
-
-        var chartData = [];
-        var chartItem = [];
-        var header = ['Test case', 'Executions Per Second'];
-        chartData.push(header);
-        @foreach (var row in Model.ResultModel.ResultRows)
-        {
-            <text>
-            chartItem = [];
-            chartItem.push('@row.TestName');
-            chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
-            chartData.push(chartItem);
-    </text>
-        }
-
-    google.charts.load('current', { packages: ['corechart', 'bar'] });
-    google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
-            var data = google.visualization.arrayToDataTable(chartData);
-            var options = {
-                title: "Benchmark results",
-                width: 800,
-                height: 400,
-                bar: { groupWidth: '95%' },
-                legend: { position: 'none' },
-                vAxis: {
-                    minValue: 0
-                }
-            };
-            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-
-        $(document)
-            .ready(function () {
-                createEditors();
-            });
+    var pageController = new ShowResultsPageController();
+    var chartItem = [];
+    var header = ['Test case', 'Executions Per Second'];
+    pageController.chartData.push(header);
+    @foreach (var row in Model.ResultModel.ResultRows)
+    {
+        <text>
+        chartItem = [];
+        chartItem.push('@row.TestName');
+        chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
+        pageController.chartData.push(chartItem);
+        </text>
+    }
+    pageController.draw();
 </script>
 }

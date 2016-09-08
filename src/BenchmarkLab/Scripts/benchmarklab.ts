@@ -279,3 +279,55 @@ class DisqusComments {
         });
     }
 }
+
+class ShowResultsPageController {
+    chartData: Array<Array<string>> = [];
+
+    constructor() {
+        $(document).ready(() => this.initialize());
+    }
+
+    initialize() {
+        // Will enable codeMirror
+        $("[data-code='html']")
+            .each(function (index) {
+                var editor = CodeMirror.fromTextArea(this,
+                    {
+                        lineNumbers: true,
+                        mode: 'xml',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
+            });
+
+        $("[data-code='javascript']")
+            .each(function (index) {
+                var editor = CodeMirror.fromTextArea(this,
+                    {
+                        //lineNumbers: true,
+                        mode: 'javascript',
+                        readOnly: true,
+                        viewportMargin: Infinity
+                    });
+            });
+    }
+
+    draw() : void {
+        google.charts.load('current', { packages: ['corechart', 'bar'] });
+        google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(this.chartData));
+    }
+
+    static drawChart(dataToDraw: Array<Array<string>>) : void {
+        var data = google.visualization.arrayToDataTable(dataToDraw);
+        var options = {
+            title: "Benchmark results",
+            bar: { groupWidth: "95%" },
+            legend: { position: "none" },
+            vAxis: {
+                minValue: 0
+            }
+        };
+        const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        chart.draw(data, options);
+    }
+}
