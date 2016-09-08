@@ -12,10 +12,28 @@
     <p class="lead">MeasureThat.net is the website to create and run JavaScript benchmarks. It uses <a target="_blank" href="https://benchmarkjs.com/">BenchmarkJS (v.2.1.1)</a> as a test runner.</p>
     <p>
         @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
-        
+
         <a asp-controller="Benchmarks" asp-action="Latest" class="btn btn-default btn-lg">Latest benchmarks</a>
         <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
     </p>
+    <!--
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">
+            <a class="github-button" href="https://github.com/thecoderok" data-count-href="/thecoderok/followers" data-count-api="/users/thecoderok#followers" data-count-aria-label="# followers on GitHub" aria-label="Follow @@thecoderok on GitHub">Follow @@thecoderok</a>
+        </div>
+        <div class="col-md-1">
+            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/fork" data-icon="octicon-repo-forked" data-count-href="/thecoderok/MeasureThat.net/network" data-count-api="/repos/thecoderok/MeasureThat.net#forks_count" data-count-aria-label="# forks on GitHub" aria-label="Fork thecoderok/MeasureThat.net on GitHub">Fork</a>
+        </div>
+        <div class="col-md-1">
+            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net" data-icon="octicon-star" data-count-href="/thecoderok/MeasureThat.net/stargazers" data-count-api="/repos/thecoderok/MeasureThat.net#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star thecoderok/MeasureThat.net on GitHub">Star</a>
+        </div>
+        <div class="col-md-1">
+            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/issues" data-icon="octicon-issue-opened" data-count-api="/repos/thecoderok/MeasureThat.net#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue thecoderok/MeasureThat.net on GitHub">Issue</a>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    -->
 </div>
 
 
@@ -98,3 +116,9 @@
     </ul>
 </div>
 
+<!--GitHub stuff-->
+<a target="_blank" href="https://github.com/thecoderok/MeasureThat.net"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1500;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+@section Scripts
+{
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+}
