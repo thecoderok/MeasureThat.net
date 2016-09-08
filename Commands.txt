@@ -1,0 +1,3 @@
+npm install typings --global
+typings search codemirror
+typings install dt~jquery --global
