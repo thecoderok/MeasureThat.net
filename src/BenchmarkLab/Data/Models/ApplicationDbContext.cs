@@ -27,7 +27,7 @@ namespace MeasureThat.Net.Data
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(60);
+                    .HasMaxLength(200);
 
                 entity.Property(e => e.OwnerId)
                     .IsRequired()

@@ -14,7 +14,7 @@ namespace MeasureThat.Net.Models
 
         [Required]
         [Display(Name = "Benchmark Name")]
-        [StringLength(60, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(200, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         public string BenchmarkName { get; set; }
 
         [StringLength(4000, ErrorMessage = "The {0} must be at max {1} characters long.")]
