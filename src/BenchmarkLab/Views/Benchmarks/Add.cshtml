@@ -140,6 +140,8 @@
     <environment names="Staging,Production">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.1.3/mustache.min.js"></script>
     </environment>
+    
+    <script src="~/Scripts/benchmarklab.js" asp-append-version="true"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
@@ -161,68 +163,6 @@
 </script>
 
 <script type="text/javascript">
-    var globalTestCaseCounter = 0;
-    function deleteTest() {
-        $(this.parentNode.parentNode).remove();
-        return false;
-    }
-
-    function makeNewTestCase(strTestCaseContent, strTestCaseName) {
-        if (!strTestCaseContent) {
-            strTestCaseContent = '';
-        }
-
-        if (!strTestCaseName) {
-            strTestCaseName = '';
-        }
-
-        var template = $('#testCase').html();
-        Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template, { textCaseContent: strTestCaseContent, testCaseName: strTestCaseName, testCaseId: globalTestCaseCounter++ });
-        var newTestCase = $(rendered);
-        $("#test-case-list").append(newTestCase);
-        var editor = newTestCase.find("textarea");
-        var ed = CodeMirror.fromTextArea(editor[0], {
-            lineNumbers: true,
-            mode: 'javascript',
-            value: '\n\n\n'
-        });
-        ed.on("blur", function (instance) {
-            instance.save();
-        });
-
-        newTestCase.find("[data-action='delete-test']").click(deleteTest);
-    }
-
-    $(document).ready(function () {
-        var editor = CodeMirror.fromTextArea(document.getElementById("HtmlPreparationCode"), {
-            lineNumbers: true,
-            mode: 'xml',
-            value: '\n\n\n'
-        });
-        editor.on("blur", function (instance) {
-            instance.save();
-        });
-
-        editor = CodeMirror.fromTextArea(document.getElementById("ScriptPreparationCode"), {
-            lineNumbers: true,
-            mode: 'javascript'
-            /*value: ' \n \n \n',
-            lineWrapping: true,
-            gutter: true*/
-        });
-        editor.on("blur", function (instance) {
-            instance.save();
-        });
-        //editor.setValue(' \n \n \n');
-
-        $("[data-action='new-test']").on("click", function () { makeNewTestCase('', ''); });
-
-        // Preserve tests previously entered by user
-        $("[data-content='existing-test']").each(function (idx, el) {
-            makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
-        });
-    });
-
+    var addPageController = new AddNewTestPageController();
 </script>
 }

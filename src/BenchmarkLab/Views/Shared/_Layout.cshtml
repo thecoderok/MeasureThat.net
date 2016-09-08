@@ -25,6 +25,10 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+
+    <meta name="Description" content="JavaScript microbenchmarks, JavaScript performance playground. Measure performance accross different browsers.">
+    <meta name="Keywords" content="JavaScript, jQuery, Performance, Benchmark, Speed, Web, React, Angular, Node.js">
+
     <title>@ViewData["Title"] - MeasureThat.net</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 
@@ -92,7 +96,7 @@
     @RenderSection("scripts", required: false)
 
     @await Html.PartialAsync("_SharedDialogs.cshtml")
-    
+
     @{
         GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
         if (gaconfig != null && gaconfig.Enabled)
