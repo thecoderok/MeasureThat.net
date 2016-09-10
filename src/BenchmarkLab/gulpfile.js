@@ -56,5 +56,5 @@ gulp.task("bump", function () {
 gulp.task("min", ["min:js", "min:css"]);
 
 gulp.task('default', function () {
-    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/scripts'))
+    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'))
 });
