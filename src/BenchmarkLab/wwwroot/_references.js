@@ -12,4 +12,3 @@
 /// <reference path="lib/mustache/mustache.js" />
 /// <reference path="lib/platform/platform.js" />
 /// <reference path="scripts/admin-app.js" />
-/// <reference path="scripts/benchmarklab.js" />
