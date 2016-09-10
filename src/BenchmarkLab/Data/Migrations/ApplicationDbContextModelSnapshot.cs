@@ -24,7 +24,7 @@ namespace MeasureThat.Net.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasAnnotation("MaxLength", 60);
+                        .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("OwnerId")
                         .IsRequired()

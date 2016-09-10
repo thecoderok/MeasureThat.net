@@ -216,6 +216,7 @@ namespace MeasureThat.Net.Data.Dao
                 for (int i = model.TestCases.Count; i < entity.BenchmarkTest.Count; i++)
                 {
                     this.m_db.BenchmarkTest.Remove(entityTestsList[i]);
+                    entity.BenchmarkTest.Remove(entityTestsList[i]);
                 }
             }
             else if (entityTestsList.Count < model.TestCases.Count)
