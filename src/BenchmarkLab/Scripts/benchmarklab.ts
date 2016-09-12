@@ -95,7 +95,6 @@ class ShowPageController {
     private initialize(): void {
         $(document)
             .ready(() => {
-                $("#runTest").click(this.runTests);
                 $("#fork-btn")
                     .click(() => {
                         $("#fork-form").submit();
@@ -103,26 +102,6 @@ class ShowPageController {
                 $("#runTest").removeAttr("disabled");
                 this.createEditors();
             });
-    }
-
-    // Handles click on run Tests button
-    private runTests(): void {
-        // Clean up any previous status
-        $('[data-role="result-label"]').text('');
-        $('[data-role="fastest-label"]').text('');
-        $('[data-role="slowest-label"]').text('');
-        $('#results-placeholder').empty();
-        $('#results-placeholder').fadeIn();
-
-        var preparation = $("#jspreparation").html();
-        var content = $("#benchmark").html();
-        try {
-            eval(preparation);
-            eval(content);
-        } catch (e) {
-            alert("Error:" + JSON.stringify(e));
-            throw e;
-        }
     }
 
     private createEditors(): void {

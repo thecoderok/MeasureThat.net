@@ -116,11 +116,36 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
     </environment>
-    <script src="~/scripts/benchmarklab.js" asp-append-version="true"></script>
+    <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
     
     <script type="text/javascript">
+                                                             
+        // Handles click on run Tests button
+        function runTests() {
+            // Clean up any previous status
+            $('[data-role="result-label"]').text('');
+                $('[data-role="fastest-label"]').text('');
+                $('[data-role="slowest-label"]').text('');
+                $('#results-placeholder').empty();
+                $('#results-placeholder').fadeIn();
+
+                var preparation = $("#jspreparation").html();
+                var content = $("#benchmark").html();
+                try {
+                    eval(preparation);
+                    eval(content);
+                } catch (e) {
+                    alert("Error:" + JSON.stringify(e));
+                    throw e;
+                }
+            }
+
         DisqusComments.setupLoad();
         pageController = new ShowPageController();
+        $(document)
+            .ready(function() {
+                $("#runTest").click(runTests);
+            });
     </script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

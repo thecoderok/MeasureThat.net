@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using MeasureThat.Net.Models;
 using MeasureThat.Net.Models.ManageViewModels;
 using MeasureThat.Net.Services;
-using MeasureThat.Net.Utility;
 
 namespace MeasureThat.Net.Controllers
 {
@@ -229,8 +228,7 @@ namespace MeasureThat.Net.Controllers
         [HttpGet]
         public IActionResult SetPassword()
         {
-            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
-            /*return View();*/
+            return View();
         }
 
         //
@@ -241,8 +239,7 @@ namespace MeasureThat.Net.Controllers
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -259,7 +256,7 @@ namespace MeasureThat.Net.Controllers
                 AddErrors(result);
                 return View(model);
             }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });*/
+            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
 
         //GET: /Manage/ManageLogins
