@@ -1,4 +1,4 @@
-namespace MeasureThat.Net.Logic.Exceptions
+namespace MeasureThat.Net.Exceptions
 {
     using System;
 

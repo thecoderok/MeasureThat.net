@@ -5,11 +5,11 @@ namespace MeasureThat.Net.Models
 {
     using System;
 
-    public class NewBenchmarkModel
+    public class BenchmarkDto
     {
-        public NewBenchmarkModel()
+        public BenchmarkDto()
         {
-            this.TestCases = new List<TestCase>();
+            this.TestCases = new List<TestCaseDto>();
         }
 
         [Required]
@@ -29,7 +29,7 @@ namespace MeasureThat.Net.Models
 
         [Required]
         [Display(Name = "Test Cases")]
-        public List<TestCase> TestCases { get; set; }        
+        public List<TestCaseDto> TestCases { get; set; }        
 
         public long Id { get; set; }
 

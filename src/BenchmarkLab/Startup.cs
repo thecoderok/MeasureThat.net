@@ -76,8 +76,7 @@ namespace MeasureThat.Net
             services.AddScoped<ValidateReCaptchaAttribute>();
 
             services.AddTransient<CachingBenchmarkRepository>();
-            services.AddTransient<IEntityRepository<PublishResultsModel, long>, CachingResultsRepository>();
-            services.AddTransient<IResultsRepository, CachingResultsRepository>();
+            services.AddTransient<CachingResultsRepository>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));

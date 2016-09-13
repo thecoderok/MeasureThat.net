@@ -5,9 +5,9 @@ namespace MeasureThat.Net.Models
 {
     using System;
 
-    public class PublishResultsModel
+    public class BenchmarkResultDto
     {
-        public PublishResultsModel()
+        public BenchmarkResultDto()
         {
             this.ResultRows = new List<ResultsRowModel>();
         }

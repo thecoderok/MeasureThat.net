@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MeasureThat.Net.Models;
@@ -6,11 +5,14 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using MeasureThat.Net.Data.Models;
 using System.Linq;
-using MeasureThat.Net.Logic.Exceptions;
+using MeasureThat.Net.Exceptions;
 
 namespace MeasureThat.Net.Data.Dao
 {
-    public class SqlServerResultsRepository : IResultsRepository
+    using Controllers;
+    using Logic.Validation;
+
+    public class SqlServerResultsRepository
     {
         private readonly ApplicationDbContext m_db;
 
@@ -19,7 +21,7 @@ namespace MeasureThat.Net.Data.Dao
             this.m_db = db;
         }
 
-        public virtual async Task<long> Add(PublishResultsModel entity)
+        public virtual async Task<long> Add(BenchmarkResultDto entity)
         {
             var newEntity = new Result()
             {
@@ -65,7 +67,7 @@ namespace MeasureThat.Net.Data.Dao
             return id;
         }
 
-        public virtual async Task<PublishResultsModel> FindById(long id)
+        public virtual async Task<BenchmarkResultDto> FindById(long id)
         {
             var entity = await this.m_db.Result
                 .Include(b => b.ResultRow)
@@ -94,16 +96,21 @@ namespace MeasureThat.Net.Data.Dao
                 return null;
             }
 
-            PublishResultsModel result = DbEntityToModel(entity);
-            NewBenchmarkModel benchmark = SqlServerBenchmarkRepository.DbEntityToModel(entity.Benchmark);
+            BenchmarkResultDto result = DbEntityToModel(entity);
+            BenchmarkDto benchmark = SqlServerBenchmarkRepository.DbEntityToModel(entity.Benchmark);
 
             return new ShowResultModel(result, benchmark);
         }
 
-        public virtual async Task<IEnumerable<PublishResultsModel>> ListBenchmarkResults(int maxEntities, int benchmarkId)
+        public virtual async Task<IEnumerable<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId, int page)
         {
+            Preconditions.ToBePositive(maxEntities);
+            Preconditions.ToBeNonNegative(page);
+
             var list = await this.m_db.Result
                 .Where(t => t.BenchmarkId == benchmarkId)
+                .Skip(page * maxEntities)
+                .Take(maxEntities)
                 .OrderByDescending(t => t.Created)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -111,46 +118,42 @@ namespace MeasureThat.Net.Data.Dao
             return ProcessQueryResult(list);
         }
 
-        public virtual async Task<IEnumerable<PublishResultsModel>> ListAll(int maxEntities)
+        /// <summary>
+        /// Returns total number of results for given benchmark
+        /// Total # is needed to create pagination
+        /// </summary>
+        /// <returns></returns>
+        public virtual async Task<EntityListWithCount<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId)
         {
-            var entities = await this.m_db.Result
-                .Include(b => b.ResultRow)
-                .Take(maxEntities)
+            Preconditions.ToBePositive(maxEntities);
+            var list = await this.m_db.Result
+                .Where(t => t.BenchmarkId == benchmarkId)
+                .OrderByDescending(t => t.Created)
                 .ToListAsync()
                 .ConfigureAwait(false);
-            return ProcessQueryResult(entities);
+
+            long count = list.Count;
+            IEnumerable<BenchmarkResultDto> dtos = ProcessQueryResult(list.Take(maxEntities));
+            var result = new EntityListWithCount<BenchmarkResultDto>(dtos, count);
+            return result;
         }
 
-        private IEnumerable<PublishResultsModel> ProcessQueryResult(List<Result> entities)
+
+        private IEnumerable<BenchmarkResultDto> ProcessQueryResult(IEnumerable<Result> entities)
         {
-            var result = new List<PublishResultsModel>();
+            var result = new List<BenchmarkResultDto>();
             foreach (var benchmark in entities)
             {
-                PublishResultsModel model = DbEntityToModel(benchmark);
+                BenchmarkResultDto model = DbEntityToModel(benchmark);
                 result.Add(model);
             }
 
             return result;
         }
 
-        public Task<IEnumerable<PublishResultsModel>> ListByUser(int maxEntities, string userId)
+        private BenchmarkResultDto DbEntityToModel([NotNull] Result entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<PublishResultsModel>> GetLatest(int numOfItems)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<long> Update(PublishResultsModel model, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        private PublishResultsModel DbEntityToModel([NotNull] Result entity)
-        {
-            var result = new PublishResultsModel()
+            var result = new BenchmarkResultDto()
             {
                 Id = entity.Id,
                 BenchmarkId = entity.BenchmarkId,

@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
@@ -7,7 +6,6 @@ using MeasureThat.Net.Logic.Web;
 using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,16 +16,14 @@ namespace MeasureThat.Net.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using Unidecode.NET;
+    using Exceptions;
+    using Logic;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
     {
-        private static readonly Regex TestCaseKeyRegex = new Regex("TestCases\\[(\\d+)\\]",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         private readonly CachingBenchmarkRepository m_benchmarkRepository;
-        private readonly IResultsRepository m_publishResultRepository;
+        private readonly CachingResultsRepository m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
@@ -39,7 +35,7 @@ namespace MeasureThat.Net.Controllers
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
-            [NotNull] IResultsRepository publishResultRepository)
+            [NotNull] CachingResultsRepository publishResultRepository)
         {
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
@@ -58,28 +54,27 @@ namespace MeasureThat.Net.Controllers
         public async Task<IActionResult> My()
         {
             ApplicationUser user = await this.GetCurrentUserAsync();
-            IEnumerable<NewBenchmarkModel> list = await this.m_benchmarkRepository.ListByUser(20, user.Id);
+            IEnumerable<BenchmarkDto> list = await this.m_benchmarkRepository.ListByUser(20, user.Id);
             return this.View(list);
         }
 
         public IActionResult Add()
         {
-            return this.View(new NewBenchmarkModel());
+            return this.View(new BenchmarkDto());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Add(NewBenchmarkModel model)
+        public async Task<IActionResult> Add(BenchmarkDto model)
         {
-            // TODO: bring back bind attribute
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
             // Manually parse input
-            var testCases = ReadTestCases();
+            var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
 
             // Check if benchmark code was actually entered
             if (testCases.Count() < 2)
@@ -106,7 +101,7 @@ namespace MeasureThat.Net.Controllers
                 }
             }
 
-            model.TestCases = new List<TestCase>(testCases);
+            model.TestCases = new List<TestCaseDto>(testCases);
 
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.OwnerId = user?.Id;
@@ -117,61 +112,11 @@ namespace MeasureThat.Net.Controllers
                 new {Id = id, Version=0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName)});
         }
 
-        // TODO: Unit tests
-        private List<TestCase> ReadTestCases()
-        {
-            var testCases = new List<TestCase>();
-            if (!this.HttpContext.Request.HasFormContentType)
-            {
-                return testCases;
-            }
-
-            var indexes = new HashSet<int>(); // list of test case indexes
-            IFormCollection form = this.HttpContext.Request.Form;
-            foreach (var key in form.Keys)
-            {
-                if (key.StartsWith("TestCases["))
-                {
-                    var match = TestCaseKeyRegex.Match(key);
-                    if (!match.Success || match.Groups.Count != 2)
-                    {
-                        continue;
-                    }
-
-                    int index = 0;
-                    if (int.TryParse(match.Groups[1].Value, out index))
-                    {
-                        indexes.Add(index);
-                    }
-                }
-            }
-
-            foreach (var idx in indexes)
-            {
-                string nameKey = $"TestCases[{idx}].TestCaseName";
-                string codeKey = $"TestCases[{idx}].BenchmarkCode";
-
-                if (form.ContainsKey(nameKey) && form.ContainsKey(codeKey))
-                {
-                    var name = form[nameKey];
-                    var code = form[codeKey];
-                    var testCase = new TestCase()
-                    {
-                        BenchmarkCode = code,
-                        TestCaseName = name
-                    };
-                    testCases.Add(testCase);
-                }
-            }
-
-            return testCases;
-        }
-
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Show(int id, int version, string name)
         {
-            NewBenchmarkModel benchmarkToRun = await this.m_benchmarkRepository.FindByIdAndVersion(id, version);
+            BenchmarkDto benchmarkToRun = await this.m_benchmarkRepository.FindByIdAndVersion(id, version);
             if (benchmarkToRun == null)
             {
                 return this.NotFound();
@@ -184,7 +129,7 @@ namespace MeasureThat.Net.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Fork(int id)
         {
-            NewBenchmarkModel benchmark = await this.m_benchmarkRepository.FindById(id);
+            BenchmarkDto benchmark = await this.m_benchmarkRepository.FindById(id);
             if (benchmark == null)
             {
                 return this.NotFound();
@@ -200,7 +145,7 @@ namespace MeasureThat.Net.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> PublishResults(PublishResultsModel model)
+        public async Task<IActionResult> PublishResults(BenchmarkResultDto model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -271,7 +216,7 @@ namespace MeasureThat.Net.Controllers
         private async Task<IActionResult> ShowLatestBenchmarks()
         {
             const int numOfItems = 25;
-            IEnumerable<NewBenchmarkModel> latestBenchmarks = await m_benchmarkRepository.GetLatest(numOfItems);
+            IEnumerable<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.GetLatest(numOfItems);
 
             return View("Index", latestBenchmarks);
         }
@@ -280,7 +225,7 @@ namespace MeasureThat.Net.Controllers
         public async Task<IActionResult> ListResults(int id)
         {
             const int numOfItems = 25;
-            IEnumerable<PublishResultsModel> model = await this
+            IEnumerable<BenchmarkResultDto> model = await this
                 .m_publishResultRepository
                 .ListBenchmarkResults(numOfItems, id);
 
@@ -312,7 +257,7 @@ namespace MeasureThat.Net.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Edit(NewBenchmarkModel model)
+        public async Task<IActionResult> Edit(BenchmarkDto model)
         {
             // TODO: duplicated code, DRY
             ApplicationUser user = await this.GetCurrentUserAsync();
@@ -327,7 +272,7 @@ namespace MeasureThat.Net.Controllers
             }
 
             // Manually parse input
-            var testCases = ReadTestCases();
+            var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
 
             // Check if benchmark code was actually entered
             if (testCases.Count() < 2)
@@ -354,11 +299,11 @@ namespace MeasureThat.Net.Controllers
                 }
             }
 
-            model.TestCases = new List<TestCase>(testCases);
+            model.TestCases = new List<TestCaseDto>(testCases);
             
             try
             {
-                NewBenchmarkModel updatedModel = await this.m_benchmarkRepository.Update(model, user.Id);
+                BenchmarkDto updatedModel = await this.m_benchmarkRepository.Update(model, user.Id);
                 return this.RedirectToAction("Show", new { Id = updatedModel.Id, Version = updatedModel.Version, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
             }
             catch (Exception ex)
@@ -371,13 +316,6 @@ namespace MeasureThat.Net.Controllers
         public IActionResult Error()
         {
             return View("Error");
-        }
-    }
-
-    public class NotLoggedInException : Exception
-    {
-        public NotLoggedInException(string youAreNotLoggedIn)
-        {
         }
     }
 }

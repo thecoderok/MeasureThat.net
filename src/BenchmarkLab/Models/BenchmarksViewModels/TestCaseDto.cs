@@ -2,7 +2,7 @@ namespace MeasureThat.Net.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class TestCase
+    public class TestCaseDto
     {
         [Required]
         [Display(Name = "Test Case")]

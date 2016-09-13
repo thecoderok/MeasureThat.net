@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MeasureThat.Net.Models;
 using JetBrains.Annotations;
@@ -8,7 +7,9 @@ namespace MeasureThat.Net.Data.Dao
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Logic.Exceptions;
+    using Controllers;
+    using Exceptions;
+    using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
 
     public class SqlServerBenchmarkRepository
@@ -20,7 +21,7 @@ namespace MeasureThat.Net.Data.Dao
             this.m_db = db;
         }
 
-        public virtual async Task<long> Add([NotNull] NewBenchmarkModel entity)
+        public virtual async Task<long> Add([NotNull] BenchmarkDto entity)
         {
             var newEntity = new Benchmark()
             {
@@ -64,7 +65,7 @@ namespace MeasureThat.Net.Data.Dao
             return id;
         }
 
-        public virtual async Task<NewBenchmarkModel> FindById(long id)
+        public virtual async Task<BenchmarkDto> FindById(long id)
         {
             var entity = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
@@ -80,15 +81,36 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListAll(int maxEntities)
+        public virtual async Task<IEnumerable<BenchmarkDto>> ListAll(int maxEntities, int page)
         {
-            // TODO: is this method really needed now?
+            Preconditions.ToBePositive(maxEntities);
+            Preconditions.ToBeNonNegative(page);
+
             var entities = await this.m_db.Benchmark
-                .Include(b => b.BenchmarkTest)
+                .Include(t => t.BenchmarkTest)
+                .OrderByDescending(t => t.WhenCreated)
+                .Skip(maxEntities * page)
                 .Take(maxEntities)
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return ProcessQueryResult(entities);
+        }
+
+        public virtual async Task<EntityListWithCount<BenchmarkDto>> ListAll(int maxEntities)
+        {
+            Preconditions.ToBePositive(maxEntities);
+
+            var entities = await this.m_db.Benchmark
+                .Include(t => t.BenchmarkTest)
+                .OrderByDescending(t => t.WhenCreated)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            long count = entities.Count;
+            IEnumerable<BenchmarkDto> dtos = ProcessQueryResult(entities.Take(maxEntities));
+            var result = new EntityListWithCount<BenchmarkDto>(dtos, count);
+            return result;
         }
 
         private void Validate(Benchmark newEntity)
@@ -127,9 +149,9 @@ namespace MeasureThat.Net.Data.Dao
             }
         }
 
-        public static NewBenchmarkModel DbEntityToModel([NotNull] Benchmark entity)
+        public static BenchmarkDto DbEntityToModel([NotNull] Benchmark entity)
         {
-            var result = new NewBenchmarkModel()
+            var result = new BenchmarkDto()
             {
                 Id = entity.Id,
                 BenchmarkName = entity.Name,
@@ -137,14 +159,14 @@ namespace MeasureThat.Net.Data.Dao
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 OwnerId = entity.OwnerId,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
-                TestCases = new List<TestCase>(),
+                TestCases = new List<TestCaseDto>(),
                 WhenCreated = entity.WhenCreated,
                 Version = entity.Version
             };
 
             foreach (var test in entity.BenchmarkTest)
             {
-                var testCase = new TestCase()
+                var testCase = new TestCaseDto()
                 {
                     TestCaseName = test.TestName,
                     BenchmarkCode = test.BenchmarkText
@@ -154,11 +176,12 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IEnumerable<NewBenchmarkModel>> ListByUser(int maxEntities, string userId)
+        public virtual async Task<IEnumerable<BenchmarkDto>> ListByUser(int maxEntities, string userId, int page, int numOfItems)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)
                 .Include(b => b.BenchmarkTest)
+                .Skip(page * numOfItems)
                 .Take(maxEntities)
                 .OrderByDescending(b => b.WhenCreated)
                 .ToListAsync()
@@ -167,19 +190,7 @@ namespace MeasureThat.Net.Data.Dao
             return ProcessQueryResult(entities);
         }
 
-        public virtual async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
-        {
-            var entities = await this.m_db.Benchmark
-                .Include(t => t.BenchmarkTest)
-                .OrderByDescending(t => t.WhenCreated)
-                .Take(numOfItems)
-                .ToListAsync()
-                .ConfigureAwait(false);
-
-            return ProcessQueryResult(entities);
-        }
-
-        public async Task<NewBenchmarkModel> Update([NotNull] NewBenchmarkModel model, 
+        public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model, 
             [NotNull] string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -243,30 +254,16 @@ namespace MeasureThat.Net.Data.Dao
             return DbEntityToModel(entity);
         }
 
-        private static IEnumerable<NewBenchmarkModel> ProcessQueryResult(List<Benchmark> entities)
+        private static IEnumerable<BenchmarkDto> ProcessQueryResult(IEnumerable<Benchmark> entities)
         {
-            var result = new List<NewBenchmarkModel>();
+            var result = new List<BenchmarkDto>();
             foreach (var benchmark in entities)
             {
-                NewBenchmarkModel model = DbEntityToModel(benchmark);
+                BenchmarkDto model = DbEntityToModel(benchmark);
                 result.Add(model);
             }
 
             return result;
-        }
-    }
-
-    public class UnableToFindBenchmarkException : Exception
-    {
-        public UnableToFindBenchmarkException(string message): base(message)
-        {
-        }
-    }
-
-    public class UserIdEmptyException : Exception
-    {
-        public UserIdEmptyException(string message) : base(message)
-        {
         }
     }
 }

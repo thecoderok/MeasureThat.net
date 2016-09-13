@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Caching.Memory;
@@ -8,6 +8,7 @@ namespace MeasureThat.Net.Data.Dao
 {
     using System;
     using System.Collections.Generic;
+    using Controllers;
 
     public class CachingBenchmarkRepository : SqlServerBenchmarkRepository
     {
@@ -23,18 +24,26 @@ namespace MeasureThat.Net.Data.Dao
             m_logger = mLogger;
         }
         
-        public override async Task<IEnumerable<NewBenchmarkModel>> GetLatest(int numOfItems)
+        public override async Task<IEnumerable<BenchmarkDto>> ListAll(int numOfItems, int page)
         {
-            const string key = "latest_benchmarks";
-            Func<Task<IEnumerable<NewBenchmarkModel>>> dbLookup = async () => await base.GetLatest(numOfItems).ConfigureAwait(false);
+            string key = $"latest_benchmarks_{numOfItems}_{page}";
+            Func<Task<IEnumerable<BenchmarkDto>>> dbLookup = async () => await base.ListAll(numOfItems, page).ConfigureAwait(false);
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
 
-        public async Task<NewBenchmarkModel> FindByIdAndVersion(int id, int version)
+        public async Task<BenchmarkDto> FindByIdAndVersion(int id, int version)
         {
-            string key = CacheKeyPrefix + id + "_ver_" + version;
-            Func<Task<NewBenchmarkModel>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
+            string key = $"{CacheKeyPrefix}_{id}_{version}";
+            Func<Task<BenchmarkDto>> dbLookup = async () => await base.FindById(id).ConfigureAwait(false);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
+        }
+
+        public override async Task<EntityListWithCount<BenchmarkDto>> ListAll(int maxEntities)
+        {
+            string key = $"latest_withcount_{maxEntities}";
+            Func<Task<EntityListWithCount<BenchmarkDto>>> dbLookup = async () => await base.ListAll(maxEntities).ConfigureAwait(false);
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }

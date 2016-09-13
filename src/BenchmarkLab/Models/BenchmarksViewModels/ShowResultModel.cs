@@ -4,12 +4,12 @@ namespace MeasureThat.Net.Models
 {
     public class ShowResultModel
     {
-        public PublishResultsModel ResultModel;
+        public BenchmarkResultDto ResultModel;
 
-        public NewBenchmarkModel Benchmark;
+        public BenchmarkDto Benchmark;
 
-        public ShowResultModel([NotNull] PublishResultsModel resultModel,
-            [NotNull] NewBenchmarkModel benchmark)
+        public ShowResultModel([NotNull] BenchmarkResultDto resultModel,
+            [NotNull] BenchmarkDto benchmark)
         {
             ResultModel = resultModel;
             Benchmark = benchmark;
