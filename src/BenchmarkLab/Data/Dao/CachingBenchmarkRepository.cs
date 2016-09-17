@@ -47,5 +47,21 @@ namespace MeasureThat.Net.Data.Dao
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
+
+        public override async Task<EntityListWithCount<BenchmarkDto>> ListByUser(string userId, int numOfItems)
+        {
+            string key = $"my_withcount_{userId}_{numOfItems}";
+            Func<Task<EntityListWithCount<BenchmarkDto>>> dbLookup = async () => await base.ListByUser(userId, numOfItems).ConfigureAwait(false);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(20));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
+        }
+
+        public override async Task<IEnumerable<BenchmarkDto>> ListByUser(string userId, int page, int numOfItems)
+        {
+            string key = $"my_{userId}_{numOfItems}_{page}";
+            Func<Task<IEnumerable<BenchmarkDto>>> dbLookup = async () => await base.ListByUser(userId, page, numOfItems).ConfigureAwait(false);
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(20));
+            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
+        }
     }
 }

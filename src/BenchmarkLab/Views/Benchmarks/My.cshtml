@@ -1,9 +1,10 @@
 @using System.Threading.Tasks
 @using Humanizer
+@using MeasureThat.Net.Controllers
 @using MeasureThat.Net.Logic.Web
 @using MeasureThat.Net.Models
 @using Microsoft.AspNetCore.Identity
-@model IEnumerable<MeasureThat.Net.Models.BenchmarkDto>
+@model Pager<BenchmarkDto>
 
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -15,35 +16,52 @@
     <h1>Your benchmarks</h1>
 </div>
 
-@if (Model.Any())
+@if (Model.ItemCount > 0)
 {
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Benchmark name</th>
-            <th>Description</th>
-            <th>When Created</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        @foreach (var b in Model)
-        {
+    <div id="benchmark-list">
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <td>
-                    <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
-                </td>
-                <td>@b.Description</td>
-                <td>@b.WhenCreated.Humanize()</td>
-                <td>
-                    <a class="btn btn-default" asp-action="Edit" asp-route-id="@b.Id">Edit</a>
-                </td>
+                <th>Benchmark name</th>
+                <th>Description</th>
+                <th>When Created</th>
+                <th>Actions</th>
             </tr>
-        }
-    </table>
+            </thead>
+            @foreach (var b in Model.Entites)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                    </td>
+                    <td>@b.Description</td>
+                    <td>@b.WhenCreated.Humanize()</td>
+                    <td>
+                        <a class="btn btn-default" asp-action="Edit" asp-route-id="@b.Id">Edit</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <!-- pager -->
+    if (Model.NumOfPages > 1)
+    {
+
+        <ul class="pagination">
+            @for (var page = 0; page < Model.NumOfPages; page++)
+            {
+                <li class="@(page == 0 ? "active" : "")">
+                    <a asp-action="My" asp-route-page="@page">@(page+1)</a>
+                </li>
+            }
+        </ul>
+    }
 }
 else
 {
     <h3>You don't have any benchmarks yet.</h3>
 }
 
+<div>
 @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
+</div>

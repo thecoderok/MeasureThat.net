@@ -29,6 +29,7 @@ namespace MeasureThat.Net.Controllers
         private readonly IOptions<ResultsConfig> m_resultsConfig;
         private const string ErrorMessageKey = "ErrorMessage";
         private const string ErrorActionName = "Error";
+        private const int numOfItemsPerPage = 5;
 
         public BenchmarksController(
             [NotNull] CachingBenchmarkRepository benchmarkRepository,
@@ -54,7 +55,22 @@ namespace MeasureThat.Net.Controllers
         public async Task<IActionResult> My()
         {
             ApplicationUser user = await this.GetCurrentUserAsync();
-            IEnumerable<BenchmarkDto> list = await this.m_benchmarkRepository.ListByUser(20, user.Id);
+            EntityListWithCount<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, numOfItemsPerPage);
+            Pager<BenchmarkDto> pager = new Pager<BenchmarkDto>(0, list.Count, list.Entities, numOfItemsPerPage);
+            return this.View(pager);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> MyPage(int page)
+        {
+            if (page < 0)
+            {
+                page = 0;
+            }
+
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            IEnumerable<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
+            
             return this.View(list);
         }
 
@@ -215,8 +231,8 @@ namespace MeasureThat.Net.Controllers
 
         private async Task<IActionResult> ShowLatestBenchmarks()
         {
-            const int numOfItems = 25;
-            IEnumerable<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.GetLatest(numOfItems);
+            // TODO: pagination
+            IEnumerable<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.ListAll(numOfItemsPerPage, 0);
 
             return View("Index", latestBenchmarks);
         }
@@ -224,10 +240,10 @@ namespace MeasureThat.Net.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ListResults(int id)
         {
-            const int numOfItems = 25;
+            // TODO: pagination
             IEnumerable<BenchmarkResultDto> model = await this
                 .m_publishResultRepository
-                .ListBenchmarkResults(numOfItems, id);
+                .ListAll(numOfItemsPerPage, id, 0);
 
             return View(model);
         }

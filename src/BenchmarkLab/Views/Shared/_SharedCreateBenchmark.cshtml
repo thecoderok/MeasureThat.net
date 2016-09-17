@@ -6,9 +6,9 @@
 
 @if (SignInManager.IsSignedIn(User) || bool.Parse(config["AllowGuestUsersToCreateBenchmarks"]))
 {
-    <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg">Create benchmark</a>
+    <a asp-controller="Benchmarks" asp-action="Add" class="btn btn-primary btn-lg"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Create benchmark</a>
 }
 else
 {
-    <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-primary btn-lg">Create benchmark</a>
+    <a data-toggle="modal" data-target="#authenticateModal" href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Create benchmark</a>
 }

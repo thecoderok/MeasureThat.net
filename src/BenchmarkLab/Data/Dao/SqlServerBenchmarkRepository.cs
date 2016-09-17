@@ -176,18 +176,33 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IEnumerable<BenchmarkDto>> ListByUser(int maxEntities, string userId, int page, int numOfItems)
+        public virtual async Task<IEnumerable<BenchmarkDto>> ListByUser(string userId, int page, int numOfItems)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)
                 .Include(b => b.BenchmarkTest)
                 .Skip(page * numOfItems)
-                .Take(maxEntities)
+                .Take(numOfItems)
                 .OrderByDescending(b => b.WhenCreated)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
             return ProcessQueryResult(entities);
+        }
+
+        public virtual async Task<EntityListWithCount<BenchmarkDto>> ListByUser(string userId, int numOfItems)
+        {
+            var entities = await this.m_db.Benchmark
+                .Where(t => t.OwnerId == userId)
+                .Include(b => b.BenchmarkTest)
+                .OrderByDescending(b => b.WhenCreated)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var count = entities.Count();
+            var result = new EntityListWithCount<BenchmarkDto>(ProcessQueryResult(entities.Take(numOfItems)), count);
+
+            return result;
         }
 
         public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model, 
