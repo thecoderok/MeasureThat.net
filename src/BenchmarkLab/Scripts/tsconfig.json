@@ -6,8 +6,11 @@
     "sourceMap": false,
     "target": "es5",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata" : true
+    "emitDecoratorMetadata": true
   },
+  "files": [
+    "../typings/index.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "wwwroot"
