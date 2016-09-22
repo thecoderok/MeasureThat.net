@@ -9,6 +9,9 @@
     "emitDecoratorMetadata": true
   },
   "files": [
+    "./app.ts",
+    "./model.ts",
+    "./main.ts",
     "../typings/index.d.ts"
   ],
   "exclude": [

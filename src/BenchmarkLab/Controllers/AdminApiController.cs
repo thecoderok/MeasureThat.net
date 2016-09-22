@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeasureThat.Net.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/AdminApi")]
-    [Authorize(Roles = "Admin")]
+    //[Produces("application/json")]
+    //[Route("api/AdminApi")]
+    //[Authorize(Roles = "Admin")]
     public class AdminApiController : Controller
     {
         private readonly UserManager<ApplicationUser> m_userManager;
@@ -27,11 +27,6 @@ namespace MeasureThat.Net.Controllers
         public IActionResult Index()
         {
             return View();
-        }
-
-        public IEnumerable<ApplicationUser> GetUsers()
-        {
-            return m_userManager.Users.Take(50).ToList();
         }
     }
 }
