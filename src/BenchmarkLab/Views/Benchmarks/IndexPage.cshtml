@@ -6,11 +6,20 @@
     Layout = null;
 }
 
-<ul>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Benchmark name</th>
+            <th>When Created</th>
+        </tr>
+    </thead>
     @foreach (var b in Model)
             {
-        <li>
-            <h4><a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>(<small>@b.WhenCreated.Humanize()</small>)</h4>
-        </li>
+        <tr>
+            <td>
+                <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+            </td>
+            <td>@b.WhenCreated.Humanize()</td>
+        </tr>
     }
-</ul>
+</table>
