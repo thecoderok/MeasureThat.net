@@ -4,7 +4,9 @@
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": false,
-    "target": "es5"
+    "target": "es5",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata" : true
   },
   "exclude": [
     "node_modules",
