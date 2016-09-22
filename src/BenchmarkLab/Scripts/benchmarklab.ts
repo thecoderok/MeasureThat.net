@@ -362,6 +362,6 @@ class PaginationController {
         var activeBtn: JQuery = paginationRoot.find("." + this.activeClass);
         activeBtn.removeClass(this.activeClass);
 
-        clickedButton.classList.add(this.activeClass);
+        clickedButton.parentElement.classList.add(this.activeClass);
     }
 }

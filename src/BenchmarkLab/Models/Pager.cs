@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace MeasureThat.Net.Models
 {
+    using System;
+
     public class Pager<T>
     {
         public readonly int CurrentPage;
@@ -20,7 +22,7 @@ namespace MeasureThat.Net.Models
             ItemCount = itemCount;
             Entites = entites;
             ItemsPerPage = itemsPerPage;
-            NumOfPages = ItemCount/ItemsPerPage + 1;
+            NumOfPages = (long) Math.Ceiling((double)ItemCount / ItemsPerPage);
         }
     }
 }

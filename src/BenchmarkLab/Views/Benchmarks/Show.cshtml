@@ -1,4 +1,5 @@
 @using System.Threading.Tasks
+@using Humanizer
 @using MeasureThat.Net.Models
 @using Microsoft.AspNetCore.Identity
 @model MeasureThat.Net.Models.BenchmarkDto
@@ -24,10 +25,26 @@
 }
 <div class="page-header">
     <h2>
-        <a href="@Url.Action("Latest")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+        <a href="@Url.Action("Index")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
         &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
     <h3>@Model.Description</h3>
+    <h5><b>Created:</b>@Model.WhenCreated.Humanize()</h5>
+    <h5>
+        <b>Created by:</b>
+        @if (string.IsNullOrWhiteSpace(Model.OwnerId))
+        {
+            <text>
+                Guest
+            </text>
+        }
+        else
+        {
+            <text>
+                Registered User
+            </text>
+        }
+    </h5>
 </div>
 
 @await Html.PartialAsync("_ShowBenchmark", Model)

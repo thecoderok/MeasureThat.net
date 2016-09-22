@@ -13,7 +13,7 @@
     <p>
         @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
 
-        <a asp-controller="Benchmarks" asp-action="Latest" class="btn btn-default btn-lg">Latest benchmarks</a>
+        <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Latest benchmarks</a>
         <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
     </p>
     <!--
@@ -130,4 +130,17 @@
 @section Scripts
 {
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+}
+
+@section Ads{
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- measurethat.net -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2889218219879125"
+     data-ad-slot="5761409685"
+     data-ad-format="auto"></ins>
+<script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 }

@@ -1,3 +1,4 @@
+@using Humanizer
 @model MeasureThat.Net.Models.ShowResultModel
 
 @{
@@ -35,8 +36,31 @@
             @Html.Label("Device Platform:")
             <span>@Model.ResultModel.DevicePlatform</span>
         </div>
+        
+        <div class="form-group">
+            @Html.Label("Date tested:")
+            <span>@Model.ResultModel.WhenCreated.Humanize()</span>
+        </div>
     </div>
 </div>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Test name</th>
+            <th>Executions per second</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ResultModel.ResultRows)
+        {
+            <tr>
+                <th scope="row">@row.TestName</th>
+                <td>@row.ExecutionsPerSecond.ToString("F1")</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <div id="chart_div" style="width: 90%; height: 35%;"></div>
 
