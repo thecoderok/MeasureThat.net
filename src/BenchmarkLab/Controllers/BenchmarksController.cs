@@ -45,7 +45,7 @@ namespace MeasureThat.Net.Controllers
             this.m_publishResultRepository = publishResultRepository;
         }
 
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             EntityListWithCount<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.ListAll(numOfItemsPerPage);
@@ -54,7 +54,7 @@ namespace MeasureThat.Net.Controllers
             return View(pager);
         }
 
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> IndexPage(int page)
         {
             // TODO: way pagination is horrible! Needs to be ported to API+Angular
@@ -123,6 +123,8 @@ namespace MeasureThat.Net.Controllers
                 return this.View(model);
             }
 
+            model.TestCases = new List<TestCaseDto>(testCases);
+
             // Check that there are no test cases with the same name
             var set = new HashSet<string>();
             foreach (var testCase in model.TestCases)
@@ -133,8 +135,6 @@ namespace MeasureThat.Net.Controllers
                     return this.View(model);
                 }
             }
-
-            model.TestCases = new List<TestCaseDto>(testCases);
 
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.OwnerId = user?.Id;
@@ -320,6 +320,8 @@ namespace MeasureThat.Net.Controllers
                 return this.View("Add", model);
             }
 
+            model.TestCases = new List<TestCaseDto>(testCases);
+
             // Check that there are no test cases with the same name
             var set = new HashSet<string>();
             foreach (var testCase in model.TestCases)
@@ -330,8 +332,6 @@ namespace MeasureThat.Net.Controllers
                     return this.View("Add", model);
                 }
             }
-
-            model.TestCases = new List<TestCaseDto>(testCases);
             
             try
             {

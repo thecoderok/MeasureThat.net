@@ -6,8 +6,15 @@
     "sourceMap": false,
     "target": "es5",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata" : true
+    "emitDecoratorMetadata": true
   },
+  "files": [
+    "./app.ts",
+    "./model.ts",
+    "./main.ts",
+    "../typings/index.d.ts",
+    "../Scripts/benchmarklab.ts"
+  ],
   "exclude": [
     "node_modules",
     "wwwroot"

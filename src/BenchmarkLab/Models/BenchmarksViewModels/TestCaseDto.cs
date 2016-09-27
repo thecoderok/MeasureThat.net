@@ -4,13 +4,13 @@ namespace MeasureThat.Net.Models
 
     public class TestCaseDto
     {
-        [Required]
+        //[Required]
         [Display(Name = "Test Case")]
-        [RegularExpression("[a-zA-Z0-9.`~!@#$%^&*()_\\-\\s]+")]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        //[RegularExpression("[a-zA-Z0-9.`~!@#$%^&*()_\\-\\s\\+=]+")]
+        //[StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
         public string TestCaseName { get; set; }
 
-        [StringLength(25000, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        //[StringLength(25000, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
         public string BenchmarkCode { get; set; }
     }
 }

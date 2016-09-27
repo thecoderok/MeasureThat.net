@@ -5,7 +5,7 @@
 /// <reference path="../typings/globals/benchmark/index.d.ts" />
 /// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
-import { Event, Suite } from "benchmark";
+//import { Event, Suite } from "benchmark";
 
 // TODO: this logic to migrate to Angular
 
@@ -296,7 +296,7 @@ class ShowResultsPageController {
         google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(this.chartData));
     }
 
-    static drawChart(dataToDraw: Array<Array<string>>) : void {
+    static drawChart(dataToDraw: Array<Array<string>>) : void  {
         var data = google.visualization.arrayToDataTable(dataToDraw);
         var options = {
             title: "Benchmark results",
@@ -363,5 +363,11 @@ class PaginationController {
         activeBtn.removeClass(this.activeClass);
 
         clickedButton.parentElement.classList.add(this.activeClass);
+    }
+}
+
+class SearchController {
+    constructor() {
+        
     }
 }
