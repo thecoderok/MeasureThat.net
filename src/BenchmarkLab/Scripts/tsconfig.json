@@ -12,7 +12,8 @@
     "./app.ts",
     "./model.ts",
     "./main.ts",
-    "../typings/index.d.ts"
+    "../typings/index.d.ts",
+    "../Scripts/benchmarklab.ts"
   ],
   "exclude": [
     "node_modules",

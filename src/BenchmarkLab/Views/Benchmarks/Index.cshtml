@@ -19,15 +19,26 @@
     <!-- pager -->
     @if (Model.NumOfPages > 1)
     {
+    <div class="col-lg-6">
+        <div class="input-group" data-role="search-control" data-endpoint="@Url.Action("Search")">
+            <input disabled="disabled" type="text" class="form-control" placeholder="Search by benchmark name (coming soon)">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" disabled="disabled">Find</button>
+            </span>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
 
-    <ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("IndexPage")">
-        @for (var page = 0; page < Model.NumOfPages; page++)
-        {
-            <li class="@(page == 0 ? "active" : "")">
-                <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
-            </li>
-        }
-    </ul>
+
+        <div class="text-center">
+            <ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("IndexPage")">
+                @for (var page = 0; page < Model.NumOfPages; page++)
+                {
+                    <li class="@(page == 0 ? "active" : "")">
+                        <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
+                    </li>
+                }
+            </ul>
+        </div>
     }
     
     <div id="benchmark-list">
