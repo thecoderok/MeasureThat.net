@@ -104,6 +104,9 @@ namespace MeasureThat.Net
             loggerFactory.AddDebug();
             m_logger = loggerFactory.CreateLogger<Startup>();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
@@ -120,15 +123,13 @@ namespace MeasureThat.Net
                 
             }
 
-            app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
+            //app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
 
             app.UseSecurityHeadersMiddleware(new SecurityHeadersBuilder()
               .AddDefaultSecurePolicy()
             );
 
             app.UseApplicationInsightsExceptionTelemetry();
-
-            app.UseStaticFiles();
 
             app.UseIdentity();
 

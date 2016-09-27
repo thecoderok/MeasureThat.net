@@ -177,7 +177,7 @@
         var suite = new Benchmark.Suite;
         @foreach (var test in Model.TestCases)
         {
-            @: suite.add('@test.TestCaseName', function() {
+            @: suite.add('@Html.Raw(test.TestCaseName)', function() {
             @Html.Raw(test.BenchmarkCode);
             @:});
         }

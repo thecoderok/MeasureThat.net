@@ -123,6 +123,8 @@ namespace MeasureThat.Net.Controllers
                 return this.View(model);
             }
 
+            model.TestCases = new List<TestCaseDto>(testCases);
+
             // Check that there are no test cases with the same name
             var set = new HashSet<string>();
             foreach (var testCase in model.TestCases)
@@ -133,8 +135,6 @@ namespace MeasureThat.Net.Controllers
                     return this.View(model);
                 }
             }
-
-            model.TestCases = new List<TestCaseDto>(testCases);
 
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.OwnerId = user?.Id;

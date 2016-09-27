@@ -42,7 +42,7 @@ namespace MeasureThat.Net.Logic
 
             foreach (var idx in indexes)
             {
-                string nameKey = $"TestCases[{idx}].TestCaseName";
+                string nameKey = $"TestCases[{idx}].TestCaseDtoName";
                 string codeKey = $"TestCases[{idx}].BenchmarkCode";
 
                 if (form.ContainsKey(nameKey) && form.ContainsKey(codeKey))
