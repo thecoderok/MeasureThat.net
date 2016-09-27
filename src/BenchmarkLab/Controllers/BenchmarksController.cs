@@ -320,6 +320,8 @@ namespace MeasureThat.Net.Controllers
                 return this.View("Add", model);
             }
 
+            model.TestCases = new List<TestCaseDto>(testCases);
+
             // Check that there are no test cases with the same name
             var set = new HashSet<string>();
             foreach (var testCase in model.TestCases)
@@ -330,8 +332,6 @@ namespace MeasureThat.Net.Controllers
                     return this.View("Add", model);
                 }
             }
-
-            model.TestCases = new List<TestCaseDto>(testCases);
             
             try
             {
