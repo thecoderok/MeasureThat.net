@@ -1,7 +1,7 @@
-﻿using BenchmarkLab.Logic.Web.Security;
+using MeasureThat.Net.Logic.Web.Security;
 using System;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     /// <summary>
     /// Exposes methods to build a policy.

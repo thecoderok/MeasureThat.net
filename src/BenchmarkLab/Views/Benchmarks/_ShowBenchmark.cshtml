@@ -1,0 +1,47 @@
+@using System.Threading.Tasks
+@using MeasureThat.Net.Models
+@model MeasureThat.Net.Models.BenchmarkDto
+
+<div class="panel panel-default">
+    @{
+        bool hasHtmlPreparationCode = !string.IsNullOrWhiteSpace(Model.HtmlPreparationCode);
+        bool hasScriptPreparationCode = !string.IsNullOrWhiteSpace(Model.ScriptPreparationCode);
+        string messageHtml = !hasHtmlPreparationCode ? "<Not specified>" : string.Empty;
+        string messageScript = !hasScriptPreparationCode ? "<Not specified>" : string.Empty;
+    }
+    <div class="panel-heading"><b>HTML Preparation code:</b> @messageHtml</div>
+    @if (hasHtmlPreparationCode)
+    {
+        <div class="panel-body">
+            <textarea class="form-control" readonly data-code="html">@Model.HtmlPreparationCode</textarea>
+        </div>
+
+        <ul class="list-group">
+            <li class="list-group-item">@Html.Raw(Model.HtmlPreparationCode)</li>
+        </ul>
+    }
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Script Preparation code: </b> @messageScript</div>
+    @if (hasScriptPreparationCode)
+    {
+        <div class="panel-body">
+            <textarea class="form-control auto-height" readonly data-code="javascript">@Model.ScriptPreparationCode</textarea>
+        </div>
+    }
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Tests:</div>
+
+    <ul class="list-group">
+        @foreach (var test in Model.TestCases)
+        {
+            <li class="list-group-item">
+                <h4>@test.TestCaseName</h4>
+                <textarea class="form-control" readonly data-code="javascript">@test.BenchmarkCode</textarea>
+            </li>
+        }
+    </ul>
+</div>

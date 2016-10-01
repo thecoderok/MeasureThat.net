@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace BenchmarkLab.Data.Models
+namespace MeasureThat.Net.Data.Models
 {
     public partial class Result
     {
@@ -21,5 +21,7 @@ namespace BenchmarkLab.Data.Models
 
         public virtual ICollection<ResultRow> ResultRow { get; set; }
         public virtual Benchmark Benchmark { get; set; }
+
+        public int Version { get; set; }
     }
 }

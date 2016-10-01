@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     public class ValidateReCaptchaAttribute : ActionFilterAttribute
     {
@@ -29,7 +29,7 @@ namespace BenchmarkLab.Logic.Web
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            await DoReCaptchaValidation(context);
+            await DoReCaptchaValidation(context).ConfigureAwait(false);
 
             await base.OnActionExecutionAsync(context, next);
         }
@@ -51,7 +51,7 @@ namespace BenchmarkLab.Logic.Web
             }
             else
             {
-                await ValidateRecaptcha(context, token);
+                await ValidateRecaptcha(context, token).ConfigureAwait(false);
             }
         }
 
@@ -70,7 +70,7 @@ namespace BenchmarkLab.Logic.Web
                         new KeyValuePair<string, string>("response", token)
                     });
                 HttpResponseMessage response = await webClient.PostAsync(ApiVerificationEndpoint, content);
-                string json = await response.Content.ReadAsStringAsync();
+                string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var reCaptchaResponse = JsonConvert.DeserializeObject<ReCaptchaResponse>(json);
                 if (reCaptchaResponse == null)
                 {

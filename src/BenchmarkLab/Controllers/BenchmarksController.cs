@@ -1,10 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BenchmarkLab.Data;
-using BenchmarkLab.Data.Dao;
-using BenchmarkLab.Logic.Options;
-using BenchmarkLab.Logic.Web;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Options;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,31 +12,32 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using UAParser;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using Unidecode.NET;
+    using Exceptions;
+    using Logic;
 
-    [Authorize]
+    [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
     {
-        private ApplicationDbContext m_context;
-        private readonly  IEntityRepository<NewBenchmarkModel, long> m_benchmarkRepository;
-        private readonly IEntityRepository<PublishResultsModel, long> m_publishResultRepository;
+        private readonly CachingBenchmarkRepository m_benchmarkRepository;
+        private readonly CachingResultsRepository m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
+        private const string ErrorMessageKey = "ErrorMessage";
+        private const string ErrorActionName = "Error";
+        private const int numOfItemsPerPage = 25;
 
         public BenchmarksController(
-            [NotNull] ApplicationDbContext context,
-            [NotNull] IEntityRepository<NewBenchmarkModel, long> benchmarkRepository,
+            [NotNull] CachingBenchmarkRepository benchmarkRepository,
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
-            [NotNull] IEntityRepository<PublishResultsModel, long> publishResultRepository)
+            [NotNull] CachingResultsRepository publishResultRepository)
         {
-            this.m_context = context;
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
             this.m_resultsConfig = resultsConfig;
@@ -45,54 +45,111 @@ namespace BenchmarkLab.Controllers
             this.m_publishResultRepository = publishResultRepository;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            EntityListWithCount<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.ListAll(numOfItemsPerPage);
+            Pager<BenchmarkDto> pager = new Pager<BenchmarkDto>(0, latestBenchmarks.Count, latestBenchmarks.Entities, numOfItemsPerPage);
+
+            return View(pager);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> IndexPage(int page)
+        {
+            // TODO: way pagination is horrible! Needs to be ported to API+Angular
+
+            if (page < 0)
+            {
+                page = 0;
+            }
+
+            IEnumerable<BenchmarkDto> list = await m_benchmarkRepository.ListAll(numOfItemsPerPage, page);
+            return View(list);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> My()
+        {
             ApplicationUser user = await this.GetCurrentUserAsync();
-            IEnumerable<NewBenchmarkModel> list = await this.m_benchmarkRepository.ListByUser(20, user.Id);
+            EntityListWithCount<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, numOfItemsPerPage);
+            Pager<BenchmarkDto> pager = new Pager<BenchmarkDto>(0, list.Count, list.Entities, numOfItemsPerPage);
+            return this.View(pager);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> MyPage(int page)
+        {
+            if (page < 0)
+            {
+                page = 0;
+            }
+
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            IEnumerable<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
+            
             return this.View(list);
         }
 
         public IActionResult Add()
         {
-            return this.View(new NewBenchmarkModel());
+            return this.View(new BenchmarkDto());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Add(/*[Bind(
-            "BenchmarkName",
-            "Description", 
-            "HtmlPreparationCode",
-            "ScriptPreparationCode", Prefix = "TestCases")]*/ NewBenchmarkModel model)
+        public async Task<IActionResult> Add(BenchmarkDto model)
         {
-            // TODO: bring back bind attribute
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
+            // Manually parse input
+            var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
+
             // Check if benchmark code was actually entered
-            if (model.TestCases.Count() < 2 || model.TestCases.Any(t=> string.IsNullOrWhiteSpace(t.BenchmarkCode)))
+            if (testCases.Count() < 2)
             {
                 // TODO: use correct error key
-                this.ModelState.AddModelError("TestCases", "At least two test are cases required.");
+                this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
                 return this.View(model);
             }
 
+            if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
+            {
+                this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
+                return this.View(model);
+            }
+
+            model.TestCases = new List<TestCaseDto>(testCases);
+
+            // Check that there are no test cases with the same name
+            var set = new HashSet<string>();
+            foreach (var testCase in model.TestCases)
+            {
+                if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
+                {
+                    this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
+                    return this.View(model);
+                }
+            }
+
             ApplicationUser user = await this.GetCurrentUserAsync();
-            model.OwnerId = user.Id;
+            model.OwnerId = user?.Id;
 
             long id = await this.m_benchmarkRepository.Add(model);
 
-            return this.RedirectToAction("Show", new { Id = id, name = model.BenchmarkName.Unidecode() });
+            return this.RedirectToAction("Show",
+                new {Id = id, Version=0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName)});
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Show(int id, string name)
+        public async Task<IActionResult> Show(int id, int version, string name)
         {
-            NewBenchmarkModel benchmarkToRun = await this.m_benchmarkRepository.FindById(id);
+            BenchmarkDto benchmarkToRun = await this.m_benchmarkRepository.FindByIdAndVersion(id, version);
             if (benchmarkToRun == null)
             {
                 return this.NotFound();
@@ -102,17 +159,26 @@ namespace BenchmarkLab.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] //TODO: should aft be validated?
-        public IActionResult Fork(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Fork(int id)
         {
-            throw new NotImplementedException();
-            return this.View();
+            BenchmarkDto benchmark = await this.m_benchmarkRepository.FindById(id);
+            if (benchmark == null)
+            {
+                return this.NotFound();
+            }
+
+            var user = await GetCurrentUserAsync();
+            benchmark.OwnerId = user?.Id;
+            benchmark.Id = 0;
+
+            return View("Add", benchmark);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> PublishResults(PublishResultsModel model)
+        public async Task<IActionResult> PublishResults(BenchmarkResultDto model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -120,17 +186,14 @@ namespace BenchmarkLab.Controllers
             }
 
             ApplicationUser user = await this.GetCurrentUserAsync();
-            if (user != null)
-            {
-                model.UserId = user.Id;
-            }
+            model.UserId = user?.Id;
 
             ClientInfo clientInfo = null;
             if (HttpContext.Request.Headers.ContainsKey("User-Agent"))
             {
                 string userAgent = HttpContext.Request.Headers["User-Agent"];
                 model.RawUserAgenString = userAgent;
-                
+
                 try
                 {
                     clientInfo = UAParser.Parser.GetDefault().Parse(userAgent);
@@ -139,7 +202,7 @@ namespace BenchmarkLab.Controllers
                 {
                     m_logger.LogError("Error while parsing UA String: " + ex.Message);
                 }
-            }            
+            }
 
             if (clientInfo != null)
             {
@@ -163,7 +226,7 @@ namespace BenchmarkLab.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ShowResult(long id)
         {
-            PublishResultsModel model = await this.m_publishResultRepository.FindById(id);
+            ShowResultModel model = await this.m_publishResultRepository.GetResultWithBenchmark(id);
             if (model == null)
             {
                 return NotFound();
@@ -175,6 +238,116 @@ namespace BenchmarkLab.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return this.m_userManager.GetUserAsync(this.HttpContext.User);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ListResults(int id)
+        {
+            EntityListWithCount<BenchmarkResultDto> model = await this
+                .m_publishResultRepository
+                .ListAll(numOfItemsPerPage, id);
+
+            var pager = new Pager<BenchmarkResultDto>(0, model.Count, model.Entities, numOfItemsPerPage);
+
+            return View(pager);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ListResultsPage(int id, int page)
+        {
+            if (page < 0)
+            {
+                page = 0;
+            }
+
+            var list = await this.m_publishResultRepository.ListAll(numOfItemsPerPage, id, page);
+            return View(list);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new NotLoggedInException("You are not logged in");
+            }
+
+            var benchmark = await this.m_benchmarkRepository.FindById(id);
+            if (benchmark == null)
+            {
+                throw new Exception("Can't find benchmark");
+            }
+
+            if (benchmark.OwnerId != user.Id)
+            {
+                throw new Exception("Only owner can edit benchmark.");
+            }
+
+            return View("Add", benchmark);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
+        public async Task<IActionResult> Edit(BenchmarkDto model)
+        {
+            // TODO: duplicated code, DRY
+            ApplicationUser user = await this.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new NotLoggedInException("You are not logged in");
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View("Add", model);
+            }
+
+            // Manually parse input
+            var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
+
+            // Check if benchmark code was actually entered
+            if (testCases.Count() < 2)
+            {
+                // TODO: use correct error key
+                this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
+                return this.View("Add", model);
+            }
+
+            if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
+            {
+                this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
+                return this.View("Add", model);
+            }
+
+            model.TestCases = new List<TestCaseDto>(testCases);
+
+            // Check that there are no test cases with the same name
+            var set = new HashSet<string>();
+            foreach (var testCase in model.TestCases)
+            {
+                if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
+                {
+                    this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
+                    return this.View("Add", model);
+                }
+            }
+            
+            try
+            {
+                BenchmarkDto updatedModel = await this.m_benchmarkRepository.Update(model, user.Id);
+                return this.RedirectToAction("Show", new { Id = updatedModel.Id, Version = updatedModel.Version, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
+            }
+            catch (Exception ex)
+            {
+                m_logger.LogError("Can't update benchmark: " + ex.Message);
+                return RedirectToAction(ErrorActionName);
+            }
+        }
+
+        public IActionResult Error()
+        {
+            return View("Error");
         }
     }
 }

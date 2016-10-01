@@ -1,5 +1,8 @@
-﻿@using BenchmarkLab.Utility
-
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
+@using Microsoft.ApplicationInsights.Extensibility
+@inject StaticSiteConfigProvider staticConfig
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +25,11 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <title>@ViewData["Title"] - BenchmarkLab</title>
+
+    <meta name="Description" content="JavaScript microbenchmarks, JavaScript performance playground. Measure performance accross different browsers. JSPerf alternative.">
+    <meta name="Keywords" content="JavaScript, jQuery, Performance, Benchmark, Speed, Web, React, Angular, Node.js, JSPerf alternative">
+
+    <title>@ViewData["Title"] - MeasureThat.net</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 
 
@@ -50,12 +57,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">BenchmarkLab<sup>beta</sup></a>
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;MeasureThat.net<sup>beta</sup></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a data-toggle="modal" data-target="#aboutModal" href="#">About</a></li>
+                    <li><a asp-controller="Home" asp-action="Discussions">Suggestions & Feedback</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -63,14 +71,16 @@
     </div>
     <div class="container body-content">
         <div class="row">
-            <div class="col-md-9">
-                @RenderBody()
-            </div>
+            @RenderBody()
         </div>
         <hr />
         <footer>
-            <p>&copy; 2016 - BenchmarkLab (Version: @(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion))</p>
+            <p>&copy; 2016 - MeasureThat.net (Version: @(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion))</p>
+            <div id="ads">
+                @RenderSection("ads", required: false)
+            </div>
         </footer>
+        
     </div>
 
     <environment names="Development">
@@ -91,5 +101,13 @@
     @RenderSection("scripts", required: false)
 
     @await Html.PartialAsync("_SharedDialogs.cshtml")
+
+    @{
+        GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
+        if (gaconfig != null && gaconfig.Enabled)
+        {
+            @await Html.PartialAsync("_GoogleAnalytics.cshtml", gaconfig);
+        }
+    }
 </body>
 </html>

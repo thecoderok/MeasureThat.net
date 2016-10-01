@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' AfterBuild='default' />
+/// <binding Clean='clean' AfterBuild='default' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -14,12 +14,16 @@ var scriptsRoot = "./Scripts/"
 
 var paths = {
     js: webroot + "js/**/*.js",
-    scripts: [scriptsRoot + "**/*.ts", scriptsRoot + "**/*.js", scriptsRoot + "**/*.map"],
+    scripts: [scriptsRoot + "**/*.js", scriptsRoot + "**/*.map"],
     minJs: webroot + "js/**/*.min.js",
     css: webroot + "css/**/*.css",
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
-    concatCssDest: webroot + "css/site.min.css"
+    concatCssDest: webroot + "css/site.min.css",
+    libs: ['node_modules/angular2/bundles/angular2.js',
+           'node_modules/angular2/bundles/angular2-polyfills.js',
+           'node_modules/systemjs/dist/system.src.js',
+           'node_modules/rxjs/bundles/Rx.js']
 };
 
 gulp.task("clean:js", function (cb) {
@@ -55,6 +59,10 @@ gulp.task("bump", function () {
 
 gulp.task("min", ["min:js", "min:css"]);
 
-gulp.task('default', function () {
-    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/scripts'))
+gulp.task('lib', function () {
+    gulp.src(paths.libs).pipe(gulp.dest('wwwroot/js/lib'));
+});
+
+gulp.task('default', ['lib'], function () {
+    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
 });

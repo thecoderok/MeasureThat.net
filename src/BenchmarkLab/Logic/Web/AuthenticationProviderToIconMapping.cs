@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Http.Authentication;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     public class AuthenticationProviderToIconMapper
     {

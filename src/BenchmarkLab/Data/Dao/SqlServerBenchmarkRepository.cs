@@ -1,17 +1,18 @@
-using System;
 using System.Collections.Generic;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Models;
 using JetBrains.Annotations;
-using BenchmarkLab.Data.Models;
+using MeasureThat.Net.Data.Models;
 
-namespace BenchmarkLab.Data.Dao
+namespace MeasureThat.Net.Data.Dao
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Logic.Exceptions;
+    using Controllers;
+    using Exceptions;
+    using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
 
-    public class SqlServerBenchmarkRepository :  IEntityRepository<NewBenchmarkModel, long>
+    public class SqlServerBenchmarkRepository
     {
         private readonly ApplicationDbContext m_db;
 
@@ -20,7 +21,7 @@ namespace BenchmarkLab.Data.Dao
             this.m_db = db;
         }
 
-        public async Task<long> Add([NotNull] NewBenchmarkModel entity)
+        public virtual async Task<long> Add([NotNull] BenchmarkDto entity)
         {
             var newEntity = new Benchmark()
             {
@@ -45,26 +46,31 @@ namespace BenchmarkLab.Data.Dao
             this.Validate(newEntity);
 
             this.m_db.Benchmark.Add(newEntity);
-            await this.m_db.SaveChangesAsync();
+            await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             return newEntity.Id;
         }
 
-        public async Task<long> DeleteById(long id)
+        public virtual async Task<long> DeleteById(long id)
         {
-            var entity = await this.m_db.Benchmark.SingleOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Benchmark
+                .SingleOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity != null)
             {
                 this.m_db.Benchmark.Remove(entity);
-                await this.m_db.SaveChangesAsync();
+                await this.m_db.SaveChangesAsync().ConfigureAwait(false);
             }
 
             return id;
         }
 
-        public async Task<NewBenchmarkModel> FindById(long id)
+        public virtual async Task<BenchmarkDto> FindById(long id)
         {
-            var entity = await this.m_db.Benchmark.Include(b => b.BenchmarkTest).FirstOrDefaultAsync(m => m.Id == id);
+            var entity = await this.m_db.Benchmark
+                .Include(b => b.BenchmarkTest)
+                .FirstOrDefaultAsync(m => m.Id == id)
+                .ConfigureAwait(false);
             if (entity == null)
             {
                 return null;
@@ -75,19 +81,35 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
-        public async Task<IEnumerable<NewBenchmarkModel>> ListAll(uint maxEntities)
+        public virtual async Task<IEnumerable<BenchmarkDto>> ListAll(int maxEntities, int page)
         {
-            var entities = await this.m_db.Benchmark
-                .Include(b => b.BenchmarkTest)
-                .Take((int)maxEntities)
-                .ToListAsync();
-            var result = new List<NewBenchmarkModel>();
-            foreach (var benchmark in entities)
-            {
-                NewBenchmarkModel model = DbEntityToModel(benchmark);
-                result.Add(model);
-            }
+            Preconditions.ToBePositive(maxEntities);
+            Preconditions.ToBeNonNegative(page);
 
+            var entities = await this.m_db.Benchmark
+                .Include(t => t.BenchmarkTest)
+                .OrderByDescending(t => t.WhenCreated)
+                .Skip(maxEntities * page)
+                .Take(maxEntities)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return ProcessQueryResult(entities);
+        }
+
+        public virtual async Task<EntityListWithCount<BenchmarkDto>> ListAll(int maxEntities)
+        {
+            Preconditions.ToBePositive(maxEntities);
+
+            var entities = await this.m_db.Benchmark
+                .Include(t => t.BenchmarkTest)
+                .OrderByDescending(t => t.WhenCreated)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            long count = entities.Count;
+            IEnumerable<BenchmarkDto> dtos = ProcessQueryResult(entities.Take(maxEntities));
+            var result = new EntityListWithCount<BenchmarkDto>(dtos, count);
             return result;
         }
 
@@ -101,11 +123,6 @@ namespace BenchmarkLab.Data.Dao
             if (string.IsNullOrWhiteSpace(newEntity.Name))
             {
                 throw new ValidationException("Benchmark name is mandatory");
-            }
-
-            if (string.IsNullOrWhiteSpace(newEntity.OwnerId))
-            {
-                throw new ValidationException("Benchmark must have owner");
             }
 
             if (newEntity.BenchmarkTest == null || newEntity.BenchmarkTest.Count == 0)
@@ -132,9 +149,9 @@ namespace BenchmarkLab.Data.Dao
             }
         }
 
-        private static NewBenchmarkModel DbEntityToModel([NotNull] Benchmark entity)
+        public static BenchmarkDto DbEntityToModel([NotNull] Benchmark entity)
         {
-            var result = new NewBenchmarkModel()
+            var result = new BenchmarkDto()
             {
                 Id = entity.Id,
                 BenchmarkName = entity.Name,
@@ -142,12 +159,14 @@ namespace BenchmarkLab.Data.Dao
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 OwnerId = entity.OwnerId,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
-                TestCases = new List<TestCase>()
+                TestCases = new List<TestCaseDto>(),
+                WhenCreated = entity.WhenCreated,
+                Version = entity.Version
             };
 
             foreach (var test in entity.BenchmarkTest)
             {
-                var testCase = new TestCase()
+                var testCase = new TestCaseDto()
                 {
                     TestCaseName = test.TestName,
                     BenchmarkCode = test.BenchmarkText
@@ -157,17 +176,105 @@ namespace BenchmarkLab.Data.Dao
             return result;
         }
 
-        public async Task<IEnumerable<NewBenchmarkModel>> ListByUser(uint maxEntities, string userId)
+        public virtual async Task<IEnumerable<BenchmarkDto>> ListByUser(string userId, int page, int numOfItems)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)
                 .Include(b => b.BenchmarkTest)
-                .Take((int)maxEntities)
-                .ToListAsync();
-            var result = new List<NewBenchmarkModel>();
+                .Skip(page * numOfItems)
+                .Take(numOfItems)
+                .OrderByDescending(b => b.WhenCreated)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return ProcessQueryResult(entities);
+        }
+
+        public virtual async Task<EntityListWithCount<BenchmarkDto>> ListByUser(string userId, int numOfItems)
+        {
+            var entities = await this.m_db.Benchmark
+                .Where(t => t.OwnerId == userId)
+                .Include(b => b.BenchmarkTest)
+                .OrderByDescending(b => b.WhenCreated)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var count = entities.Count();
+            var result = new EntityListWithCount<BenchmarkDto>(ProcessQueryResult(entities.Take(numOfItems)), count);
+
+            return result;
+        }
+
+        public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model, 
+            [NotNull] string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new UserIdEmptyException("User Id is empty");
+            }
+
+            var entity = await this.m_db.Benchmark
+                .Include(m => m.BenchmarkTest)
+                .FirstOrDefaultAsync(m => m.Id == model.Id && m.OwnerId == userId)
+                .ConfigureAwait(false);
+
+            if (entity == null)
+            {
+                throw new UnableToFindBenchmarkException("Unable to find benchmark by Id and owner id");
+            }
+
+            if (entity.BenchmarkTest == null)
+            {
+                // Just sanity check
+                throw new ValidationException("Empty test collection");
+            }
+
+            entity.Version++;
+            entity.Description = model.Description;
+            entity.Name = model.BenchmarkName;
+            entity.HtmlPreparationCode = model.HtmlPreparationCode;
+            entity.ScriptPreparationCode = model.ScriptPreparationCode;
+
+            var entityTestsList = entity.BenchmarkTest.ToList();
+            if (entityTestsList.Count > model.TestCases.Count)
+            {
+                // Remove extra test cases from the entity
+                for (int i = model.TestCases.Count; i < entity.BenchmarkTest.Count; i++)
+                {
+                    this.m_db.BenchmarkTest.Remove(entityTestsList[i]);
+                    entity.BenchmarkTest.Remove(entityTestsList[i]);
+                }
+            }
+            else if (entityTestsList.Count < model.TestCases.Count)
+            {
+                for (int i = entity.BenchmarkTest.Count; i < model.TestCases.Count; i++)
+                {
+                    entity.BenchmarkTest.Add(new BenchmarkTest());
+                }
+            }
+
+
+            // Now both collections of test cases should have same number of elements
+            int index = 0;
+            foreach (var benchmarkTest in entity.BenchmarkTest)
+            {
+                benchmarkTest.BenchmarkText = model.TestCases[index].BenchmarkCode;
+                benchmarkTest.TestName = model.TestCases[index].TestCaseName;
+                index++;
+            }
+
+            this.m_db.Benchmark.Update(entity);
+            await this.m_db.SaveChangesAsync().ConfigureAwait(false);
+
+            return DbEntityToModel(entity);
+        }
+
+        private static IEnumerable<BenchmarkDto> ProcessQueryResult(IEnumerable<Benchmark> entities)
+        {
+            var result = new List<BenchmarkDto>();
             foreach (var benchmark in entities)
             {
-                NewBenchmarkModel model = DbEntityToModel(benchmark);
+                BenchmarkDto model = DbEntityToModel(benchmark);
                 result.Add(model);
             }
 

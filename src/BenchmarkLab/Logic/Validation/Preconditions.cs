@@ -1,0 +1,24 @@
+namespace MeasureThat.Net.Logic.Validation
+{
+    using System;
+    using Exceptions;
+
+    public static class Preconditions
+    {
+        public static void ToBeNonNegative<T>(T val) where T : IComparable<int>
+        {
+            if (val.CompareTo(0) < 0)
+            {
+                throw new ValidationException(nameof(val) + " is expected to be non-negative.");
+            }
+        }
+
+        public static void ToBePositive<T>(T val) where T : IComparable<int>
+        {
+            if (val.CompareTo(0) <= 0)
+            {
+                throw new ValidationException(nameof(val) + " is expected to be greater than zero.");
+            }
+        }
+    }
+}

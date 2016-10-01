@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using BenchmarkLab.Data;
+using MeasureThat.Net.Data;
 
-namespace BenchmarkLab.Migrations
+namespace MeasureThat.Net.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20160720014413_CurrentMigration")]
@@ -27,7 +27,7 @@ namespace BenchmarkLab.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasAnnotation("MaxLength", 60);
+                        .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("OwnerId")
                         .IsRequired()

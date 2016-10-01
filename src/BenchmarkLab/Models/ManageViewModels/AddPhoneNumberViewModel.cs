@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BenchmarkLab.Models.ManageViewModels
+namespace MeasureThat.Net.Models.ManageViewModels
 {
     public class AddPhoneNumberViewModel
     {

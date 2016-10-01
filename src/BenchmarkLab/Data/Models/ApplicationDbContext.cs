@@ -1,10 +1,10 @@
-using BenchmarkLab.Data.Models;
-using BenchmarkLab.Models;
+using MeasureThat.Net.Data.Models;
+using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace BenchmarkLab.Data
+namespace MeasureThat.Net.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -27,7 +27,7 @@ namespace BenchmarkLab.Data
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(60);
+                    .HasMaxLength(200);
 
                 entity.Property(e => e.OwnerId)
                     .IsRequired()

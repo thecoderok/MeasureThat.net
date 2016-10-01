@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Data;
-using BenchmarkLab.Models;
-using BenchmarkLab.Services;
-using BenchmarkLab.Logic.Web;
-using BenchmarkLab.Data.Dao;
-using BenchmarkLab.Logic.Options;
+using MeasureThat.Net.Data;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Services;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Options;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BenchmarkLab
+namespace MeasureThat.Net
 {
     public class Startup
     {
@@ -44,13 +45,22 @@ namespace BenchmarkLab
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(o =>
+                {
+                    o.Password.RequireDigit = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequireNonAlphanumeric = false;
+                    o.Password.RequiredLength = 6;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -65,11 +75,26 @@ namespace BenchmarkLab
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddTransient<IEntityRepository<NewBenchmarkModel, long>, SqlServerBenchmarkRepository>();
-            services.AddTransient<IEntityRepository<PublishResultsModel, long>, SqlServerResultsRepository>();
+            services.AddTransient<CachingBenchmarkRepository>();
+            services.AddTransient<CachingResultsRepository>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));
+
+            services.AddSingleton<StaticSiteConfigProvider>();
+
+            bool allowGuestUsersToCreateBenchmarks = bool.Parse(Configuration["AllowGuestUsersToCreateBenchmarks"]);
+
+            services.AddSingleton<IAuthorizationHandler, ConfigurableAuthorizationHandler>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AllowGuests",
+                    policy => policy.Requirements.Add(
+                        new ConfigurableAuthorizationRequirement(
+                            allowGuestUsersToCreateBenchmarks)));
+            });
+
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +103,9 @@ namespace BenchmarkLab
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             m_logger = loggerFactory.CreateLogger<Startup>();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseApplicationInsightsRequestTelemetry();
 
@@ -92,15 +120,16 @@ namespace BenchmarkLab
             {
                 m_logger.LogInformation("Running in production mode");
                 app.UseExceptionHandler("/Home/Error");
+                
             }
+
+            //app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
 
             app.UseSecurityHeadersMiddleware(new SecurityHeadersBuilder()
               .AddDefaultSecurePolicy()
             );
 
             app.UseApplicationInsightsExceptionTelemetry();
-
-            app.UseStaticFiles();
 
             app.UseIdentity();
 
@@ -110,7 +139,7 @@ namespace BenchmarkLab
             {
                 routes.MapRoute(
                     name: "showTest",
-                    template: "{controller=Benchmarks}/{action=Show}/{id}/{name?}");
+                    template: "{controller=Benchmarks}/{action=Show}/{id}/{version}/{name?}");
 
                 routes.MapRoute(
                     name: "default",

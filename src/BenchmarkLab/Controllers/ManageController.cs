@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Models;
-using BenchmarkLab.Models.ManageViewModels;
-using BenchmarkLab.Services;
-using BenchmarkLab.Utility;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Models.ManageViewModels;
+using MeasureThat.Net.Services;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Net.Controllers
 {
     [Authorize]
     public class ManageController : Controller
@@ -231,8 +228,7 @@ namespace BenchmarkLab.Controllers
         [HttpGet]
         public IActionResult SetPassword()
         {
-            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
-            /*return View();*/
+            return View();
         }
 
         //
@@ -243,8 +239,7 @@ namespace BenchmarkLab.Controllers
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            throw new LocalAccountsDisabledException("Local accounts are not allowed. Login via external login providers.");
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -261,7 +256,7 @@ namespace BenchmarkLab.Controllers
                 AddErrors(result);
                 return View(model);
             }
-            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });*/
+            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
 
         //GET: /Manage/ManageLogins

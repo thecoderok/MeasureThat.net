@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     public class SecurityHeadersPolicy
     {

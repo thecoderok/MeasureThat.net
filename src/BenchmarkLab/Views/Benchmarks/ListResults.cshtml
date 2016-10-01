@@ -1,0 +1,45 @@
+@using System.Threading.Tasks
+@using Humanizer
+@using MeasureThat.Net.Models
+@model MeasureThat.Net.Models.Pager<BenchmarkResultDto>
+
+@{
+    ViewBag.Title = "Listing latest benchmark result";
+}
+
+<div class="page-header">
+    <h1>Listing latest benchmark result</h1>
+</div>
+
+<!-- pager -->
+@if (Model.NumOfPages > 1)
+{
+
+<ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("ListResultsPage", new { id = Model.Entites.First().BenchmarkId })">
+    @for (var page = 0; page < Model.NumOfPages; page++)
+    {
+        <li class="@(page == 0 ? "active" : "")">
+            <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
+        </li>
+    }
+</ul>
+}
+
+<div id="benchmark-list">
+    @{ await Html.RenderPartialAsync("ListResultsPage", Model.Entites); }
+</div>
+
+<div class="hidden" id="progress-hidden">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        var paginationController = new PaginationController();
+    </script>
+}

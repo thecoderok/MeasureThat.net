@@ -1,5 +1,6 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using BenchmarkLab.Models
+@using System.Threading.Tasks
+@using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -20,6 +21,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
+        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
         <li><a href="#" data-toggle="modal" data-target="#authenticateModal">Log in</a></li>
     </ul>    
 }

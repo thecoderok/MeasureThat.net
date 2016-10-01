@@ -1,0 +1,29 @@
+@using Humanizer
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@model IEnumerable<MeasureThat.Net.Models.BenchmarkResultDto>
+@{
+    Layout = null;
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Browser</th>
+            <th>OS</th>
+            <th>User Agent</th>
+            <th>When Created</th>
+        </tr>
+    </thead>
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>@b.Browser</td>
+            <td>@b.OS</td>
+            <td>
+                <a asp-action="ShowResult" asp-route-id="@b.Id">@b.RawUserAgenString</a>
+            </td>
+            <td>@b.WhenCreated.Humanize()</td>
+        </tr>
+    }
+</table>

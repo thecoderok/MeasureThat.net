@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 using System.Text.RegularExpressions;
 using Unidecode.NET;
 
-namespace BenchmarkLab.Logic.Web
+namespace MeasureThat.Net.Logic.Web
 {
     public class SeoFriendlyStringConverter
     {
@@ -17,7 +17,7 @@ namespace BenchmarkLab.Logic.Web
             str = InvalidCharsRegex.Replace(str, "");
             str = RemoveMultipleSpacesRegex.Replace(str, " ").Trim();
             // cut and trim 
-            str = str.Substring(0, str.Length <= 45 ? str.Length : 45).Trim();
+            str = str.Substring(0, str.Length <= 55 ? str.Length : 55).Trim();
             str = SpaceRegex.Replace(str, "-"); // hyphens   
             return str;
         }

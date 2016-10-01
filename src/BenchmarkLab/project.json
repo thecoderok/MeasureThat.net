@@ -1,7 +1,8 @@
 {
   "userSecretsId": "aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297",
-  "version": "1.0.14",
+  "version": "1.0.47",
   "dependencies": {
+    "Microsoft.Extensions.Caching.Memory": "1.0.0",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"
@@ -45,7 +46,10 @@
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
-    "Microsoft.Extensions.Configuration.Binder": "1.0.0"
+    "Microsoft.Extensions.Configuration.Binder": "1.0.0",
+    "Humanizer.Core": "2.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "SendGrid.NetCore": "1.0.0-rtm-00002" 
   },
 
   "tools": {
@@ -101,7 +105,8 @@
       "wwwroot",
       "Views",
       "appsettings.json",
-      "web.config"
+      "web.config",
+      "Regexes.yaml"
     ]
   },
 

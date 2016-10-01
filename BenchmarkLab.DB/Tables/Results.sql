@@ -8,6 +8,7 @@
     [UserId] NVARCHAR(450) NULL, 
     [DevicePlatform] NVARCHAR(100) NULL, 
     [OperatingSystem] NVARCHAR(100) NULL, 
+    [Version] INT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_Results_ToBenchmark] FOREIGN KEY ([BenchmarkId]) REFERENCES [Benchmark]([Id]), 
     CONSTRAINT [FK_Result_ToUsers] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers]([Id])
 )

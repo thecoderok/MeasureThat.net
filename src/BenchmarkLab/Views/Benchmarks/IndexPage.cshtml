@@ -1,0 +1,25 @@
+@using Humanizer
+@using System.Threading.Tasks
+@using MeasureThat.Net.Logic.Web
+@model IEnumerable<MeasureThat.Net.Models.BenchmarkDto>
+@{
+    Layout = null;
+}
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Benchmark name</th>
+            <th>When Created</th>
+        </tr>
+    </thead>
+    @foreach (var b in Model)
+            {
+        <tr>
+            <td>
+                <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+            </td>
+            <td>@b.WhenCreated.Humanize()</td>
+        </tr>
+    }
+</table>

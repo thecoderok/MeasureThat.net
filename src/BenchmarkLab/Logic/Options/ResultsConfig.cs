@@ -1,4 +1,4 @@
-﻿namespace BenchmarkLab.Logic.Options
+namespace MeasureThat.Net.Logic.Options
 {
     public class ResultsConfig
     {
