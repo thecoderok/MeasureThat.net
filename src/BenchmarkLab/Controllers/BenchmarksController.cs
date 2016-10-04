@@ -45,7 +45,6 @@ namespace MeasureThat.Net.Controllers
             this.m_publishResultRepository = publishResultRepository;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             EntityListWithCount<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.ListAll(numOfItemsPerPage);
@@ -54,7 +53,6 @@ namespace MeasureThat.Net.Controllers
             return View(pager);
         }
 
-        [Authorize]
         public async Task<IActionResult> IndexPage(int page)
         {
             // TODO: way pagination is horrible! Needs to be ported to API+Angular
