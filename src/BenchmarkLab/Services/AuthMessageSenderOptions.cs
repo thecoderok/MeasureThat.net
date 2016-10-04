@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace MeasureThat.Net.Services
+﻿namespace MeasureThat.Net.Services
 {
     public class AuthMessageSenderOptions
     {

@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using MeasureThat.Net.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace MeasureThat.Net.Logic.Web
 {

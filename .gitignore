@@ -262,3 +262,4 @@ ModelManifest.xml
 /src/BenchmarkLab/Scripts/*.js
 /src/BenchmarkLab/wwwroot/js
 /src/BenchmarkLab/wwwroot/scripts/lib
+/BenchmarkLab.DB/MeasureThat.Net.DB.jfm
