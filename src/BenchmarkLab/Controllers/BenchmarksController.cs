@@ -289,16 +289,17 @@ namespace MeasureThat.Net.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Edit(BenchmarkDto model)
         {
-            // TODO: duplicated code, DRY
+            
             ApplicationUser user = await this.GetCurrentUserAsync();
             if (user == null)
             {
                 throw new NotLoggedInException("You are not logged in");
             }
 
+            const string ViewName = "Add";
             if (!this.ModelState.IsValid)
             {
-                return this.View("Add", model);
+                return this.View(ViewName, model);
             }
 
             // Manually parse input
@@ -307,15 +308,14 @@ namespace MeasureThat.Net.Controllers
             // Check if benchmark code was actually entered
             if (testCases.Count() < 2)
             {
-                // TODO: use correct error key
                 this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
-                return this.View("Add", model);
+                return this.View(ViewName, model);
             }
 
             if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
-                return this.View("Add", model);
+                return this.View(ViewName, model);
             }
 
             model.TestCases = new List<TestCaseDto>(testCases);
@@ -341,6 +341,15 @@ namespace MeasureThat.Net.Controllers
                 m_logger.LogError("Can't update benchmark: " + ex.Message);
                 return RedirectToAction(ErrorActionName);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
+        public async Task<IActionResult> Delete(long id)
+        {
+            await this.m_benchmarkRepository.DeleteById(id);
+            return RedirectToAction("Index");
         }
 
         public IActionResult Error()

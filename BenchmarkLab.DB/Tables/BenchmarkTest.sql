@@ -4,5 +4,5 @@ CREATE TABLE [dbo].[BenchmarkTest]
     [BenchmarkId] BIGINT NOT NULL, 
     [BenchmarkText] NVARCHAR(MAX) NOT NULL, 
     [TestName] NVARCHAR(50) NOT NULL, 
-    CONSTRAINT [FK_BenchmarkTest_ToBenchmark] FOREIGN KEY ([BenchmarkId]) REFERENCES [Benchmark]([Id])
+    CONSTRAINT [FK_BenchmarkTest_ToBenchmark] FOREIGN KEY ([BenchmarkId]) REFERENCES [Benchmark]([Id]) ON DELETE CASCADE
 )

@@ -366,8 +366,23 @@ class PaginationController {
     }
 }
 
-class SearchController {
+class DeleteBenchmarkHandler {
     constructor() {
-        
+        $("[data-role='delete-benchmark']").on("click", this.handleDeleteButtonClick);
+        $("#perform-delete").on("click", this.performDelete);
+    }
+
+    private handleDeleteButtonClick(eventObject: JQueryEventObject): void {
+        var id: string = eventObject.target.getAttribute("data-entity-id");
+        if (id === ''){
+            throw new Error("Can't get id of the benchmark");
+        }
+
+        $("#delete-form [name='id']").val(id);
+        $("#delete-confirm").modal();
+    }
+
+    private performDelete(): void{
+        $("#delete-form form").submit();
     }
 }

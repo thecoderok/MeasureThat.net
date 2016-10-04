@@ -11,7 +11,6 @@
     <thead>
         <tr>
             <th>Benchmark name</th>
-            <th>Description</th>
             <th>When Created</th>
             <th>Actions</th>
         </tr>
@@ -21,12 +20,14 @@
         <tr>
             <td>
                 <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                <br>
+                <small>@b.Description</small>
             </td>
-            <td>@b.Description</td>
-            <td>@b.WhenCreated.Humanize()</td>
+           <td>@b.WhenCreated.Humanize()</td>
             <td>
                 <a class="btn btn-default" asp-action="Edit" asp-route-id="@b.Id">Edit</a>
                 <a class="btn btn-default" asp-action="Fork" asp-route-id="@b.Id">Fork</a>
+                <a class="btn btn-default" data-entity-id="@b.Id" data-role="delete-benchmark">Delete</a>
             </td>
         </tr>
     }

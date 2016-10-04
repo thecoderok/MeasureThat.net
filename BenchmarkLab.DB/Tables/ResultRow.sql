@@ -6,5 +6,5 @@
     [RelativeMarginOfError] REAL NOT NULL, 
     [NumberOfSamples] INT NOT NULL, 
     [TestName] NVARCHAR(50) NOT NULL, 
-    CONSTRAINT [FK_ResultRow_ToResult] FOREIGN KEY ([ResultId]) REFERENCES [Result]([Id])
+    CONSTRAINT [FK_ResultRow_ToResult] FOREIGN KEY ([ResultId]) REFERENCES [Result]([Id]) ON DELETE CASCADE
 )
