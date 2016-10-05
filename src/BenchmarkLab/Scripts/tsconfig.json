@@ -13,7 +13,8 @@
     "./model.ts",
     "./main.ts",
     "../typings/index.d.ts",
-    "../Scripts/benchmarklab.ts"
+    "../Scripts/benchmarklab.ts",
+    "../Scripts/frontendapp.ts"
   ],
   "exclude": [
     "node_modules",

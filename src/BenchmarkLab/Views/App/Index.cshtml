@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Benchmarks";
+}
+
+<div ng-app>
+    <h1>Directives</h1>
+    {{2+2}}
+    <script src="~/lib/angular/angular.js"></script>
+</div>
+
+@section Scripts{
+    <environment names="Development">
+        <script src="~/lib/angular/angular.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"
+                asp-fallback-src="~/lib/angular/angular.min.js"
+                asp-fallback-test="window.angular">
+        </script>
+    </environment>
+    <script src="~/js/frontendapp.js" asp-append-version="true"></script>
+}
