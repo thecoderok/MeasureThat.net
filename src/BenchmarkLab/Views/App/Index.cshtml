@@ -14,12 +14,17 @@
 @section Scripts{
     <environment names="Development">
         <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular-route/angular-route.js"></script>
+        <script src="~/lib/angular-ui-router/release/angular-ui-router.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"
                 asp-fallback-src="~/lib/angular/angular.min.js"
                 asp-fallback-test="window.angular">
+        
         </script>
+        <script src="~/lib/angular-route/angular-route.js"></script>
+        <script src="~/lib/angular-ui-router/release/angular-ui-router.js"></script>
     </environment>
-    <script src="~/js/frontendapp.js" asp-append-version="true"></script>
+    <script src="~/js/frontendappbundle.js" asp-append-version="true"></script>
 }

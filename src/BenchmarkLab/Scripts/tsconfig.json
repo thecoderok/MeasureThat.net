@@ -6,12 +6,12 @@
     "sourceMap": false,
     "target": "es5",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "module": "amd"
   },
   "files": [
     "../typings/index.d.ts",
-    "../Scripts/benchmarklab.ts",
-    "../Scripts/frontendapp.ts"
+    "../Scripts/*.ts"
   ],
   "exclude": [
     "node_modules",

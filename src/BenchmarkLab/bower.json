@@ -13,6 +13,7 @@
     "code-mirror-themes": "0.0.3",
     "mustache": "2.2.1",
     "angular": "1.5.8",
-    "angular-route": "1.5.8"
+    "angular-route": "1.5.8",
+    "angular-ui-router": "0.3.1"
   }
 }

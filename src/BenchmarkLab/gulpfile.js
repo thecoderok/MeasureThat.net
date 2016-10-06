@@ -13,6 +13,8 @@ var tsProject = ts.createProject("Scripts/tsconfig.json");
 var browserify = require("browserify");
 var source = require('vinyl-source-stream');
 var tsify = require("tsify");
+var watchify = require("watchify");
+var gutil = require("gulp-util");
 
 var webroot = "./wwwroot/";
 var scriptsRoot = "./Scripts/";
@@ -74,7 +76,30 @@ gulp.task("copy-html", function () {
         .pipe(gulp.dest('wwwroot/js/partials'));
 });
 
+var watchedBrowserify = watchify(browserify({
+    basedir: '.',
+    debug: true,
+    entries: [
+            'Scripts/frontendapp.ts',
+            'Scripts/BenchmarksController.ts',
+            'Scripts/BenchmarkListComponent.ts'
+    ],
+    cache: {},
+    packageCache: {}
+}).plugin(tsify));
+
+function bundle() {
+    return watchedBrowserify
+        .bundle()
+        .pipe(source('frontendappbundle.js'))
+        .pipe(gulp.dest("wwwroot/js"));
+}
+
 gulp.task('default', ['lib', "copy-html"], function () {
     gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
-    tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
+    //tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
+    bundle();
 });
+
+watchedBrowserify.on("update", bundle);
+watchedBrowserify.on("log", gutil.log);
