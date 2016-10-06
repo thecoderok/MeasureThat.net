@@ -2,10 +2,16 @@
     ViewData["Title"] = "Benchmarks";
 }
 
-<div ng-app>
+<div ng-app="benchmarkApp">
     <h1>Directives</h1>
     {{2+2}}
-    <script src="~/lib/angular/angular.js"></script>
+    
+    <h1>Controllers</h1>
+
+    <div ng-controller="benchmarksController">
+        <strong>First Name:</strong> {{firstName}} <br />
+        <strong>Last Name:</strong> {{lastName}}
+    </div>
 </div>
 
 @section Scripts{

@@ -9,9 +9,6 @@
     "emitDecoratorMetadata": true
   },
   "files": [
-    "./app.ts",
-    "./model.ts",
-    "./main.ts",
     "../typings/index.d.ts",
     "../Scripts/benchmarklab.ts",
     "../Scripts/frontendapp.ts"

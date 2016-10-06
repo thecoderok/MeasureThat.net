@@ -8,9 +8,14 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     bump = require("gulp-bump"),
     del = require("del");
+var ts = require("gulp-typescript");
+var tsProject = ts.createProject("Scripts/tsconfig.json");
+var browserify = require("browserify");
+var source = require('vinyl-source-stream');
+var tsify = require("tsify");
 
 var webroot = "./wwwroot/";
-var scriptsRoot = "./Scripts/"
+var scriptsRoot = "./Scripts/";
 
 var paths = {
     js: webroot + "js/**/*.js",
@@ -20,6 +25,7 @@ var paths = {
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css",
+    partials: scriptsRoot + "partials/*.html",
     libs: ['node_modules/angular2/bundles/angular2.js',
            'node_modules/angular2/bundles/angular2-polyfills.js',
            'node_modules/systemjs/dist/system.src.js',
@@ -63,6 +69,12 @@ gulp.task('lib', function () {
     gulp.src(paths.libs).pipe(gulp.dest('wwwroot/js/lib'));
 });
 
-gulp.task('default', ['lib'], function () {
+gulp.task("copy-html", function () {
+    return gulp.src(paths.partials)
+        .pipe(gulp.dest('wwwroot/js/partials'));
+});
+
+gulp.task('default', ['lib', "copy-html"], function () {
     gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
+    tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
 });
