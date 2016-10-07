@@ -107,6 +107,7 @@ namespace MeasureThat.Net.Controllers
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ConfirmationEmailsEnabled"] = this.m_emailConfirmationOptions.Value.RequireEmailConfirmation;
             return View();
         }
 
