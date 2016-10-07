@@ -1,4 +1,4 @@
-﻿namespace MeasureThat.Net.Services
+namespace MeasureThat.Net.Services
 {
     public class AuthMessageSenderOptions
     {
@@ -9,5 +9,7 @@
         public string SenderEmail { get; set; }
 
         public string SenderName { get; set; }
+
+        public bool RequireEmailConfirmation { get; set; }
     }
 }
