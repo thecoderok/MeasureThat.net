@@ -80,8 +80,7 @@ var browserifyBundle = browserify({
         entries: [
             'Scripts/frontendapp.ts',
             'Scripts/BenchmarksController.ts',
-            'Scripts/BenchmarkListComponent.ts',
-            'Scripts/benchmarklab.ts'
+            'Scripts/BenchmarkListComponent.ts'
         ],
         cache: {
         
