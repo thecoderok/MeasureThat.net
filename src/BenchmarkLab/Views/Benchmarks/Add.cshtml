@@ -105,10 +105,13 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
-        @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey, "", new { @class = "text-danger" })
-    </div>
+    if (bool.Parse(configuration["ReCaptchaEnabled"]))
+    {
+        <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>
+            @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey, "", new { @class = "text-danger" })
+        </div>
+    }
 
     <input type="submit" class="btn btn-default" value="Submit" />
     <a href="@Url.Action("Index")" class="btn btn-link">Cancel</a>

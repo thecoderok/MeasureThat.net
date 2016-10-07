@@ -15,6 +15,7 @@ namespace MeasureThat.Net.Logic.Web
         private const string ApiVerificationEndpoint = "https://www.google.com/recaptcha/api/siteverify";
         private readonly IConfiguration m_configuration;
         private readonly Lazy<string> m_reCaptchaSecret;
+        private readonly bool reCaptchaValidationEnabled = true;
 
         public ValidateReCaptchaAttribute(IConfiguration configuration)
         {
@@ -25,10 +26,16 @@ namespace MeasureThat.Net.Logic.Web
 
             this.m_configuration = configuration;
             this.m_reCaptchaSecret = new Lazy<string>(() => m_configuration["ReCaptcha:Secret"]);
+            this.reCaptchaValidationEnabled = bool.Parse(m_configuration["ReCaptchaEnabled"]);
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            if (!this.reCaptchaValidationEnabled)
+            {
+                return;
+            }
+
             await DoReCaptchaValidation(context).ConfigureAwait(false);
 
             await base.OnActionExecutionAsync(context, next);
