@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MeasureThat.Net
 {
+    using MySQL.Data.EntityFrameworkCore.Extensions;
+
     public class Startup
     {
         private ILogger m_logger;
@@ -50,8 +52,7 @@ namespace MeasureThat.Net
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            AddDatabaseContext(services);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(o =>
                 {
@@ -95,6 +96,31 @@ namespace MeasureThat.Net
             });
 
             services.Configure<AuthMessageSenderOptions>(Configuration);
+        }
+
+        private void AddDatabaseContext(IServiceCollection services)
+        {
+            string dbTypeString = Configuration["DatabaseType"];
+            SupportedDatabase db;
+            if (!Enum.TryParse(dbTypeString, out db))
+            {
+                throw new Exception("Such database type is not supported: " + dbTypeString);
+            }
+
+            switch (db)
+            {
+                case SupportedDatabase.SqlServer:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    break;
+                case SupportedDatabase.MySql:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+                    break;
+                default:
+                    throw new Exception("There is no initialization section for DB: " + dbTypeString);
+            }
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,7 +12,7 @@ var factoryId: string = 'benchmarkListFactory';
     function configRoutes($urlRouterProvider: ng.ui.IUrlRouterProvider,
         $stateProvider: ng.ui.IStateProvider) {
         $urlRouterProvider.otherwise('/app');
-
+        //yodd
         /*$stateProvider
             .state('play', {
                 url: '/play',
