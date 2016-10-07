@@ -12,6 +12,8 @@ using MeasureThat.Net.Services;
 
 namespace MeasureThat.Net.Controllers
 {
+    using Microsoft.Extensions.Options;
+
     [Authorize]
     public class AccountController : Controller
     {
@@ -19,6 +21,7 @@ namespace MeasureThat.Net.Controllers
         private readonly SignInManager<ApplicationUser> m_signInManager;
         private readonly IEmailSender m_emailSender;
         private readonly ISmsSender m_smsSender;
+        private readonly IOptions<AuthMessageSenderOptions> m_emailConfirmationOptions;
         private readonly ILogger m_logger;
 
         public AccountController(
@@ -26,12 +29,14 @@ namespace MeasureThat.Net.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IOptions<AuthMessageSenderOptions> emailConfirmationOptions)
         {
             m_userManager = userManager;
             m_signInManager = signInManager;
             m_emailSender = emailSender;
             m_smsSender = smsSender;
+            m_emailConfirmationOptions = emailConfirmationOptions;
             m_logger = loggerFactory.CreateLogger<AccountController>();
         }
 
@@ -59,7 +64,8 @@ namespace MeasureThat.Net.Controllers
                 var user = await m_userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
-                    if (!await m_userManager.IsEmailConfirmedAsync(user))
+                    if (this.m_emailConfirmationOptions.Value.RequireEmailConfirmation 
+                        && !await m_userManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError(string.Empty, "You must have a confirmed email to log in.");
                         return View(model);
@@ -118,14 +124,23 @@ namespace MeasureThat.Net.Controllers
                 var result = await m_userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    var code = await m_userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    await m_emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                        $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    // await m_signInManager.SignInAsync(user, isPersistent: false);
                     m_logger.LogInformation(3, "User created a new account with password.");
+
+                    if (this.m_emailConfirmationOptions.Value.RequireEmailConfirmation)
+                    {
+                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                        // Send an email with this link
+                        var code = await m_userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code },
+                            protocol: HttpContext.Request.Scheme);
+                        await m_emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                            $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    }
+                    else
+                    {
+                        await m_signInManager.SignInAsync(user, isPersistent: false);
+                    }
+                    
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
