@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeasureThat.Net.Controllers
 {
+    using Logic.Web;
+
     [Produces("application/json")]
     [Route("api/benchmarks")]
     public class BenchmarksApiController : Controller
@@ -22,6 +24,19 @@ namespace MeasureThat.Net.Controllers
             var list = await this.m_benchmarkRepository.ListAll(20, page);
             
             return list;
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this.m_benchmarkRepository.DeleteById(id);
+            return new NoContentResult();
+        }
+
+        [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
+        public async Task<BenchmarkDto> Post(BenchmarkDto model)
+        {
+            return null;
         }
     }
 }
