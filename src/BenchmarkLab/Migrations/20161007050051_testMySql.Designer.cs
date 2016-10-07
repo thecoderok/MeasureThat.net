@@ -1,26 +1,31 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using MeasureThat.Net.Data;
 
-namespace MeasureThat.Net.Data.Migrations
+namespace BenchmarkLab.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161007050051_testMySql")]
+    partial class testMySql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
+                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BenchmarkLab.Data.Models.Benchmark", b =>
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.Benchmark", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description")
-                        .HasColumnType("nchar(400)");
+                        .HasAnnotation("MaxLength", 400);
+
+                    b.Property<string>("HtmlPreparationCode");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -30,20 +35,9 @@ namespace MeasureThat.Net.Data.Migrations
                         .IsRequired()
                         .HasAnnotation("MaxLength", 450);
 
-                    b.HasKey("Id");
+                    b.Property<string>("ScriptPreparationCode");
 
-                    b.ToTable("Benchmark");
-                });
-
-            modelBuilder.Entity("BenchmarkLab.Data.Models.BenchmarkTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BenchmarkText")
-                        .IsRequired();
-
-                    b.Property<int>("BenchmarkVersionId");
+                    b.Property<int>("Version");
 
                     b.Property<DateTime>("WhenCreated")
                         .ValueGeneratedOnAdd()
@@ -51,21 +45,57 @@ namespace MeasureThat.Net.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BenchmarkVersionId");
+                    b.ToTable("Benchmark");
+                });
+
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.BenchmarkTest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("BenchmarkId");
+
+                    b.Property<string>("BenchmarkText")
+                        .IsRequired();
+
+                    b.Property<string>("TestName")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BenchmarkId");
 
                     b.ToTable("BenchmarkTest");
                 });
 
-            modelBuilder.Entity("BenchmarkLab.Data.Models.BenchmarkVersion", b =>
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.Result", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("BenchmarkId");
+                    b.Property<long>("BenchmarkId");
 
-                    b.Property<string>("HtmlPreparationCode");
+                    b.Property<string>("Browser")
+                        .HasAnnotation("MaxLength", 100);
 
-                    b.Property<string>("ScriptPreparationCode");
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("DevicePlatform")
+                        .HasAnnotation("MaxLength", 100);
+
+                    b.Property<string>("OperatingSystem")
+                        .HasAnnotation("MaxLength", 100);
+
+                    b.Property<string>("RawUastring")
+                        .IsRequired()
+                        .HasColumnName("RawUAString")
+                        .HasAnnotation("MaxLength", 300);
+
+                    b.Property<string>("UserId")
+                        .HasAnnotation("MaxLength", 450);
 
                     b.Property<int>("Version");
 
@@ -73,13 +103,34 @@ namespace MeasureThat.Net.Data.Migrations
 
                     b.HasIndex("BenchmarkId");
 
-                    b.HasIndex("BenchmarkId", "Version")
-                        .HasName("IX_BenchmarkVersion_Unique");
-
-                    b.ToTable("BenchmarkVersion");
+                    b.ToTable("Result");
                 });
 
-            modelBuilder.Entity("BenchmarkLab.Models.ApplicationUser", b =>
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.ResultRow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<float>("ExecutionsPerSecond");
+
+                    b.Property<int>("NumberOfSamples");
+
+                    b.Property<float>("RelativeMarginOfError");
+
+                    b.Property<long>("ResultId");
+
+                    b.Property<string>("TestName")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResultId");
+
+                    b.ToTable("ResultRow");
+                });
+
+            modelBuilder.Entity("MeasureThat.Net.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
 
@@ -122,6 +173,7 @@ namespace MeasureThat.Net.Data.Migrations
                         .HasName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
+                        .IsUnique()
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
@@ -234,42 +286,50 @@ namespace MeasureThat.Net.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BenchmarkLab.Data.Models.BenchmarkTest", b =>
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.BenchmarkTest", b =>
                 {
-                    b.HasOne("BenchmarkLab.Data.Models.BenchmarkVersion")
-                        .WithMany()
-                        .HasForeignKey("BenchmarkVersionId")
-                        .HasConstraintName("FK_BenchmarkTest_ToBenchmarkVersion");
+                    b.HasOne("MeasureThat.Net.Data.Models.Benchmark", "Benchmark")
+                        .WithMany("BenchmarkTest")
+                        .HasForeignKey("BenchmarkId")
+                        .HasConstraintName("FK_BenchmarkTest_ToBenchmark");
                 });
 
-            modelBuilder.Entity("BenchmarkLab.Data.Models.BenchmarkVersion", b =>
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.Result", b =>
                 {
-                    b.HasOne("BenchmarkLab.Data.Models.Benchmark")
-                        .WithMany()
+                    b.HasOne("MeasureThat.Net.Data.Models.Benchmark", "Benchmark")
+                        .WithMany("Result")
                         .HasForeignKey("BenchmarkId")
-                        .HasConstraintName("FK_BenchmarkVersion_ToBenchmark");
+                        .HasConstraintName("FK_Results_ToBenchmark");
+                });
+
+            modelBuilder.Entity("MeasureThat.Net.Data.Models.ResultRow", b =>
+                {
+                    b.HasOne("MeasureThat.Net.Data.Models.Result", "Result")
+                        .WithMany("ResultRow")
+                        .HasForeignKey("ResultId")
+                        .HasConstraintName("FK_ResultRow_ToResult");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
-                        .WithMany()
+                        .WithMany("Claims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BenchmarkLab.Models.ApplicationUser")
-                        .WithMany()
+                    b.HasOne("MeasureThat.Net.Models.ApplicationUser")
+                        .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BenchmarkLab.Models.ApplicationUser")
-                        .WithMany()
+                    b.HasOne("MeasureThat.Net.Models.ApplicationUser")
+                        .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -277,12 +337,12 @@ namespace MeasureThat.Net.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("BenchmarkLab.Models.ApplicationUser")
-                        .WithMany()
+                    b.HasOne("MeasureThat.Net.Models.ApplicationUser")
+                        .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
