@@ -21,7 +21,7 @@ namespace MeasureThat.Net.Logic.Web
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw new ArgumentNullException(nameof(configuration));
             }
 
             this.m_configuration = configuration;
@@ -31,12 +31,10 @@ namespace MeasureThat.Net.Logic.Web
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (!this.reCaptchaValidationEnabled)
+            if (this.reCaptchaValidationEnabled)
             {
-                return;
+                await DoReCaptchaValidation(context).ConfigureAwait(false);
             }
-
-            await DoReCaptchaValidation(context).ConfigureAwait(false);
 
             await base.OnActionExecutionAsync(context, next);
         }
