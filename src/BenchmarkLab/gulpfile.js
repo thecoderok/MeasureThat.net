@@ -27,13 +27,7 @@ var paths = {
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css",
-    partials: scriptsRoot + "partials/*.html",
-    libs: [
-        'node_modules/angular2/bundles/angular2.js',
-        'node_modules/angular2/bundles/angular2-polyfills.js',
-        'node_modules/systemjs/dist/system.src.js',
-        'node_modules/rxjs/bundles/Rx.js'
-    ]
+    partials: scriptsRoot + "partials/*.html"
 };
 
 gulp.task("clean:js",
@@ -74,11 +68,6 @@ gulp.task("bump",
 
 gulp.task("min", ["min:js", "min:css"]);
 
-gulp.task('lib',
-    function() {
-        gulp.src(paths.libs).pipe(gulp.dest('wwwroot/js/lib'));
-    });
-
 gulp.task("copy-html",
     function() {
         return gulp.src(paths.partials)
@@ -91,7 +80,8 @@ var browserifyBundle = browserify({
         entries: [
             'Scripts/frontendapp.ts',
             'Scripts/BenchmarksController.ts',
-            'Scripts/BenchmarkListComponent.ts'
+            'Scripts/BenchmarkListComponent.ts',
+            'Scripts/benchmarklab.ts'
         ],
         cache: {
         
@@ -122,9 +112,9 @@ gulp.task('watch',
     });
 
 gulp.task('default',
-    ['lib', "copy-html"],
+    ["copy-html"],
     function() {
         gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
-        //tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
+        tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
         bundle();
     });

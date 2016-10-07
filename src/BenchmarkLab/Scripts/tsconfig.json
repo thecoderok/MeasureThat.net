@@ -11,9 +11,9 @@
   },
   "files": [
     "../typings/index.d.ts",
-    "../Scripts/frontendapp.ts",
+    /*"../Scripts/frontendapp.ts",
     "../Scripts/BenchmarkListComponent.ts",
-    "../Scripts/BenchmarksController.ts",
+    "../Scripts/BenchmarksController.ts",*/
     "../Scripts/benchmarklab.ts"
   ],
   "exclude": [
