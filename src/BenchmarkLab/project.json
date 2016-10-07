@@ -49,7 +49,8 @@
     "Microsoft.Extensions.Configuration.Binder": "1.0.0",
     "Humanizer.Core": "2.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-    "SendGrid.NetCore": "1.0.0-rtm-00002" 
+    "SendGrid.NetCore": "1.0.0-rtm-00002",
+    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21" 
   },
 
   "tools": {

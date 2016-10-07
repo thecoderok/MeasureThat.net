@@ -20,6 +20,7 @@ namespace MeasureThat.Net.Controllers
         public async Task<IEnumerable<BenchmarkDto>> Get(int page, string query)
         {
             var list = await this.m_benchmarkRepository.ListAll(20, page);
+            
             return list;
         }
     }

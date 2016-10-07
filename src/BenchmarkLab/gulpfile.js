@@ -8,9 +8,16 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     bump = require("gulp-bump"),
     del = require("del");
+var ts = require("gulp-typescript");
+var tsProject = ts.createProject("Scripts/tsconfig.json");
+var browserify = require("browserify");
+var source = require('vinyl-source-stream');
+var tsify = require("tsify");
+var watchify = require("watchify");
+var gutil = require("gulp-util");
 
 var webroot = "./wwwroot/";
-var scriptsRoot = "./Scripts/"
+var scriptsRoot = "./Scripts/";
 
 var paths = {
     js: webroot + "js/**/*.js",
@@ -20,49 +27,104 @@ var paths = {
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css",
-    libs: ['node_modules/angular2/bundles/angular2.js',
-           'node_modules/angular2/bundles/angular2-polyfills.js',
-           'node_modules/systemjs/dist/system.src.js',
-           'node_modules/rxjs/bundles/Rx.js']
+    partials: scriptsRoot + "partials/*.html",
+    libs: [
+        'node_modules/angular2/bundles/angular2.js',
+        'node_modules/angular2/bundles/angular2-polyfills.js',
+        'node_modules/systemjs/dist/system.src.js',
+        'node_modules/rxjs/bundles/Rx.js'
+    ]
 };
 
-gulp.task("clean:js", function (cb) {
-    rimraf(paths.concatJsDest, cb);
-    del(['wwwroot/scripts/**/*']);
-});
+gulp.task("clean:js",
+    function(cb) {
+        rimraf(paths.concatJsDest, cb);
+        del(['wwwroot/scripts/**/*']);
+    });
 
-gulp.task("clean:css", function (cb) {
-    rimraf(paths.concatCssDest, cb);
-});
+gulp.task("clean:css",
+    function(cb) {
+        rimraf(paths.concatCssDest, cb);
+    });
 
 gulp.task("clean", ["clean:js", "clean:css"]);
 
-gulp.task("min:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
-        .pipe(uglify())
-        .pipe(gulp.dest("."));
-});
+gulp.task("min:js",
+    function() {
+        return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
+            .pipe(concat(paths.concatJsDest))
+            .pipe(uglify())
+            .pipe(gulp.dest("."));
+    });
 
-gulp.task("min:css", function () {
-    return gulp.src([paths.css, "!" + paths.minCss])
-        .pipe(concat(paths.concatCssDest))
-        .pipe(cssmin())
-        .pipe(gulp.dest("."));
-});
+gulp.task("min:css",
+    function() {
+        return gulp.src([paths.css, "!" + paths.minCss])
+            .pipe(concat(paths.concatCssDest))
+            .pipe(cssmin())
+            .pipe(gulp.dest("."));
+    });
 
-gulp.task("bump", function () {
-    gulp.src("./project.json")
-    .pipe(bump())
-    .pipe(gulp.dest("./"));
-});
+gulp.task("bump",
+    function() {
+        gulp.src("./project.json")
+            .pipe(bump())
+            .pipe(gulp.dest("./"));
+    });
 
 gulp.task("min", ["min:js", "min:css"]);
 
-gulp.task('lib', function () {
-    gulp.src(paths.libs).pipe(gulp.dest('wwwroot/js/lib'));
-});
+gulp.task('lib',
+    function() {
+        gulp.src(paths.libs).pipe(gulp.dest('wwwroot/js/lib'));
+    });
 
-gulp.task('default', ['lib'], function () {
-    gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
-});
+gulp.task("copy-html",
+    function() {
+        return gulp.src(paths.partials)
+            .pipe(gulp.dest('wwwroot/js/partials'));
+    });
+
+var browserifyBundle = browserify({
+        basedir: '.',
+        debug: true,
+        entries: [
+            'Scripts/frontendapp.ts',
+            'Scripts/BenchmarksController.ts',
+            'Scripts/BenchmarkListComponent.ts'
+        ],
+        cache: {
+        
+        },
+        packageCache: {
+        
+        }
+    })
+    .plugin(tsify);
+
+function bundle() {
+    browserifyBundle
+        .bundle()
+        .pipe(source('frontendappbundle.js'))
+        .pipe(gulp.dest("wwwroot/js"));
+}
+
+gulp.task('watch',
+    function() {
+
+        var watchedBrowserify = watchify(browserifyBundle);
+        watchedBrowserify.on("update", bundle);
+        watchedBrowserify.on("log", gutil.log);
+        watchedBrowserify
+            .bundle()
+            .pipe(source('frontendappbundle.js'))
+            .pipe(gulp.dest("wwwroot/js"));
+    });
+
+gulp.task('default',
+    ['lib', "copy-html"],
+    function() {
+        gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
+        //tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
+        bundle();
+    });

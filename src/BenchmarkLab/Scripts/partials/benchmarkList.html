@@ -1,0 +1,16 @@
+Yo vm.
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Benchmark name</th>
+            <th>When Created</th>
+        </tr>
+    </thead>
+    <tr  ng-repeat="benchmark in vm.benchmarks">
+        <td>
+            <a asp-action="Show">{{benchmark.benchmarkName}}</a>
+        </td>
+        <td>{{benchmark.whenCreated}}</td>
+    </tr>
+</table>
