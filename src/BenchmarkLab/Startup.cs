@@ -118,6 +118,10 @@ namespace MeasureThat.Net
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
                     break;
+                case SupportedDatabase.PostgreSQL:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                    break;
                 default:
                     throw new Exception("There is no initialization section for DB: " + dbTypeString);
             }

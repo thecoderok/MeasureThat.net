@@ -4,6 +4,7 @@ namespace MeasureThat.Net.Data
     {
         Unknown,
         SqlServer,
-        MySql
+        MySql,
+        PostgreSQL
     }
 }
