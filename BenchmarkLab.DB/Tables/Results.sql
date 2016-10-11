@@ -1,10 +1,10 @@
-﻿CREATE TABLE [dbo].[Result]
+CREATE TABLE [dbo].[Result]
 (
 	[Id] BIGINT IDENTITY NOT NULL PRIMARY KEY, 
     [BenchmarkId] BIGINT NOT NULL, 
     [RawUAString] NVARCHAR(300) NOT NULL, 
     [Browser] NVARCHAR(100) NULL, 
-    [Created] DATETIME2 NOT NULL DEFAULT getdate(), 
+    [Created] DATETIME2 NOT NULL , 
     [UserId] NVARCHAR(450) NULL, 
     [DevicePlatform] NVARCHAR(100) NULL, 
     [OperatingSystem] NVARCHAR(100) NULL, 

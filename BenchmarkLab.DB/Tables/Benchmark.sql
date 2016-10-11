@@ -4,7 +4,7 @@ CREATE TABLE [dbo].[Benchmark]
     [Name] NVARCHAR(200) NOT NULL, 
     [Description] NVARCHAR(4000) NULL, 
     [OwnerId] nvarchar(450) NULL, 
-    [WhenCreated] DATETIME2 NOT NULL DEFAULT getdate(), 
+    [WhenCreated] DATETIME2 NOT NULL , 
     [ScriptPreparationCode] NVARCHAR(MAX) NULL, 
     [HtmlPreparationCode] NVARCHAR(MAX) NULL, 
     [Version] INT NOT NULL DEFAULT 1, 
