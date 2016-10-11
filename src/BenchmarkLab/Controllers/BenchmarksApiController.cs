@@ -34,7 +34,7 @@ namespace MeasureThat.Net.Controllers
 
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<BenchmarkDto> Post(BenchmarkDto model)
+        public Task<BenchmarkDto> Post(BenchmarkDto model)
         {
             return null;
         }
