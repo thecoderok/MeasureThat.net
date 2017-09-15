@@ -28,10 +28,15 @@
         </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
 
-
+        <nav aria-label="...">
+            <ul class="pager">
+                <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
+                <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+            </ul>
+        </nav>
         <div class="text-center">
             <ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("IndexPage")">
-                @for (var page = 0; page < Model.NumOfPages; page++)
+                @for (var page = Model.FirstPage; page < Model.LastPage; page++)
                 {
                     <li class="@(page == 0 ? "active" : "")">
                         <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
@@ -63,5 +68,18 @@
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
     <script type="text/javascript">
     var paginationController = new PaginationController();
+    </script>
+}
+
+@section Ads{
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- measurethat.net -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2889218219879125"
+         data-ad-slot="5761409685"
+         data-ad-format="auto"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 }

@@ -16,7 +16,7 @@
 {
 
 <ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("ListResultsPage", new { id = Model.Entites.First().BenchmarkId })">
-    @for (var page = 0; page < Model.NumOfPages; page++)
+    @for (var page = Model.FirstPage; page < Model.LastPage; page++)
     {
         <li class="@(page == 0 ? "active" : "")">
             <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
