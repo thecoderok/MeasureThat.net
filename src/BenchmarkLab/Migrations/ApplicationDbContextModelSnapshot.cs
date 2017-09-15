@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -39,8 +39,7 @@ namespace BenchmarkLab.Migrations
                     b.Property<int>("Version");
 
                     b.Property<DateTime>("WhenCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
+                        .ValueGeneratedOnAdd();
 
                     b.HasKey("Id");
 
@@ -79,8 +78,7 @@ namespace BenchmarkLab.Migrations
                         .HasAnnotation("MaxLength", 100);
 
                     b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("DevicePlatform")
                         .HasAnnotation("MaxLength", 100);

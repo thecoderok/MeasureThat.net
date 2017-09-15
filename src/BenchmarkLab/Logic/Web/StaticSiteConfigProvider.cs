@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JetBrains.Annotations;
 using MeasureThat.Net.Models;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +34,7 @@ namespace MeasureThat.Net.Logic.Web
                     this.googleAnalyticsConfig = new GoogleAnalyticsConfig(identifier, enabled);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // We don't want to break website just because we can't read GA config
                 //m_logger.LogError("Error when reading Google Analytics config: {0}.", e.Message);

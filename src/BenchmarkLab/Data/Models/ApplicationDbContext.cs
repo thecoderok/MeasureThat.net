@@ -32,8 +32,6 @@ namespace MeasureThat.Net.Data
                 entity.Property(e => e.OwnerId)
                     .IsRequired()
                     .HasMaxLength(450);
-
-                entity.Property(e => e.WhenCreated).HasDefaultValueSql("getdate()");
             });
 
             modelBuilder.Entity<BenchmarkTest>(entity =>
@@ -54,8 +52,6 @@ namespace MeasureThat.Net.Data
             modelBuilder.Entity<Result>(entity =>
             {
                 entity.Property(e => e.Browser).HasMaxLength(100);
-
-                entity.Property(e => e.Created).HasDefaultValueSql("getdate()");
 
                 entity.Property(e => e.DevicePlatform).HasMaxLength(100);
 
