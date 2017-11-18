@@ -18,6 +18,9 @@ namespace MeasureThat.Net.Controllers
     using System.Collections.Generic;
     using Exceptions;
     using Logic;
+    using MeasureThat.Net.Logic.Validation;
+    using BenchmarkLab.Models;
+    using BenchmarkLab.Logic.Web;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -45,47 +48,23 @@ namespace MeasureThat.Net.Controllers
             this.m_publishResultRepository = publishResultRepository;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            EntityListWithCount<BenchmarkDto> latestBenchmarks = await m_benchmarkRepository.ListAll(numOfItemsPerPage);
-            Pager<BenchmarkDto> pager = new Pager<BenchmarkDto>(0, latestBenchmarks.Count, latestBenchmarks.Entities, numOfItemsPerPage);
-
-            return View(pager);
-        }
-
-        public async Task<IActionResult> IndexPage(int page)
-        {
-            // TODO: way pagination is horrible! Needs to be ported to API+Angular
-
-            if (page < 0)
-            {
-                page = 0;
-            }
-
-            IEnumerable<BenchmarkDto> list = await m_benchmarkRepository.ListAll(numOfItemsPerPage, page);
-            return View(list);
-        }
-
-        [Authorize]
-        public async Task<IActionResult> My()
-        {
-            ApplicationUser user = await this.GetCurrentUserAsync();
-            EntityListWithCount<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, numOfItemsPerPage);
-            Pager<BenchmarkDto> pager = new Pager<BenchmarkDto>(0, list.Count, list.Entities, numOfItemsPerPage);
-            return this.View(pager);
-        }
-
-        [Authorize]
-        public async Task<IActionResult> MyPage(int page)
+        public async Task<IActionResult> Index(int page)
         {
             if (page < 0)
             {
                 page = 0;
             }
+            IList<BenchmarkDtoForIndex> latestBenchmarks = await m_benchmarkRepository.ListAllForIndex(numOfItemsPerPage, page);
 
+            return View(new ResultsHolder<BenchmarkDtoForIndex>(latestBenchmarks, page));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> My(int page)
+        {
+            page = Preconditions.ToValidPage(page);
             ApplicationUser user = await this.GetCurrentUserAsync();
-            IEnumerable<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
-            
+            IList<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
             return this.View(list);
         }
 
@@ -241,25 +220,11 @@ namespace MeasureThat.Net.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ListResults(int id)
         {
-            EntityListWithCount<BenchmarkResultDto> model = await this
+            IList<BenchmarkResultDto> model = await this
                 .m_publishResultRepository
-                .ListAll(numOfItemsPerPage, id);
+                .ListAll(id);
 
-            var pager = new Pager<BenchmarkResultDto>(0, model.Count, model.Entities, numOfItemsPerPage);
-
-            return View(pager);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> ListResultsPage(int id, int page)
-        {
-            if (page < 0)
-            {
-                page = 0;
-            }
-
-            var list = await this.m_publishResultRepository.ListAll(numOfItemsPerPage, id, page);
-            return View(list);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(int id)

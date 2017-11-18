@@ -9,9 +9,6 @@ using MeasureThat.Net.Exceptions;
 
 namespace MeasureThat.Net.Data.Dao
 {
-    using Controllers;
-    using Logic.Validation;
-
     public class SqlServerResultsRepository
     {
         private readonly ApplicationDbContext m_db;
@@ -102,15 +99,15 @@ namespace MeasureThat.Net.Data.Dao
             return new ShowResultModel(result, benchmark);
         }
 
-        public virtual async Task<IEnumerable<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId, int page)
+        /// <summary>
+        /// Returns total number of results for given benchmark
+        /// Total # is needed to create pagination
+        /// </summary>
+        /// <returns></returns>
+        public virtual async Task<IList<BenchmarkResultDto>> ListAll(int benchmarkId)
         {
-            Preconditions.ToBePositive(maxEntities);
-            Preconditions.ToBeNonNegative(page);
-
             var list = await this.m_db.Result
                 .Where(t => t.BenchmarkId == benchmarkId)
-                .Skip(page * maxEntities)
-                .Take(maxEntities)
                 .OrderByDescending(t => t.Created)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -118,28 +115,8 @@ namespace MeasureThat.Net.Data.Dao
             return ProcessQueryResult(list);
         }
 
-        /// <summary>
-        /// Returns total number of results for given benchmark
-        /// Total # is needed to create pagination
-        /// </summary>
-        /// <returns></returns>
-        public virtual async Task<EntityListWithCount<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId)
-        {
-            Preconditions.ToBePositive(maxEntities);
-            var list = await this.m_db.Result
-                .Where(t => t.BenchmarkId == benchmarkId)
-                .OrderByDescending(t => t.Created)
-                .ToListAsync()
-                .ConfigureAwait(false);
 
-            long count = list.Count;
-            IEnumerable<BenchmarkResultDto> dtos = ProcessQueryResult(list.Take(maxEntities));
-            var result = new EntityListWithCount<BenchmarkResultDto>(dtos, count);
-            return result;
-        }
-
-
-        private IEnumerable<BenchmarkResultDto> ProcessQueryResult(IEnumerable<Result> entities)
+        private IList<BenchmarkResultDto> ProcessQueryResult(IEnumerable<Result> entities)
         {
             var result = new List<BenchmarkResultDto>();
             foreach (var benchmark in entities)

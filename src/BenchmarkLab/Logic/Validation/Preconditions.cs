@@ -20,5 +20,23 @@ namespace MeasureThat.Net.Logic.Validation
                 throw new ValidationException(nameof(val) + " is expected to be greater than zero.");
             }
         }
+
+        public static void ToNotBeNull<T>(T obj)
+        {
+            if (obj == null)
+            {
+                throw new ValidationException("Object is null.");
+            }
+        }
+
+        // Returns valid page number
+        public static int ToValidPage(int page)
+        {
+            if (page < 0)
+            {
+                return 0;
+            }
+            return page;
+        }
     }
 }

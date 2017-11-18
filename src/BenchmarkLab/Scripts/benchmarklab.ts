@@ -311,61 +311,6 @@ class ShowResultsPageController {
     }
 }
 
-class PaginationController {
-    private activeClass: string = "active";
-
-    constructor() {
-        // Find our pager
-        var paginationRoot: JQuery = $("[data-role='pagination-root']");
-        if (paginationRoot.length === 0) {
-            // No pagination control found here
-            console.warn("No pagination control found on the page");
-            return;
-        }
-
-        paginationRoot.each((index: number, el: Element) : void => {
-            var endpoint = el.getAttribute('data-endpoint');
-            if (!endpoint || endpoint.length === 0) {
-                console.warn("Pagination endpoint is not specified");
-                return;
-            }
-
-            var target = el.getAttribute('data-target');
-            if (target.length === 0) {
-                console.warn("No target id specified for pagination");
-                return;
-            }
-
-            // Find button for individual pages
-            var buttons: JQuery = $(el).find("[data-role='page-button']");
-            buttons.on("click",
-                (eventObject: JQueryEventObject, ...args: any[]) => {
-                    this.handlePageButtonClick(paginationRoot,
-                        eventObject.target,
-                        endpoint,
-                        target);
-                });
-        });
-        
-    }
-
-    private handlePageButtonClick(paginationRoot: JQuery,
-        clickedButton: Element,
-        endpoint: string,
-        targetId: string) {
-        var paneNum: string = clickedButton.getAttribute("data-page");
-        var url: string = endpoint + "?page=" + paneNum;
-        $(targetId).html($("#progress-hidden").html());
-        $(targetId).load(url);
-
-        // Update button state - find active button
-        var activeBtn: JQuery = paginationRoot.find("." + this.activeClass);
-        activeBtn.removeClass(this.activeClass);
-
-        clickedButton.parentElement.classList.add(this.activeClass);
-    }
-}
-
 class DeleteBenchmarkHandler {
     constructor() {
         $("[data-role='delete-benchmark']").on("click", this.handleDeleteButtonClick);

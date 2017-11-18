@@ -1,8 +1,7 @@
-@using System.Threading.Tasks
 @using Humanizer
 @using MeasureThat.Net.Logic.Web
-@using MeasureThat.Net.Models
-@model MeasureThat.Net.Models.Pager<BenchmarkDto>
+@using BenchmarkLab.Models
+@model BenchmarkLab.Logic.Web.ResultsHolder<BenchmarkDtoForIndex>
 
 @{
     ViewBag.Title = "Latest benchmarks";
@@ -10,46 +9,32 @@
 
 <div class="page-header">
     <h2>
-        Latest benchmarks
+        Latest JavaScript Performance benchmarks
     </h2>
 </div>
 
 
 <div class="row">
-    <!-- pager -->
-    @if (Model.NumOfPages > 1)
-    {
-    <div class="col-lg-6">
-        <div class="input-group" data-role="search-control" data-endpoint="@Url.Action("Search")">
-            <input disabled="disabled" type="text" class="form-control" placeholder="Search by benchmark name (coming soon)">
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button" disabled="disabled">Find</button>
-            </span>
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Benchmark name</th>
+                <th>When Created</th>
+            </tr>
+        </thead>
+        @foreach (var b in Model.Entities)
+            {
+            <tr>
+                <td>
+                    <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                </td>
+                <td>@b.WhenCreated.Humanize()</td>
+            </tr>
+        }
+    </table>
 
-        <nav aria-label="...">
-            <ul class="pager">
-                <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-                <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
-            </ul>
-        </nav>
-        <div class="text-center">
-            <ul class="pagination" data-target="#benchmark-list" data-role="pagination-root" data-endpoint="@Url.Action("IndexPage")">
-                @for (var page = Model.FirstPage; page < Model.LastPage; page++)
-                {
-                    <li class="@(page == 0 ? "active" : "")">
-                        <a data-page="@page" href="#" data-role="page-button">@(page + 1)</a>
-                    </li>
-                }
-            </ul>
-        </div>
-    }
-    
-    <div id="benchmark-list">
-        @{ await Html.RenderPartialAsync("IndexPage", Model.Entites); }
-    </div>
 </div>
+
 <p>
     @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
     <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
@@ -63,10 +48,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts{
-    <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
-    <script type="text/javascript">
-    var paginationController = new PaginationController();
-    </script>
-}

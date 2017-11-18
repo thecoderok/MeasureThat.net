@@ -37,18 +37,10 @@ namespace MeasureThat.Net.Data.Dao
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache).ConfigureAwait(false);
         }
 
-        public override async Task<IEnumerable<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId, int page)
+        public override async Task<IList<BenchmarkResultDto>> ListAll(int benchmarkId)
         {
-            string key = $"result+list_{benchmarkId}_{maxEntities}_{page}";
-            Func<Task<IEnumerable<BenchmarkResultDto>>> dbLookup = async () => await base.ListAll(maxEntities, benchmarkId, page).ConfigureAwait(false);
-            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
-        }
-
-        public override async Task<EntityListWithCount<BenchmarkResultDto>> ListAll(int maxEntities, int benchmarkId)
-        {
-            string key = $"result+withcnt_{benchmarkId}_{maxEntities}";
-            Func<Task<EntityListWithCount<BenchmarkResultDto>>> dbLookup = async () => await base.ListAll(maxEntities, benchmarkId).ConfigureAwait(false);
+            string key = $"result_{benchmarkId}";
+            Func<Task<IList<BenchmarkResultDto>>> dbLookup = async () => await base.ListAll(benchmarkId).ConfigureAwait(false);
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
