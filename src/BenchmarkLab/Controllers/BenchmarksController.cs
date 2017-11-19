@@ -55,8 +55,9 @@ namespace MeasureThat.Net.Controllers
                 page = 0;
             }
             IList<BenchmarkDtoForIndex> latestBenchmarks = await m_benchmarkRepository.ListAllForIndex(numOfItemsPerPage, page);
+            int totalNumberOfRecords = await m_benchmarkRepository.CountAll();
 
-            return View(new ResultsHolder<BenchmarkDtoForIndex>(latestBenchmarks, page));
+            return View(new ResultsPaginationHolder<BenchmarkDtoForIndex>(latestBenchmarks, page, totalNumberOfRecords, numOfItemsPerPage));
         }
 
         [Authorize]

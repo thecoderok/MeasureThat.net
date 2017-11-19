@@ -1,7 +1,7 @@
 @using Humanizer
 @using MeasureThat.Net.Logic.Web
 @using BenchmarkLab.Models
-@model BenchmarkLab.Logic.Web.ResultsHolder<BenchmarkDtoForIndex>
+@model BenchmarkLab.Logic.Web.ResultsPaginationHolder<BenchmarkDtoForIndex>
 
 @{
     ViewBag.Title = "Latest benchmarks";
@@ -13,6 +13,39 @@
     </h2>
 </div>
 
+
+<nav aria-label="...">
+    <ul class="pager">
+        @if (Model.ButtonPreviousActive)
+        {
+            <li><a asp-action="Index" asp-route-id="@(Model.Page-1)">Previous</a></li>
+        }
+        else
+        {
+            <li class="disabled"><a href="#" >Previous</a></li>
+        }
+        @foreach (var page in Model.AvailablePages)
+        {
+            if (page == Model.Page)
+            {
+                <li class="disabled"><a>@(page+1)</a></li>
+            }
+            else
+            {
+                <li><a asp-action="Index" asp-route-page="@(page)">@(page + 1)</a></li>
+            }
+        }
+        
+        @if (Model.ButtonNextActive)
+        {
+            <li><a asp-action="Index" asp-route-id="@(Model.Page+1)">Next</a></li>
+        }
+        else
+        {
+            <li class="disabled"><a href="#">Next</a></li>
+        }
+    </ul>
+</nav>
 
 <div class="row">
     <table class="table table-striped table-bordered">
@@ -27,6 +60,10 @@
             <tr>
                 <td>
                     <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
+                    @if (!string.IsNullOrWhiteSpace(b.Description))
+                    {
+                        <p>@b.Description</p>
+                    }
                 </td>
                 <td>@b.WhenCreated.Humanize()</td>
             </tr>

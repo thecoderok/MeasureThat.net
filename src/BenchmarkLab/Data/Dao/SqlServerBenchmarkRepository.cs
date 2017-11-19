@@ -98,6 +98,12 @@ namespace MeasureThat.Net.Data.Dao
             return ProcessQueryResult(entities);
         }
 
+        // Returns total number of benchmarks
+        public virtual async Task<int> CountAll()
+        {
+            return await this.m_db.Benchmark.CountAsync();
+        }
+
         // Returns list of benchmarks just for the index (title and when created.)
         public virtual async Task<IList<BenchmarkDtoForIndex>> ListAllForIndex(int maxEntities, int page)
         {
