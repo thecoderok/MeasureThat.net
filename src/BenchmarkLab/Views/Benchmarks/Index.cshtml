@@ -18,6 +18,7 @@
     <ul class="pager">
         @if (Model.ButtonPreviousActive)
         {
+            <li><a asp-action="Index" asp-route-id="0">&laquo;</a></li>
             <li><a asp-action="Index" asp-route-id="@(Model.Page-1)">Previous</a></li>
         }
         else
