@@ -40,10 +40,12 @@
         @if (Model.ButtonNextActive)
         {
             <li><a asp-action="Index" asp-route-id="@(Model.Page+1)">Next</a></li>
+            <li><a asp-action="Index" asp-route-id="@(Model.NumberOfPages)">&raquo;</a></li>
         }
         else
         {
             <li class="disabled"><a href="#">Next</a></li>
+            <li class="disabled"><a href="#">&raquo;</a></li>
         }
     </ul>
 </nav>

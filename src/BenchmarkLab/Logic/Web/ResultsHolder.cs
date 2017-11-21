@@ -17,6 +17,8 @@ namespace BenchmarkLab.Logic.Web
 
         public IList<int> AvailablePages { get; private set; }
 
+        public int NumberOfPages {get; private set;}
+
         public bool ButtonPreviousActive
         {
             get
@@ -29,7 +31,7 @@ namespace BenchmarkLab.Logic.Web
         {
             get
             {
-                return Page < GetNumberOfPages();
+                return Page < NumberOfPages;
             }
         }
 
@@ -90,6 +92,7 @@ namespace BenchmarkLab.Logic.Web
             this.Page = page;
             this.TotalRecordsCount = totalRecordsCount;
             this.PageSize = pageSize;
+            this.NumberOfPages = this.GetNumberOfPages();
             this.AvailablePages = this.ComputeAvailablePages();
         }
     }
