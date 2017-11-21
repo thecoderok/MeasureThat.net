@@ -21,6 +21,14 @@ namespace MeasureThat.Net.Logic.Validation
             }
         }
 
+        public static void NonEmptyString(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                throw new ValidationException("Given string is empty.");
+            }
+        }
+
         public static void ToNotBeNull<T>(T obj)
         {
             if (obj == null)

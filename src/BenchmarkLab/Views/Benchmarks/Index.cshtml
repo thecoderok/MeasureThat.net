@@ -18,18 +18,19 @@
     <ul class="pager">
         @if (Model.ButtonPreviousActive)
         {
-            <li><a asp-action="Index" asp-route-id="0">&laquo;</a></li>
-            <li><a asp-action="Index" asp-route-id="@(Model.Page-1)">Previous</a></li>
+            <li><a asp-action="Index" asp-route-page="0">&laquo;</a></li>
+            <li><a asp-action="Index" asp-route-page="@(Model.Page-1)">Previous</a></li>
         }
         else
         {
+            <li class="disabled"><a href="#">&laquo;</a></li>
             <li class="disabled"><a href="#" >Previous</a></li>
         }
         @foreach (var page in Model.AvailablePages)
         {
             if (page == Model.Page)
             {
-                <li class="disabled"><a>@(page+1)</a></li>
+                <li class="active disabled"><a>@(page+1)<span class="sr-only">(current)</span></a></li>
             }
             else
             {
@@ -39,8 +40,8 @@
         
         @if (Model.ButtonNextActive)
         {
-            <li><a asp-action="Index" asp-route-id="@(Model.Page+1)">Next</a></li>
-            <li><a asp-action="Index" asp-route-id="@(Model.NumberOfPages)">&raquo;</a></li>
+            <li><a asp-action="Index" asp-route-page="@(Model.Page+1)">Next</a></li>
+            <li><a asp-action="Index" asp-route-page="@(Model.NumberOfPages)">&raquo;</a></li>
         }
         else
         {
@@ -65,10 +66,10 @@
                     <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>
                     @if (!string.IsNullOrWhiteSpace(b.Description))
                     {
-                        <p>@b.Description</p>
+                        <p><small>@b.Description</small></p>
                     }
                 </td>
-                <td>@b.WhenCreated.Humanize()</td>
+                <td>@b.WhenCreated.Humanize(utcDate: false)</td>
             </tr>
         }
     </table>

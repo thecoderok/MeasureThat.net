@@ -322,12 +322,31 @@ class DeleteBenchmarkHandler {
         if (id === ''){
             throw new Error("Can't get id of the benchmark");
         }
-
         $("#delete-form [name='id']").val(id);
         $("#delete-confirm").modal();
     }
 
     private performDelete(): void{
         $("#delete-form form").submit();
+    }
+}
+
+class ForkBenchmarkHandler {
+    constructor() {
+        $("[data-role='fork-benchmark']").on("click", this.handleForkButtonClick);
+        $("#perform-fork").on("click", this.performFork);
+    }
+
+    private handleForkButtonClick(eventObject: JQueryEventObject): void {
+        var id: string = eventObject.target.getAttribute("data-entity-id");
+        if (id === '') {
+            throw new Error("Can't get id of the benchmark");
+        }
+        $("#fork-form [name='id']").val(id);
+        $("#fork-confirm").modal();
+    }
+
+    private performFork(): void {
+        $("#fork-form form").submit();
     }
 }

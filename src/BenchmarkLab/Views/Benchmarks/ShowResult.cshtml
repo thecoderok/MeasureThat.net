@@ -39,7 +39,7 @@
         
         <div class="form-group">
             @Html.Label("Date tested:")
-            <span>@Model.ResultModel.WhenCreated.Humanize()</span>
+            <span>@Model.ResultModel.WhenCreated.Humanize(utcDate: false)</span>
         </div>
     </div>
 </div>

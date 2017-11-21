@@ -12,6 +12,7 @@ namespace MeasureThat.Net.Data.Dao
     using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
     using BenchmarkLab.Models;
+    using System;
 
     public class SqlServerBenchmarkRepository
     {
@@ -31,7 +32,8 @@ namespace MeasureThat.Net.Data.Dao
                 OwnerId = entity.OwnerId,
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
-                BenchmarkTest = new List<BenchmarkTest>()
+                BenchmarkTest = new List<BenchmarkTest>(),
+                WhenCreated = DateTime.Now,
             };
 
             foreach (var test in entity.TestCases)
@@ -102,6 +104,13 @@ namespace MeasureThat.Net.Data.Dao
         public virtual async Task<int> CountAll()
         {
             return await this.m_db.Benchmark.CountAsync();
+        }
+
+        // Returns total number of benchmarks for the given user
+        public virtual async Task<int> CountUserBenchmarks(string userId)
+        {
+            Preconditions.NonEmptyString(userId);
+            return await this.m_db.Benchmark.CountAsync(t => t.OwnerId == userId);
         }
 
         // Returns list of benchmarks just for the index (title and when created.)
@@ -199,7 +208,7 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IList<BenchmarkDto>> ListByUser(string userId, int page, int numOfItems)
+        public virtual async Task<IList<BenchmarkDtoForIndex>> ListByUser(string userId, int page, int numOfItems)
         {
             var entities = await this.m_db.Benchmark
                 .Where(t=> t.OwnerId == userId)
@@ -207,10 +216,25 @@ namespace MeasureThat.Net.Data.Dao
                 .Skip(page * numOfItems)
                 .Take(numOfItems)
                 .OrderByDescending(b => b.WhenCreated)
+                .Select(x => new { x.Id, x.Name, x.Description, x.WhenCreated, x.Version, x.OwnerId })
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            return ProcessQueryResult(entities);
+            var result = new List<BenchmarkDtoForIndex>();
+            foreach (var item in entities)
+            {
+                result.Add(new BenchmarkDtoForIndex
+                {
+                    Id = item.Id,
+                    BenchmarkName = item.Name,
+                    Description = item.Description,
+                    WhenCreated = item.WhenCreated,
+                    Version = item.Version,
+                    OwnerId = item.OwnerId
+                });
+            }
+
+            return result;
         }
 
         public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model, 

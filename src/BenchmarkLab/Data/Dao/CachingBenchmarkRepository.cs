@@ -39,13 +39,5 @@ namespace MeasureThat.Net.Data.Dao
             var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
             return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
         }
-
-        public override async Task<IList<BenchmarkDto>> ListByUser(string userId, int page, int numOfItems)
-        {
-            string key = $"my_{userId}_{numOfItems}_{page}";
-            Func<Task<IList<BenchmarkDto>>> dbLookup = async () => await base.ListByUser(userId, page, numOfItems).ConfigureAwait(false);
-            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(20));
-            return await CacheAsideRequestHelper.CacheAsideRequest(dbLookup, key, this.m_memoryCache, expirationOptions).ConfigureAwait(false);
-        }
     }
 }

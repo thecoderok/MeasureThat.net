@@ -65,8 +65,9 @@ namespace MeasureThat.Net.Controllers
         {
             page = Preconditions.ToValidPage(page);
             ApplicationUser user = await this.GetCurrentUserAsync();
-            IList<BenchmarkDto> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
-            return this.View(list);
+            int count = await m_benchmarkRepository.CountUserBenchmarks(user.Id);
+            IList<BenchmarkDtoForIndex> list = await m_benchmarkRepository.ListByUser(user.Id, page, numOfItemsPerPage);
+            return this.View(new ResultsPaginationHolder<BenchmarkDtoForIndex>(list, page, count, numOfItemsPerPage));
         }
 
         public IActionResult Add()
