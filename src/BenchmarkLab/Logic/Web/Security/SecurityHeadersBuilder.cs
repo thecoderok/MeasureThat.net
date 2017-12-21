@@ -20,7 +20,8 @@ namespace MeasureThat.Net.Logic.Web
         /// </summary>
         public SecurityHeadersBuilder AddDefaultSecurePolicy()
         {
-            AddFrameOptionsDeny();
+            // AddFrameOptionsDeny();
+            AddFrameOptionsSameOrigin();
             AddXssProtectionBlock();
             AddContentTypeOptionsNoSniff();
             AddStrictTransportSecurityMaxAge();
