@@ -95,15 +95,14 @@ else
 }
 
 <div class="hidden" id="delete-form">
-    @Html.BeginForm("Delete", "Benchmarks", FormMethod.Post)
-    {
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="id" />
-    }
+    <form action="/Benchmarks/Delete" method="post">
+        <input type="hidden" name="id">
+        @Html.AntiForgeryToken()
+    </form>
 </div>
 
 <div class="hidden" id="fork-form">
-    <form action="/Benchmarks/Delete" method="post">
+    <form action="/Benchmarks/Fork" method="post">
         <input type="hidden" name="id">
         @Html.AntiForgeryToken()
     </form>
