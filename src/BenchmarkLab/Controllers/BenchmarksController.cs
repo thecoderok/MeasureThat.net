@@ -25,8 +25,8 @@ namespace MeasureThat.Net.Controllers
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
     {
-        private readonly CachingBenchmarkRepository m_benchmarkRepository;
-        private readonly CachingResultsRepository m_publishResultRepository;
+        private readonly SqlServerBenchmarkRepository m_benchmarkRepository;
+        private readonly SqlServerResultsRepository m_publishResultRepository;
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
@@ -35,11 +35,11 @@ namespace MeasureThat.Net.Controllers
         private const int numOfItemsPerPage = 25;
 
         public BenchmarksController(
-            [NotNull] CachingBenchmarkRepository benchmarkRepository,
+            [NotNull] SqlServerBenchmarkRepository benchmarkRepository,
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
-            [NotNull] CachingResultsRepository publishResultRepository)
+            [NotNull] SqlServerResultsRepository publishResultRepository)
         {
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
@@ -128,7 +128,7 @@ namespace MeasureThat.Net.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Show(int id, int version, string name)
         {
-            BenchmarkDto benchmarkToRun = await this.m_benchmarkRepository.FindByIdAndVersion(id, version);
+            BenchmarkDto benchmarkToRun = await this.m_benchmarkRepository.FindById(id);
             if (benchmarkToRun == null)
             {
                 return this.NotFound();
@@ -226,7 +226,7 @@ namespace MeasureThat.Net.Controllers
                 .m_publishResultRepository
                 .ListAll(id);
 
-            return View(model);
+            return View(new Tuple<IList<BenchmarkResultDto>, int>(model, id));
         }
 
         public async Task<IActionResult> Edit(int id)

@@ -77,8 +77,8 @@ namespace MeasureThat.Net
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
-            services.AddTransient<CachingBenchmarkRepository>();
-            services.AddTransient<CachingResultsRepository>();
+            services.AddTransient<SqlServerBenchmarkRepository>();
+            services.AddTransient<SqlServerResultsRepository>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));
