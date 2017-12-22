@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MeasureThat.Net.Data.Models;
 using System.Linq;
 using MeasureThat.Net.Exceptions;
+using System;
 
 namespace MeasureThat.Net.Data.Dao
 {
@@ -29,7 +30,8 @@ namespace MeasureThat.Net.Data.Dao
                 RawUastring = entity.RawUserAgenString,
                 UserId = entity.UserId,
                 ResultRow = new List<ResultRow>(),
-                Version = entity.BenchmarkVersion
+                Version = entity.BenchmarkVersion,
+                Created = DateTime.Now
             };
 
             foreach(var row in entity.ResultRows)
