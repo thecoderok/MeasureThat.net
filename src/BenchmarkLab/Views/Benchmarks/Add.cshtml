@@ -77,11 +77,46 @@
                         @Html.LabelFor(m => m.HtmlPreparationCode)
                         @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
+                        <br>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Quick HTML Snippets: <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">&lt;div/&gt;</a></li>
+                                <li><a href="#">&lt;a/&gt;</a></li>
+                                <li><a href="#">&lt;canvas/&gt;</a></li>
+                                <li><a href="#">&lt;script&gt;</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Reference popular libraries: <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">jQuery</a></li>
+                                <li><a href="#">React.JS</a></li>
+                                <li><a href="#">Angular</a></li>
+                                <li><a href="#">lodash</a></li>
+                            </ul>
+                        </div>
                     </div>
+                    <hr>
                     <div class="form-group">
                         @Html.LabelFor(m => m.ScriptPreparationCode)
                         @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                New Script snippets: <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">For loop</a></li>
+                                <li><a href="#">Array</a></li>
+                                <li><a href="#">document.getElementById</a></li>
+                                <li><a href="#">console.log</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

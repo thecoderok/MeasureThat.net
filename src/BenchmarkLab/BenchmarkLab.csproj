@@ -11,6 +11,7 @@
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <Version>1.0.50</Version>
   </PropertyGroup>
 
   <ItemGroup>
