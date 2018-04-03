@@ -5,10 +5,6 @@
 /// <reference path="../typings/globals/benchmark/index.d.ts" />
 /// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
-//import { Event, Suite } from "benchmark";
-
-// TODO: this logic to migrate to Angular
-
 class AddNewTestPageController {
     testCaseCounter: number = 0;
 
@@ -348,5 +344,32 @@ class ForkBenchmarkHandler {
 
     private performFork(): void {
         $("#fork-form form").submit();
+    }
+}
+
+class AppendSnippetHandler {
+    constructor() {
+        $(document).ready(() => this.initialize());
+    }
+
+    private initialize(): void {
+        $("[data-role='insert-snippet']").on("click", this.handleClick);
+    }
+
+    private handleClick(eventObject: JQueryEventObject): void {
+        var target: string = eventObject.target.getAttribute("data-target");
+        if (target === '') {
+            throw new Error("Can't get target");
+        }
+
+        var snippet: string = eventObject.target.getAttribute("data-text");
+        if (snippet === '') {
+            throw new Error("Can't get snippet");
+        }
+
+        var targetEl = document.getElementById(target) as HTMLTextAreaElement;
+        var editor = (targetEl.nextSibling as any).CodeMirror as CodeMirror.EditorFromTextArea;
+        editor.setValue(editor.getValue() + "\n" + snippet);
+        editor.save();
     }
 }

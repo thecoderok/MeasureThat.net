@@ -74,46 +74,9 @@ gulp.task("copy-html",
             .pipe(gulp.dest('wwwroot/js/partials'));
     });
 
-var browserifyBundle = browserify({
-        basedir: '.',
-        debug: true,
-        entries: [
-            'Scripts/frontendapp.ts',
-            'Scripts/BenchmarksController.ts',
-            'Scripts/BenchmarkListComponent.ts'
-        ],
-        cache: {
-        
-        },
-        packageCache: {
-        
-        }
-    })
-    .plugin(tsify);
-
-function bundle() {
-    browserifyBundle
-        .bundle()
-        .pipe(source('frontendappbundle.js'))
-        .pipe(gulp.dest("wwwroot/js"));
-}
-
-gulp.task('watch',
-    function() {
-
-        var watchedBrowserify = watchify(browserifyBundle);
-        watchedBrowserify.on("update", bundle);
-        watchedBrowserify.on("log", gutil.log);
-        watchedBrowserify
-            .bundle()
-            .pipe(source('frontendappbundle.js'))
-            .pipe(gulp.dest("wwwroot/js"));
-    });
-
 gulp.task('default',
     ["copy-html"],
     function() {
         gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
         tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
-        bundle();
     });

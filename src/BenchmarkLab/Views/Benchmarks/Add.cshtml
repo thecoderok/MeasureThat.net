@@ -83,10 +83,10 @@
                                 Quick HTML Snippets: <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a href="#">&lt;div/&gt;</a></li>
-                                <li><a href="#">&lt;a/&gt;</a></li>
-                                <li><a href="#">&lt;canvas/&gt;</a></li>
-                                <li><a href="#">&lt;script&gt;</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<div id=''></div>">&lt;div/&gt;</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<a id='' href='#' />">&lt;a/&gt;</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<canvas id='' width='' height=''></canvas>">&lt;canvas/&gt;</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src=''></script>">&lt;script&gt;</a></li>
                             </ul>
                         </div>
                         <div class="btn-group">
@@ -94,10 +94,15 @@
                                 Reference popular libraries: <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a href="#">jQuery</a></li>
-                                <li><a href="#">React.JS</a></li>
-                                <li><a href="#">Angular</a></li>
-                                <li><a href="#">lodash</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>">jQuery</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/react/16.3.0/cjs/react.production.min.js'></script>">React.JS</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js'></script>">lodash</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js'></script>">moment.js</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js'></script>">Chart.js</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>">jqueryui</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>">underscore.js</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js'></script>">d3</a></li>
+                                <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js'></script>">angular.js</a></li>
                             </ul>
                         </div>
                     </div>
@@ -111,10 +116,10 @@
                                 New Script snippets: <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a href="#">For loop</a></li>
-                                <li><a href="#">Array</a></li>
-                                <li><a href="#">document.getElementById</a></li>
-                                <li><a href="#">console.log</a></li>
+                                <li><a data-role="insert-snippet" data-target="ScriptPreparationCode" data-text="for(i=0; i<10; i++){}">For loop</a></li>
+                                <li><a data-role="insert-snippet" data-target="ScriptPreparationCode" data-text="var arr = ['', '', ''];">Array</a></li>
+                                <li><a data-role="insert-snippet" data-target="ScriptPreparationCode" data-text="var el = document.getElementById('');">document.getElementById</a></li>
+                                <li><a data-role="insert-snippet" data-target="ScriptPreparationCode" data-text="console.log('');">console.log</a></li>
                             </ul>
                         </div>
                     </div>
@@ -202,5 +207,6 @@
 
 <script type="text/javascript">
     var addPageController = new AddNewTestPageController();
+    new AppendSnippetHandler();
 </script>
 }
