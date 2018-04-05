@@ -373,3 +373,17 @@ class AppendSnippetHandler {
         editor.save();
     }
 }
+
+class ClientValidationHandler {
+
+    messageEl: HTMLElement;
+
+    constructor() {
+        $('#BenchmarkName').change(this.handle);
+        this.messageEl = document.getElementById('dup-title');
+        $(this.messageEl).hide();
+    }
+
+    private handle(eventObject: JQueryEventObject): void {
+    }
+}

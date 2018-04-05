@@ -7,20 +7,24 @@ namespace MeasureThat.Net.Data.Dao
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Controllers;
     using Exceptions;
     using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
     using BenchmarkLab.Models;
     using System;
+    using Microsoft.Extensions.Caching.Memory;
 
     public class SqlServerBenchmarkRepository
     {
+        const string titles_cache_key = "titles";
         private readonly ApplicationDbContext m_db;
+        private readonly IMemoryCache memoryCache;
+        private readonly Dictionary<string, int> titles = null;
 
-        public SqlServerBenchmarkRepository([NotNull] ApplicationDbContext db)
+        public SqlServerBenchmarkRepository([NotNull] ApplicationDbContext db, [NotNull] IMemoryCache memoryCache)
         {
             this.m_db = db;
+            this.memoryCache = memoryCache;
         }
 
         public virtual async Task<long> Add([NotNull] BenchmarkDto entity)
@@ -50,6 +54,8 @@ namespace MeasureThat.Net.Data.Dao
 
             this.m_db.Benchmark.Add(newEntity);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
+
+            InvalidateCache();
 
             return newEntity.Id;
         }
@@ -298,7 +304,38 @@ namespace MeasureThat.Net.Data.Dao
             this.m_db.Benchmark.Update(entity);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
+            InvalidateCache();
+
             return DbEntityToModel(entity);
+        }
+
+        public async Task<Dictionary<string, long>> GetTitles()
+        {
+            Dictionary<string, long> result;
+            if (this.memoryCache.TryGetValue(titles_cache_key, out result))
+            {
+                return result;
+            }
+
+            var entities = await this.m_db.Benchmark
+               .OrderByDescending(b => b.WhenCreated)
+               .Select(x => new { x.Id, x.Name })
+               .ToListAsync()
+               .ConfigureAwait(false);
+            result = new Dictionary<string, long>();
+            foreach (var entity in entities)
+            {
+                result[entity.Name.ToLower()] = entity.Id;
+            }
+
+            var expirationOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1));
+            this.memoryCache.Set(titles_cache_key, result, expirationOptions);
+            return result;
+        }
+
+        private void InvalidateCache()
+        {
+            this.memoryCache.Remove(titles_cache_key);
         }
 
         private static IList<BenchmarkDto> ProcessQueryResult(IEnumerable<Benchmark> entities)

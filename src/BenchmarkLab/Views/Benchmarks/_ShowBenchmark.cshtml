@@ -16,7 +16,7 @@
             <textarea class="form-control" readonly data-code="html">@Model.HtmlPreparationCode</textarea>
         </div>
 
-        <ul class="list-group">
+        <ul class="list-group" style="max-height:500px; overflow: scroll;" >
             <li class="list-group-item">@Html.Raw(Model.HtmlPreparationCode)</li>
         </ul>
     }
