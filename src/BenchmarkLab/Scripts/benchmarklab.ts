@@ -376,14 +376,27 @@ class AppendSnippetHandler {
 
 class ClientValidationHandler {
 
-    messageEl: HTMLElement;
-
     constructor() {
         $('#BenchmarkName').change(this.handle);
-        this.messageEl = document.getElementById('dup-title');
-        $(this.messageEl).hide();
+        $('#dup-title').hide();
     }
 
     private handle(eventObject: JQueryEventObject): void {
+        var target: HTMLInputElement = eventObject.target as HTMLInputElement;
+        var value: string = target.value;
+        if (value === '') {
+            $('#dup-title').hide();
+            return;
+        }
+
+        var uri = '/api/HasTitle?title=';
+        $.getJSON(uri + encodeURIComponent(value))
+            .done(function (data) {
+                if (data === true) {
+                    $('#dup-title').show();
+                } else {
+                    $('#dup-title').hide();
+                }
+            });
     }
 }
