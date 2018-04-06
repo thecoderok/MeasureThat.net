@@ -389,7 +389,7 @@ class ClientValidationHandler {
             return;
         }
 
-        var uri = '/api/HasTitle?title=';
+        var uri = '/api/CheckBenchmarkTitle?title=';
         $.getJSON(uri + encodeURIComponent(value))
             .done(function (data) {
                 if (data === true) {

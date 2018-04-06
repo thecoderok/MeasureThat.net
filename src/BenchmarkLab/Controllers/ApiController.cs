@@ -1,16 +1,18 @@
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BenchmarkLab.Data.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BenchmarkLab.Controllers
 {
     [Produces("application/json")]
     public class ApiController : Controller
     {
+        const int TitleLengthToCheckForSimilarBenchmarks = 15;
+        const int SimilarityPercentThreshold = 85;
+
         private readonly SqlServerBenchmarkRepository m_benchmarkRepository;
         private readonly ILogger m_logger;
 
@@ -22,15 +24,15 @@ namespace BenchmarkLab.Controllers
         }
 
         // GET: api/Api
-        public async Task<SimilarBenchmarksResponse> CheckBenchmarkTitle(string title)
+        public async Task<bool> CheckBenchmarkTitle(string title)
         {
-            Dictionary<string, long> titles = await m_benchmarkRepository.GetTitles();
-            bool sameTitle = false;
-            if (titles.ContainsKey(title.ToLower()))
+            if (string.IsNullOrWhiteSpace(title))
             {
-                sameTitle = true;
+                // Empty result
+                return false;
             }
-
+            Dictionary<string, long> titles = await m_benchmarkRepository.GetTitles();
+            return titles.ContainsKey(title.ToLower());
         }
     }
 }
