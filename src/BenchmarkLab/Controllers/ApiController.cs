@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using Microsoft.Extensions.Logging;
+using BenchmarkLab.Data.Models;
 
 namespace BenchmarkLab.Controllers
 {
@@ -21,15 +22,15 @@ namespace BenchmarkLab.Controllers
         }
 
         // GET: api/Api
-        public async Task<bool> HasTitle(string title)
+        public async Task<SimilarBenchmarksResponse> CheckBenchmarkTitle(string title)
         {
             Dictionary<string, long> titles = await m_benchmarkRepository.GetTitles();
+            bool sameTitle = false;
             if (titles.ContainsKey(title.ToLower()))
             {
-                return true;
+                sameTitle = true;
             }
 
-            return false;
         }
     }
 }

@@ -377,13 +377,13 @@ class AppendSnippetHandler {
 class ClientValidationHandler {
 
     constructor() {
-        $('#BenchmarkName').change(this.handle);
+        $('#BenchmarkName').change(this.validate);
         $('#dup-title').hide();
+        this.validate();
     }
 
-    private handle(eventObject: JQueryEventObject): void {
-        var target: HTMLInputElement = eventObject.target as HTMLInputElement;
-        var value: string = target.value;
+    private validate(): void {
+        var value: string = $('#BenchmarkName').val();
         if (value === '') {
             $('#dup-title').hide();
             return;

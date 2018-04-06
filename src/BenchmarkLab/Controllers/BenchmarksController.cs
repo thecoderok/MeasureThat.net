@@ -85,6 +85,13 @@ namespace MeasureThat.Net.Controllers
                 return this.View(model);
             }
 
+            var titles = await m_benchmarkRepository.GetTitles();
+            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
+            {
+                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                return this.View(model);
+            }
+
             // Manually parse input
             var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
 
@@ -267,6 +274,13 @@ namespace MeasureThat.Net.Controllers
             if (!this.ModelState.IsValid)
             {
                 return this.View(ViewName, model);
+            }
+
+            var titles = await m_benchmarkRepository.GetTitles();
+            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
+            {
+                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                return this.View(model);
             }
 
             // Manually parse input
