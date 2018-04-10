@@ -6,14 +6,36 @@ class TestRunnerController {
     }
 
     private initialize(): void {
-        document.getElementById('runTest').removeAttribute('disabled');
+        window.addEventListener("message", this.handleMessage);
+    }
+
+    handleMessage(event: Event): void {
+        alert('Got event in iframe: ' + event);
+    }
+
+    runTests(): void {
+        // Clean up any previous status
+        /*$('[data-role="result-label"]').text('');
+        $('[data-role="fastest-label"]').text('');
+        $('[data-role="slowest-label"]').text('');
+        $('#results-placeholder').empty();
+        $('#results-placeholder').fadeIn();
+
+        var preparation = $("#jspreparation").html();
+        var content = $("#benchmark").html();
+        try {
+            eval(preparation);
+            eval(content);
+        } catch (e) {
+            alert("Error:" + JSON.stringify(e));
+            throw e;
+        }*/
     }
 
     onStartHandler(): void {
         const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
         suiteStatusLabels.textContent = 'Running';
         suiteStatusLabels.setAttribute("class", "label label-info");
-        document.getElementById('runTest').setAttribute('disabled', 'true');
     }
 
     onCycleHandler(targets: Event): void {
@@ -30,7 +52,6 @@ class TestRunnerController {
         const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
         suiteStatusLabels.textContent = 'Aborted';
         suiteStatusLabels.setAttribute("class", "label label-warning");
-        document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onErrorHandler(evt): void {
@@ -42,14 +63,12 @@ class TestRunnerController {
         const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
         suiteStatusLabels.textContent = 'Error';
         suiteStatusLabels.setAttribute("class", "label label-danger");
-        document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onResetHandler(): void {
         const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
         suiteStatusLabels.textContent = 'Reset';
         suiteStatusLabels.setAttribute("class", "label label-warning");
-        document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onCompleteHandler(suites: Event): void {
@@ -67,8 +86,6 @@ class TestRunnerController {
         document.querySelectorAll("[data-role='slowest-label']")[0].textContent = benchmark.filter("slowest").map("name");
 
         this.postResults();
-
-        document.getElementById('runTest').removeAttribute('disabled');
     }
 
     postResults(): void {

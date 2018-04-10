@@ -204,7 +204,9 @@ class ShowResultsPageController {
     }
 
     initialize() {
-        // Will enable codeMirror
+        document.getElementById('runTest').removeAttribute('disabled');
+        document.getElementById('runTest').addEventListener('click', this.startRun);
+        window.addEventListener("message", this.handleMessage);
         $("[data-code='html']")
             .each(function (index) {
                 var editor = CodeMirror.fromTextArea(this,
@@ -226,6 +228,16 @@ class ShowResultsPageController {
                         viewportMargin: Infinity
                     });
             });
+    }
+
+    handleMessage(event: Event): void {
+
+    }
+
+    startRun(): void {
+        alert('starting run');
+        var iframe = document.getElementById('test-runner-iframe') as HTMLIFrameElement;
+        iframe.contentWindow.postMessage("test", "*");
     }
 
     draw() : void {

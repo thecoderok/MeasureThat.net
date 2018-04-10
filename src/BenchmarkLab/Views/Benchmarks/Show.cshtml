@@ -127,6 +127,7 @@
     
     <script type="text/javascript">
         DisqusComments.setupLoad();
+        new ShowResultsPageController();
     </script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -134,7 +135,7 @@
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 }
 
-<iframe src="/Benchmarks/TestFrame?id=@Model.Id"></iframe>
+<iframe id="test-runner-iframe" src="/Benchmarks/TestFrame?id=@Model.Id"></iframe>
 
 <hr />
 <div class="text-center">
