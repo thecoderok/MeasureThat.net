@@ -11,10 +11,8 @@
   },
   "files": [
     "../typings/index.d.ts",
-    /*"../Scripts/frontendapp.ts",
-    "../Scripts/BenchmarkListComponent.ts",
-    "../Scripts/BenchmarksController.ts",*/
-    "../Scripts/benchmarklab.ts"
+    "../Scripts/benchmarklab.ts",
+    "../Scripts/testrunner.ts"
   ],
   "exclude": [
     "node_modules",

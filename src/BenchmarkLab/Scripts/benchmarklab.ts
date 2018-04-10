@@ -89,15 +89,11 @@ class ShowPageController {
     }
 
     private initialize(): void {
-        $(document)
-            .ready(() => {
-                $("#fork-btn")
-                    .click(() => {
-                        $("#fork-form").submit();
-                    });
-                $("#runTest").removeAttr("disabled");
-                this.createEditors();
+        $("#fork-btn")
+            .click(() => {
+                $("#fork-form").submit();
             });
+        this.createEditors();
     }
 
     private createEditors(): void {
@@ -125,63 +121,9 @@ class ShowPageController {
             });
     }
 
-    onStartHandler(): void {
-        const suiteStatusLabels = $("[data-role='suite-status']");
-        suiteStatusLabels.text('Running');
-        suiteStatusLabels.attr("class", "label label-info");
-        $("#runTest").attr("disabled", "true");
-    }
-
-    onCycleHandler(targets: Event) : void {
-        const completedTarget = targets.target as any;
-        const testName: string = completedTarget.name;
-        const row = $(`[data-row-for='${testName}']`);
-        if (row.length !== 1) {
-            throw "Unable to find where to report result";
-        }
-        row.find('[data-role="result-label"]').text(completedTarget.toString());
-    }
-
-    onAbortHandler() : void {
-        const suiteStatusLabels = $("[data-role='suite-status']");
-        suiteStatusLabels.text('Aborted');
-        suiteStatusLabels.attr("class", "label label-warning");
-        $("#runTest").removeAttr("disabled");
-    }
-
-    onErrorHandler(evt) : void {
-        let message = "Some error occurred.";
-        if (evt && evt.target && evt.target.error) {
-            message = evt.target.error;
-        }
-        $("#error-message").text(message);
-        $("#errorDuringExecution").modal();
-        const suiteStatusLabels = $("[data-role='suite-status']");
-        suiteStatusLabels.text("Error");
-        suiteStatusLabels.attr("class", "label label-danger");
-        $("#runTest").removeAttr("disabled");
-    }
-
-    onResetHandler() : void {
-        const suiteStatusLabels = $("[data-role='suite-status']");
-        suiteStatusLabels.text("Reset");
-        suiteStatusLabels.attr("class", "label label-warning");
-        $("#runTest").removeAttr("disabled");
-    }
-
-    onCompleteHandler(suites: Event): void {
+    handleRunCompleted(suites: Event): void {
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
-        var suiteStatusLabels = $("[data-role='suite-status']");
-        if ((suites.target as any).aborted === true) {
-            suiteStatusLabels.text("Aborted");
-            suiteStatusLabels.attr("class", "label label-warning");
-            return;
-        }
-        suiteStatusLabels.text('Completed');
-        suiteStatusLabels.attr("class", "label label-success");
-        $("[data-role='fastest-label']").text(benchmark.filter("fastest").map("name"));
-        $("[data-role='slowest-label']").text(benchmark.filter("slowest").map("name"));
 
         const form = $("#results-form");
         var chartData: Array<Array<string>> = [];
@@ -197,7 +139,6 @@ class ShowPageController {
             chartItem.push(suites.currentTarget[i].name);
             chartItem.push(suites.currentTarget[i].hz);
             chartData.push(chartItem);
-
         }
 
         const url: string = "/Benchmarks/PublishResults";

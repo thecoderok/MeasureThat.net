@@ -1,0 +1,77 @@
+
+@using Humanizer
+@using MeasureThat.Net.Models
+@using Microsoft.AspNetCore.Identity
+@model MeasureThat.Net.Models.BenchmarkDto
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    Layout = null;
+}
+
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/lodash/dist/lodash.js"></script>
+        <script src="~/lib/platform/platform.js"></script>
+        <script src="~/lib/benchmark/benchmark.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.1/platform.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
+    </environment>
+    <script src="~/js/testrunner.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+
+        // Handles click on run Tests button
+        function runTests() {
+            // Clean up any previous status
+            $('[data-role="result-label"]').text('');
+                $('[data-role="fastest-label"]').text('');
+                $('[data-role="slowest-label"]').text('');
+                $('#results-placeholder').empty();
+                $('#results-placeholder').fadeIn();
+
+                var preparation = $("#jspreparation").html();
+                var content = $("#benchmark").html();
+                try {
+                    eval(preparation);
+                    eval(content);
+                } catch (e) {
+                    alert("Error:" + JSON.stringify(e));
+                    throw e;
+                }
+            }
+
+        DisqusComments.setupLoad();
+        pageController = new ShowPageController();
+        $(document)
+            .ready(function() {
+                $("#runTest").click(runTests);
+            });
+    </script>
+
+    <script type="text/template" id="jspreparation">
+        @Html.Raw(Model.ScriptPreparationCode)
+    </script>
+
+    <script type="text/template" id="benchmark">
+        var suite = new Benchmark.Suite;
+        @foreach (var test in Model.TestCases)
+        {
+            @: suite.add('@Html.Raw(test.TestCaseName)', function() {
+            @Html.Raw(test.BenchmarkCode);
+            @:});
+        }
+        suite.on('start', pageController.onStartHandler);
+        suite.on('cycle', pageController.onCycleHandler);
+        suite.on('abort', pageController.onAbortHandler);
+        suite.on('error', pageController.onErrorHandler);
+        suite.on('reset', pageController.onResetHandler);
+        suite.on('complete', pageController.onCompleteHandler);
+        suite.run({ 'async': true });
+    </script>
+}

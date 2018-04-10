@@ -80,46 +80,10 @@ namespace MeasureThat.Net.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Add(BenchmarkDto model)
         {
-            if (!this.ModelState.IsValid)
+            await this.ValidateInputModel(model);
+            if (this.ModelState.ErrorCount > 0)
             {
-                return this.View(model);
-            }
-
-            var titles = await m_benchmarkRepository.GetTitles();
-            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
-            {
-                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
-                return this.View(model);
-            }
-
-            // Manually parse input
-            var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
-
-            // Check if benchmark code was actually entered
-            if (testCases.Count() < 2)
-            {
-                // TODO: use correct error key
-                this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
-                return this.View(model);
-            }
-
-            if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
-            {
-                this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
-                return this.View(model);
-            }
-
-            model.TestCases = new List<TestCaseDto>(testCases);
-
-            // Check that there are no test cases with the same name
-            var set = new HashSet<string>();
-            foreach (var testCase in model.TestCases)
-            {
-                if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
-                {
-                    this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
-                    return this.View(model);
-                }
+                return View("Add", model);
             }
 
             ApplicationUser user = await this.GetCurrentUserAsync();
@@ -128,7 +92,7 @@ namespace MeasureThat.Net.Controllers
             long id = await this.m_benchmarkRepository.Add(model);
 
             return this.RedirectToAction("Show",
-                new {Id = id, Version=0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName)});
+                new { Id = id, Version = 0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
         }
 
         [HttpGet]
@@ -238,6 +202,39 @@ namespace MeasureThat.Net.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            BenchmarkDto benchmark = await this.ValidateOwner(id);
+            return View("Add", benchmark);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
+        public async Task<IActionResult> Edit(BenchmarkDto model)
+        {
+            BenchmarkDto benchmark = await this.ValidateOwner(model.Id);
+
+            ApplicationUser user = await this.GetCurrentUserAsync();
+
+            await this.ValidateInputModel(model);
+            if (this.ModelState.ErrorCount > 0)
+            {
+                return View("Add", model);
+            }
+
+            try
+            {
+                BenchmarkDto updatedModel = await this.m_benchmarkRepository.Update(model, user.Id);
+                return this.RedirectToAction("Show", new { Id = updatedModel.Id, Version = updatedModel.Version, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
+            }
+            catch (Exception ex)
+            {
+                m_logger.LogError("Can't update benchmark: " + ex.Message);
+                return RedirectToAction(ErrorActionName);
+            }
+        }
+
+        private async Task<BenchmarkDto> ValidateOwner(long id)
+        {
             ApplicationUser user = await this.GetCurrentUserAsync();
             if (user == null)
             {
@@ -255,32 +252,21 @@ namespace MeasureThat.Net.Controllers
                 throw new Exception("Only owner can edit benchmark.");
             }
 
-            return View("Add", benchmark);
+            return benchmark;
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Edit(BenchmarkDto model)
+        private async Task ValidateInputModel(BenchmarkDto model)
         {
-            
-            ApplicationUser user = await this.GetCurrentUserAsync();
-            if (user == null)
-            {
-                throw new NotLoggedInException("You are not logged in");
-            }
-
-            const string ViewName = "Add";
             if (!this.ModelState.IsValid)
             {
-                return this.View(ViewName, model);
+                return;
             }
 
             var titles = await m_benchmarkRepository.GetTitles();
             if (titles.ContainsKey(model.BenchmarkName.ToLower()))
             {
                 this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
-                return this.View(model);
+                return;
             }
 
             // Manually parse input
@@ -290,13 +276,13 @@ namespace MeasureThat.Net.Controllers
             if (testCases.Count() < 2)
             {
                 this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
-                return this.View(ViewName, model);
+                return;
             }
 
             if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
-                return this.View(ViewName, model);
+                return;
             }
 
             model.TestCases = new List<TestCaseDto>(testCases);
@@ -308,19 +294,8 @@ namespace MeasureThat.Net.Controllers
                 if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
                 {
                     this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
-                    return this.View("Add", model);
+                    return;
                 }
-            }
-            
-            try
-            {
-                BenchmarkDto updatedModel = await this.m_benchmarkRepository.Update(model, user.Id);
-                return this.RedirectToAction("Show", new { Id = updatedModel.Id, Version = updatedModel.Version, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
-            }
-            catch (Exception ex)
-            {
-                m_logger.LogError("Can't update benchmark: " + ex.Message);
-                return RedirectToAction(ErrorActionName);
             }
         }
 
@@ -336,6 +311,17 @@ namespace MeasureThat.Net.Controllers
         public IActionResult Error()
         {
             return View("Error");
+        }
+
+        public async Task<IActionResult> TestFrame(long id)
+        {
+            BenchmarkDto benchmarkToRun = await m_benchmarkRepository.FindById(id);
+            if (benchmarkToRun == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(benchmarkToRun);
         }
     }
 }

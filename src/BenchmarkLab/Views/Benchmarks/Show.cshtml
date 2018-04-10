@@ -92,7 +92,12 @@
     </div>
 </div>
 
-@using (Html.BeginForm("Add", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "results-form" }))
+@section Styles
+{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
+@using (Html.BeginForm("PublishResults", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "results-form" }))
 {
     @Html.AntiForgeryToken()
     <input name="BenchmarkId" type="hidden" value="@Model.Id" />
@@ -108,106 +113,29 @@
     }
 }
 
+<div id="chart_div" style="width: 90%; height: 35%;"></div>
+<div id="results-placeholder"></div>
+
 @using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
 {
     @Html.AntiForgeryToken()
     <input name="id" type="hidden" value="@Model.Id" />
 }
 
-<div id="chart_div" style="width: 90%; height: 35%;"></div>
-<div id="results-placeholder"></div>
-
-@section Styles
-{
-    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
-}
-
 @section Scripts {
-    <environment names="Development">
-        <script src="~/lib/lodash/dist/lodash.js"></script>
-        <script src="~/lib/platform/platform.js"></script>
-        <script src="~/lib/benchmark/benchmark.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.1/platform.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
-    </environment>
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
     
     <script type="text/javascript">
-                                                             
-        // Handles click on run Tests button
-        function runTests() {
-            // Clean up any previous status
-            $('[data-role="result-label"]').text('');
-                $('[data-role="fastest-label"]').text('');
-                $('[data-role="slowest-label"]').text('');
-                $('#results-placeholder').empty();
-                $('#results-placeholder').fadeIn();
-
-                var preparation = $("#jspreparation").html();
-                var content = $("#benchmark").html();
-                try {
-                    eval(preparation);
-                    eval(content);
-                } catch (e) {
-                    alert("Error:" + JSON.stringify(e));
-                    throw e;
-                }
-            }
-
         DisqusComments.setupLoad();
-        pageController = new ShowPageController();
-        $(document)
-            .ready(function() {
-                $("#runTest").click(runTests);
-            });
     </script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
-
-    <script type="text/template" id="jspreparation">
-        @Html.Raw(Model.ScriptPreparationCode)
-    </script>
-
-    <script type="text/template" id="benchmark">
-        var suite = new Benchmark.Suite;
-        @foreach (var test in Model.TestCases)
-        {
-            @: suite.add('@Html.Raw(test.TestCaseName)', function() {
-            @Html.Raw(test.BenchmarkCode);
-            @:});
-        }
-        suite.on('start', pageController.onStartHandler);
-        suite.on('cycle', pageController.onCycleHandler);
-        suite.on('abort', pageController.onAbortHandler);
-        suite.on('error', pageController.onErrorHandler);
-        suite.on('reset', pageController.onResetHandler);
-        suite.on('complete', pageController.onCompleteHandler);
-        suite.run({ 'async': true });
-    </script>
 }
 
+<iframe src="/Benchmarks/TestFrame?id=@Model.Id"></iframe>
 
-<div class="modal fade" id="errorDuringExecution" tabindex="-1" role="dialog" aria-labelledby="authenticateModal-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="authenticateModal-label">Error occurred during benchmark execution:</h4>
-            </div>
-            <div class="modal-body" style="text-align: center" id="error-message">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <hr />
 <div class="text-center">
     <!-- An element a visitor can click if they <3 comments! -->
