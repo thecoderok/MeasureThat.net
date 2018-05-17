@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MeasureThat.Net
 {
+    using System.IO;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.FileProviders;
     using MySQL.Data.EntityFrameworkCore.Extensions;
 
     public class Startup
@@ -33,7 +36,7 @@ namespace MeasureThat.Net
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
 
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
@@ -125,7 +128,7 @@ namespace MeasureThat.Net
                 default:
                     throw new Exception("There is no initialization section for DB: " + dbTypeString);
             }
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,6 +140,19 @@ namespace MeasureThat.Net
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("blog_source", "public"))),
+                RequestPath = "/blog",
+                OnPrepareResponse = ctx =>
+                {
+                    // Requires the following import:
+                    // using Microsoft.AspNetCore.Http;
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600");
+                }
+            }
+            );
 
             app.UseApplicationInsightsRequestTelemetry();
 
@@ -151,7 +167,7 @@ namespace MeasureThat.Net
             {
                 m_logger.LogInformation("Running in production mode");
                 app.UseExceptionHandler("/Home/Error");
-                
+
             }
 
             //app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
