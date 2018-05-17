@@ -3,12 +3,13 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
 
 namespace MeasureThat.Net
 {
     public class Program
     {
-        public static void Main(string[] args)
+        /*public static void Main(string[] args)
         {
             TaskScheduler.UnobservedTaskException += (s, e) => Log("*** Crash! ***", "UnobservedTaskException");
 
@@ -27,7 +28,17 @@ namespace MeasureThat.Net
                 System.Console.Error.WriteLine("Exception while running the application: " + e.Message);
                 System.Console.Error.WriteLine(e.StackTrace);
             }
+        }*/
+        
+        public static void Main(string[] args)
+        {
+            BuildWebHost(args).Run();
         }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .Build();
 
         internal static void Log(string message, [CallerMemberName] string caller = "")
         {

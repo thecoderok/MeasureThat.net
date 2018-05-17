@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <VersionPrefix>1.0.49</VersionPrefix>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>BenchmarkLab</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>BenchmarkLab</PackageId>
     <UserSecretsId>aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297</UserSecretsId>
-    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <!--<PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>-->
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     <Version>1.1.51</Version>
     <AssemblyVersion>1.1.51.0</AssemblyVersion>
@@ -27,14 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
+    <PackageReference Include="Sendgrid" Version="9.9.0" />
+    
+    <PackageReference Include="Unidecode.NET" Version="1.0.0" />
+    <!--
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.0.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.0.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Unidecode.NET" Version="1.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.0.3" />
@@ -56,13 +60,31 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="1.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="1.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.0.3" />-->
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.0.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.0.2" />
-    <PackageReference Include="SendGrid.NetCore" Version="1.0.0-rtm-00002" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="7.0.5-IR21" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
+    <!--<PackageReference Include="SendGrid.NetCore" Version="1.0.0-rtm-00002" />-->
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
@@ -74,9 +96,9 @@
   </Target>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

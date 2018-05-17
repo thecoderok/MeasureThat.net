@@ -19,7 +19,7 @@ namespace MeasureThat.Net.Data.Dao
         const string titles_cache_key = "titles";
         private readonly ApplicationDbContext m_db;
         private readonly IMemoryCache memoryCache;
-        private readonly Dictionary<string, int> titles = null;
+        //private readonly Dictionary<string, int> titles = null;
 
         public SqlServerBenchmarkRepository([NotNull] ApplicationDbContext db, [NotNull] IMemoryCache memoryCache)
         {

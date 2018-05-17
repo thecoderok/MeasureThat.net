@@ -1,7 +1,6 @@
 ﻿@using System.Threading.Tasks
 @using MeasureThat.Net.Logic.Web
 @using MeasureThat.Net.Models
-@using Microsoft.ApplicationInsights.Extensibility
 @inject StaticSiteConfigProvider staticConfig
 <!DOCTYPE html>
 <html>
@@ -43,7 +42,6 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 
     @RenderSection("styles", required: false)
 </head>
@@ -62,6 +60,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Benchmarks" asp-action="Add">Create benchmark</a></li>
+                    <li><a href="/blog/index.html">Blog<sup>new</sup></a></li>
                     <li><a data-toggle="modal" data-target="#aboutModal" href="#">About</a></li>
                     <li><a asp-controller="Home" asp-action="Discussions">Suggestions & Feedback</a></li>
 
@@ -77,7 +76,7 @@
         </div>
         <hr />
         <footer>
-            <p>&copy; 2018 - MeasureThat.net (Version: @(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion))</p>
+            <p>&copy; 2018 - MeasureThat.net (Version: @(System.Reflection.Assembly.GetEntryAssembly().GetName().Version))</p>
             <div id="ads">
                 @RenderSection("ads", required: false)
             </div>

@@ -1,5 +1,10 @@
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System.Collections.Generic;
 
 namespace MeasureThat.Net.Services
 {
@@ -19,7 +24,7 @@ namespace MeasureThat.Net.Services
         public Task SendEmailAsync(string email, string subject, string message)
         {
             // Plug in your email service here to send an email.
-            var myMessage = new SendGrid.SendGridMessage();
+            /*var myMessage = new SendGrid.SendGridMessage();
             myMessage.AddTo(email);
             myMessage.From = new System.Net.Mail.MailAddress(Options.SenderEmail, Options.SenderName);
             myMessage.Subject = subject;
@@ -30,7 +35,17 @@ namespace MeasureThat.Net.Services
                 Options.SendGridKey);
             // Create a Web transport for sending email.
             var transportWeb = new SendGrid.Web(credentials);
-            return transportWeb.DeliverAsync(myMessage);
+            return transportWeb.DeliverAsync(myMessage);*/
+            var client = new SendGridClient(Options.SendGridApiKey);
+
+            // Send a Single Email using the Mail Helper
+            var from = new EmailAddress(Options.SenderEmail, Options.SenderName);
+            var to = new EmailAddress(email);
+            var plainTextContent = message;
+            var htmlContent = message;
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+            return client.SendEmailAsync(msg);
         }
 
         public Task SendSmsAsync(string number, string message)

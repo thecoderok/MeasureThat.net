@@ -10,6 +10,8 @@ namespace MeasureThat.Net.Services
 
         public string SenderName { get; set; }
 
+        public string SendGridApiKey {get; set;}
+
         public bool RequireEmailConfirmation { get; set; }
     }
 }
