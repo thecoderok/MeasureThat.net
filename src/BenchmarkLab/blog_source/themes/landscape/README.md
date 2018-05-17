@@ -30,7 +30,8 @@ git pull
 ``` yml
 # Header
 menu:
-  Home: /
+  Back to MeasureThat.net: https://measurethat.net/
+  Blog Home: /
   Archives: /archives
 rss: /atom.xml
 
