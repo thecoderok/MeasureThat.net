@@ -10,7 +10,6 @@ namespace MeasureThat.Net
     {
         public static void Main(string[] args)
         {
-            //AppDomain.CurrentDomain.UnhandledException += (s, e) => Log("*** Crash! ***", "UnhandledException");
             TaskScheduler.UnobservedTaskException += (s, e) => Log("*** Crash! ***", "UnobservedTaskException");
 
             var host = new WebHostBuilder()
