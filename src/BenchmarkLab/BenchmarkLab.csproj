@@ -10,7 +10,7 @@
     <UserSecretsId>aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297</UserSecretsId>
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <Version>1.1.51</Version>
     <AssemblyVersion>1.1.51.0</AssemblyVersion>
     <FileVersion>1.1.51.0</FileVersion>
