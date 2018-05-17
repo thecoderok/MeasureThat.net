@@ -13,40 +13,25 @@ using MeasureThat.Net.Logic.Web;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace MeasureThat.Net
 {
     using System.IO;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.FileProviders;
-    using MySQL.Data.EntityFrameworkCore.Extensions;
+    // using MySQL.Data.EntityFrameworkCore.Extensions;
 
     public class Startup
     {
         private ILogger m_logger;
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration config)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile($"appsettings.overrides.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = config;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -54,7 +39,7 @@ namespace MeasureThat.Net
             services.AddMemoryCache();
 
             // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
+            //services.AddApplicationInsightsTelemetry(Configuration);
 
             AddDatabaseContext(services);
 
@@ -75,7 +60,7 @@ namespace MeasureThat.Net
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            services.AddSingleton<IConfigurationRoot>(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddScoped<ValidateReCaptchaAttribute>();
@@ -88,9 +73,12 @@ namespace MeasureThat.Net
 
             services.AddSingleton<StaticSiteConfigProvider>();
 
+            services.AddTransient<UserManager<ApplicationUser>>();
+            services.AddTransient<ApplicationDbContext>();
+
             bool allowGuestUsersToCreateBenchmarks = bool.Parse(Configuration["AllowGuestUsersToCreateBenchmarks"]);
 
-            services.AddSingleton<IAuthorizationHandler, ConfigurableAuthorizationHandler>();
+            services.AddTransient<IAuthorizationHandler, ConfigurableAuthorizationHandler>();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AllowGuests",
@@ -100,6 +88,8 @@ namespace MeasureThat.Net
             });
 
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            AddExternalAuthentication(services);
         }
 
         private void AddDatabaseContext(IServiceCollection services)
@@ -138,7 +128,18 @@ namespace MeasureThat.Net
             loggerFactory.AddDebug();
             m_logger = loggerFactory.CreateLogger<Startup>();
 
-            app.UseDefaultFiles();
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            //options.DefaultFileNames.Clear();
+            options.DefaultFileNames.Add("index.html");
+            app.UseDefaultFiles(options);
+
+            app.UseDefaultFiles(new DefaultFilesOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("blog_source", "public"))),
+                RequestPath = new PathString("/blog")
+            });
+            
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -150,11 +151,11 @@ namespace MeasureThat.Net
                     // Requires the following import:
                     // using Microsoft.AspNetCore.Http;
                     ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600");
-                }
+                },
             }
             );
 
-            app.UseApplicationInsightsRequestTelemetry();
+            //app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -176,11 +177,11 @@ namespace MeasureThat.Net
               .AddDefaultSecurePolicy()
             );
 
-            app.UseApplicationInsightsExceptionTelemetry();
+            //app.UseApplicationInsightsExceptionTelemetry();
 
-            app.UseIdentity();
+            app.UseAuthentication();
 
-            AddExternalAuthentication(app);
+            //AddExternalAuthentication(app);
 
             app.UseMvc(routes =>
             {
@@ -194,47 +195,46 @@ namespace MeasureThat.Net
             });
         }
 
-        private void AddExternalAuthentication(IApplicationBuilder app)
+        private void AddExternalAuthentication(IServiceCollection services)
         {
             // https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-how-to-configure-google-authentication/
-            m_logger.LogInformation("Adding external authentication");
             if (Boolean.Parse(Configuration["UseFacebookAuthentication"]))
             {
-                m_logger.LogInformation("Using FB Authentication");
-                app.UseFacebookAuthentication(new FacebookOptions()
+                services.AddAuthentication()
+                .AddFacebook(options =>
                 {
-                    AppId = Configuration["Authentication:Facebook:AppId"],
-                    AppSecret = Configuration["Authentication:Facebook:AppSecret"]
+                    options.AppId = Configuration["Authentication:Facebook:AppId"];
+                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 });
             }
 
             if (Boolean.Parse(Configuration["UseTwitterAuthentication"]))
             {
-                m_logger.LogInformation("Using Twitter Authentication");
-                app.UseTwitterAuthentication(new TwitterOptions()
+                services.AddAuthentication()
+                .AddTwitter(options =>
                 {
-                    ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"],
-                    ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"],
+                    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
                 });
             }
 
             if (Boolean.Parse(Configuration["UseGoogleAuthentication"]))
             {
-                m_logger.LogInformation("Using Google Authentication");
-                app.UseGoogleAuthentication(new GoogleOptions()
+                services.AddAuthentication()
+                .AddGoogle(options =>
                 {
-                    ClientId = Configuration["Authentication:Google:ClientId"],
-                    ClientSecret = Configuration["Authentication:Google:ClientSecret"]
+                    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
             }
 
             if (Boolean.Parse(Configuration["UseMicrosoftAuthenticaiton"]))
             {
-                m_logger.LogInformation("Using Microsoft Authentication");
-                app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions()
+                services.AddAuthentication()
+                .AddMicrosoftAccount(options =>
                 {
-                    ClientId = Configuration["Authentication:Microsoft:ClientId"],
-                    ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"],
+                    options.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                    options.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
                 });
             }
         }

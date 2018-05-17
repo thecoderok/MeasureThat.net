@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: MeasureThat.Net Blog
 subtitle:
 description:
 keywords:
@@ -13,9 +13,9 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
-root: /
-permalink: :year/:month/:day/:title/
+url: https://measurethat.net/blog/index.html
+root: /blog/
+permalink: :title/
 permalink_defaults:
 
 # Directory
