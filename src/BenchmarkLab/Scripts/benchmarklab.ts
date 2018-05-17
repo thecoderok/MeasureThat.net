@@ -86,6 +86,12 @@ class AddNewTestPageController {
 class ShowPageController {
     constructor() {
         $(document).ready(() => this.initialize());
+        (window as any)._benchmark_listener = this;
+
+        document.getElementById('runTest').removeAttribute('disabled');
+        document.getElementById('runTest').addEventListener('click', this.startRun);
+        window.addEventListener("message", this.handleMessage);
+        (window as any)._benchmark_listener = this;
     }
 
     private initialize(): void {
@@ -121,6 +127,15 @@ class ShowPageController {
             });
     }
 
+    handleMessage(event: Event): void {
+
+    }
+
+    startRun(): void {
+        var iframe = document.getElementById('test-runner-iframe') as HTMLIFrameElement;
+        iframe.contentWindow.postMessage("start_test", "*");
+    }
+
     handleRunCompleted(suites: Event): void {
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
@@ -150,6 +165,7 @@ class ShowPageController {
             data: form.serialize(), // serializes the form's elements.
             success(data) {
                 $("#results-placeholder").html(data);
+                $("#results-placeholder").show();
             }
         });
 
@@ -203,10 +219,26 @@ class ShowResultsPageController {
         $(document).ready(() => this.initialize());
     }
 
+    draw() : void {
+        google.charts.load('current', { packages: ['corechart', 'bar'] });
+        google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(this.chartData));
+    }
+
+    static drawChart(dataToDraw: Array<Array<string>>) : void  {
+        var data = google.visualization.arrayToDataTable(dataToDraw);
+        var options = {
+            title: "Benchmark results",
+            bar: { groupWidth: "95%" },
+            legend: { position: "none" },
+            vAxis: {
+                minValue: 0
+            }
+        };
+        const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        chart.draw(data, options);
+    }
+
     initialize() {
-        document.getElementById('runTest').removeAttribute('disabled');
-        document.getElementById('runTest').addEventListener('click', this.startRun);
-        window.addEventListener("message", this.handleMessage);
         $("[data-code='html']")
             .each(function (index) {
                 var editor = CodeMirror.fromTextArea(this,
@@ -228,35 +260,6 @@ class ShowResultsPageController {
                         viewportMargin: Infinity
                     });
             });
-    }
-
-    handleMessage(event: Event): void {
-
-    }
-
-    startRun(): void {
-        alert('starting run');
-        var iframe = document.getElementById('test-runner-iframe') as HTMLIFrameElement;
-        iframe.contentWindow.postMessage("test", "*");
-    }
-
-    draw() : void {
-        google.charts.load('current', { packages: ['corechart', 'bar'] });
-        google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(this.chartData));
-    }
-
-    static drawChart(dataToDraw: Array<Array<string>>) : void  {
-        var data = google.visualization.arrayToDataTable(dataToDraw);
-        var options = {
-            title: "Benchmark results",
-            bar: { groupWidth: "95%" },
-            legend: { position: "none" },
-            vAxis: {
-                minValue: 0
-            }
-        };
-        const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
-        chart.draw(data, options);
     }
 }
 

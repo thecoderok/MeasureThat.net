@@ -1,39 +1,67 @@
 ﻿/// <reference path="../typings/globals/mustache/index.d.ts" />
 
+function getElementByDataAttribute(attr: string): HTMLElement {
+    const row = window.parent.document.querySelectorAll(attr);
+    if (row.length !== 1) {
+        throw "Unable to find signle element by attribute: " + attr;
+    }
+    return row[0] as HTMLElement;
+}
+
+function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
+    const result = window.parent.document.querySelectorAll(attr);
+    if (result.length === 0) {
+        throw "Unable to find any elements by attribute: " + attr;
+    }
+    return result;
+}
+
 class TestRunnerController {
     constructor() {
         document.addEventListener("DOMContentLoaded", () => this.initialize());
     }
 
     private initialize(): void {
-        window.addEventListener("message", this.handleMessage);
+        window.addEventListener("message", (e) => this.handleMessage(e));
     }
 
-    handleMessage(event: Event): void {
-        alert('Got event in iframe: ' + event);
+    handleMessage(event: any): void {
+        if (event.origin !== "http://localhost:5000" && event.origin !== "https://measurethat.net/") {
+            // Where did this message came from?
+            return;
+        }
+
+
+        if (event.data === 'start_test') {
+            this.runTests();
+        }
     }
 
     runTests(): void {
+        window.parent.document.getElementById('runTest').setAttribute('disabled', 'true');
         // Clean up any previous status
-        /*$('[data-role="result-label"]').text('');
-        $('[data-role="fastest-label"]').text('');
-        $('[data-role="slowest-label"]').text('');
-        $('#results-placeholder').empty();
-        $('#results-placeholder').fadeIn();
+        var labels = getElementsByDataAttribute('[data-role="result-label"]');
+        for (var i = 0; i < labels.length; ++i) {
+            labels[i].textContent = '';
+        }
+        getElementByDataAttribute('[data-role="fastest-label"]').textContent = '';
+        getElementByDataAttribute('[data-role="slowest-label"]').textContent = '';
+        getElementByDataAttribute('#results-placeholder').innerHTML = '';
+        getElementByDataAttribute('#results-placeholder').style.display = 'none';
 
-        var preparation = $("#jspreparation").html();
-        var content = $("#benchmark").html();
+        var preparation = document.getElementById("jspreparation").innerHTML;
+        var content = document.getElementById("benchmark").innerHTML;
         try {
             eval(preparation);
             eval(content);
         } catch (e) {
             alert("Error:" + JSON.stringify(e));
             throw e;
-        }*/
+        }
     }
 
     onStartHandler(): void {
-        const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
+        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Running';
         suiteStatusLabels.setAttribute("class", "label label-info");
     }
@@ -41,7 +69,7 @@ class TestRunnerController {
     onCycleHandler(targets: Event): void {
         const completedTarget = targets.target as any;
         const testName: string = completedTarget.name;
-        const row = document.querySelectorAll(`[data-row-for='${testName}']`);
+        const row = window.parent.document.querySelectorAll(`[data-row-for='${testName}']`);
         if (row.length !== 1) {
             throw "Unable to find where to report result";
         }
@@ -49,9 +77,10 @@ class TestRunnerController {
     }
 
     onAbortHandler(): void {
-        const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
+        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Aborted';
         suiteStatusLabels.setAttribute("class", "label label-warning");
+        window.parent.document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onErrorHandler(evt): void {
@@ -60,21 +89,23 @@ class TestRunnerController {
             message = evt.target.error;
         }
         alert(message);
-        const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
+        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Error';
         suiteStatusLabels.setAttribute("class", "label label-danger");
+        window.parent.document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onResetHandler(): void {
-        const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
+        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Reset';
         suiteStatusLabels.setAttribute("class", "label label-warning");
+        window.parent.document.getElementById('runTest').removeAttribute('disabled');
     }
 
     onCompleteHandler(suites: Event): void {
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
-        const suiteStatusLabels = document.querySelectorAll("[data-role='suite-status']")[0];
+        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         if ((suites.target as any).aborted === true) {
             suiteStatusLabels.textContent = 'Aborted';
             suiteStatusLabels.setAttribute("class", "label label-warning");
@@ -82,13 +113,12 @@ class TestRunnerController {
         }
         suiteStatusLabels.textContent = 'Completed';
         suiteStatusLabels.setAttribute("class", "label label-success");
-        document.querySelectorAll("[data-role='fastest-label']")[0].textContent = benchmark.filter("fastest").map("name");
-        document.querySelectorAll("[data-role='slowest-label']")[0].textContent = benchmark.filter("slowest").map("name");
+        getElementByDataAttribute("[data-role='fastest-label']").textContent = benchmark.filter("fastest").map("name");
+        getElementByDataAttribute("[data-role='slowest-label']").textContent = benchmark.filter("slowest").map("name");
 
-        this.postResults();
-    }
+        window.parent.document.getElementById('runTest').removeAttribute('disabled');
 
-    postResults(): void {
-
+        (window.parent as any)._benchmark_listener.handleRunCompleted(suites);
+        //this.postResults();
     }
 }
