@@ -16,24 +16,16 @@
         <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Latest benchmarks</a>
         <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
     </p>
-    <!--
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-2">
-            <a class="github-button" href="https://github.com/thecoderok" data-count-href="/thecoderok/followers" data-count-api="/users/thecoderok#followers" data-count-aria-label="# followers on GitHub" aria-label="Follow @@thecoderok on GitHub">Follow @@thecoderok</a>
-        </div>
-        <div class="col-md-1">
-            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/fork" data-icon="octicon-repo-forked" data-count-href="/thecoderok/MeasureThat.net/network" data-count-api="/repos/thecoderok/MeasureThat.net#forks_count" data-count-aria-label="# forks on GitHub" aria-label="Fork thecoderok/MeasureThat.net on GitHub">Fork</a>
-        </div>
-        <div class="col-md-1">
-            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net" data-icon="octicon-star" data-count-href="/thecoderok/MeasureThat.net/stargazers" data-count-api="/repos/thecoderok/MeasureThat.net#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star thecoderok/MeasureThat.net on GitHub">Star</a>
-        </div>
-        <div class="col-md-1">
-            <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/issues" data-icon="octicon-issue-opened" data-count-api="/repos/thecoderok/MeasureThat.net#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue thecoderok/MeasureThat.net on GitHub">Issue</a>
-        </div>
-        <div class="col-md-2"></div>
-    </div>
-    -->
+    <p>
+        <a class="github-button" href="https://github.com/thecoderok" data-count-href="/thecoderok/followers" data-count-api="/users/thecoderok#followers" data-count-aria-label="# followers on GitHub" aria-label="Follow @@thecoderok on GitHub">Follow @@thecoderok</a>
+        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/fork" data-icon="octicon-repo-forked" data-count-href="/thecoderok/MeasureThat.net/network" data-count-api="/repos/thecoderok/MeasureThat.net#forks_count" data-count-aria-label="# forks on GitHub" aria-label="Fork thecoderok/MeasureThat.net on GitHub">Fork</a>
+        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net" data-icon="octicon-star" data-count-href="/thecoderok/MeasureThat.net/stargazers" data-count-api="/repos/thecoderok/MeasureThat.net#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star thecoderok/MeasureThat.net on GitHub">Star</a>
+        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/issues" data-icon="octicon-issue-opened" data-count-api="/repos/thecoderok/MeasureThat.net#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue thecoderok/MeasureThat.net on GitHub">Issue</a>
+
+    </p>
+    <p>
+        <div class="fb-like" data-href="https://measurethat.net/" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+    </p>
 </div>
 
 
@@ -52,7 +44,7 @@
     <p><a target="_blank" href="http://the-coderok.azurewebsites.net/2016/10/11/Run-MeasureThat-net-application-on-Linux-building-and-running-the-application/">How to run the application on Linux using PostgreSQL as a database</a></p>
 </div>
 
-<div class="col-md-8">
+<div class="col-md-4">
     <h2>Sample benchmarks:</h2>
     <ul>
         <li>
@@ -75,7 +67,12 @@
         </li>
     </ul>
 </div>
-<hr/>
+<div class="col-md-4">
+</div>
+<div class="col-md-4">
+    <div class="fb-page" data-href="https://www.facebook.com/MeasureThat.Net/" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/MeasureThat.Net/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/MeasureThat.Net/">MeasureThat.net</a></blockquote></div>
+</div>
+<hr />
 <div class="col-md-8">
     <h2>Change log:</h2>
     <h3>v1.0.48.0 (12/20/2017)</h3>
@@ -141,22 +138,41 @@
     </ul>
 </div>
 
+<div id="fb-root"></div>
+
 <!--GitHub stuff-->
 <!--<a target="_blank" href="https://github.com/thecoderok/MeasureThat.net"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1500;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>-->
 @section Scripts
-{
+    {
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=146317889326102&autoLogAppEvents=1';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    <script>
+    (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=195401741011598&autoLogAppEvents=1';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
 }
 
 @section Ads{
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- measurethat.net -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2889218219879125"
-     data-ad-slot="5761409685"
-     data-ad-format="auto"></ins>
-<script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+    <!-- measurethat.net -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2889218219879125"
+         data-ad-slot="5761409685"
+         data-ad-format="auto"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 }

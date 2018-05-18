@@ -43,6 +43,8 @@ namespace MeasureThat.Net
         {
             services.AddMemoryCache();
 
+            services.AddDetection();
+
             // Add framework services.
             //services.AddApplicationInsightsTelemetry(Configuration);
 

@@ -21,6 +21,7 @@ namespace MeasureThat.Net.Controllers
     using MeasureThat.Net.Logic.Validation;
     using BenchmarkLab.Models;
     using BenchmarkLab.Logic.Web;
+    using Wangkanai.Detection;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -30,6 +31,7 @@ namespace MeasureThat.Net.Controllers
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
+        private readonly IDetection detection;
         private const string ErrorMessageKey = "ErrorMessage";
         private const string ErrorActionName = "Error";
         private const int numOfItemsPerPage = 25;
@@ -39,13 +41,15 @@ namespace MeasureThat.Net.Controllers
             [NotNull] UserManager<ApplicationUser> userManager,
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
-            [NotNull] SqlServerResultsRepository publishResultRepository)
+            [NotNull] SqlServerResultsRepository publishResultRepository,
+            IDetection detection)
         {
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
             this.m_resultsConfig = resultsConfig;
             this.m_logger = loggerFactory.CreateLogger<BenchmarksController>();
             this.m_publishResultRepository = publishResultRepository;
+            this.detection = detection;
         }
 
         public async Task<IActionResult> Index(int page)
@@ -154,18 +158,18 @@ namespace MeasureThat.Net.Controllers
                 try
                 {
                     clientInfo = UAParser.Parser.GetDefault().Parse(userAgent);
+
+                    if (clientInfo != null)
+                    {
+                        model.Browser = detection.Browser?.Maker + detection.Browser?.Type.ToString() + detection.Browser?.Version;
+                        model.DevicePlatform = detection.Device?.Type.ToString();
+                        model.OS = clientInfo.OS.ToString();
+                    }
                 }
                 catch (Exception ex)
                 {
                     m_logger.LogError("Error while parsing UA String: " + ex.Message);
                 }
-            }
-
-            if (clientInfo != null)
-            {
-                model.Browser = clientInfo.UserAgent.Family + " " + clientInfo.UserAgent.Major;
-                model.DevicePlatform = clientInfo.Device.ToString();
-                model.OS = clientInfo.OS.ToString();
             }
 
             if (this.m_resultsConfig.Value.UploadResultsToDb)
