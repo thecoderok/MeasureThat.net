@@ -28,7 +28,7 @@
                 <td>
                     <a asp-action="ShowResult" asp-route-id="@b.Id">@b.RawUserAgenString</a>
                 </td>
-                <td>@b.WhenCreated.Humanize()</td>
+                <td>@b.WhenCreated.Humanize(utcDate: false)</td>
             </tr>
         }
     </table>

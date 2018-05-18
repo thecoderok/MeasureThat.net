@@ -29,6 +29,10 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<long> Add([NotNull] BenchmarkDto entity)
         {
+            DateTime utcTime = DateTime.UtcNow;
+            var zone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            DateTime currentDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, zone);
+
             var newEntity = new Benchmark()
             {
                 Name = entity.BenchmarkName,
@@ -37,7 +41,7 @@ namespace MeasureThat.Net.Data.Dao
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
                 BenchmarkTest = new List<BenchmarkTest>(),
-                WhenCreated = DateTime.Now,
+                WhenCreated = currentDateTime,
             };
 
             foreach (var test in entity.TestCases)

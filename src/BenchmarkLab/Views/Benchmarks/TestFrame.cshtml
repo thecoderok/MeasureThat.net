@@ -22,6 +22,11 @@
 </environment>
 <script src="~/js/testrunner.js" asp-append-version="true"></script>
 
+@if (!string.IsNullOrWhiteSpace(Model.HtmlPreparationCode))
+{
+    <span>@Html.Raw(Model.HtmlPreparationCode)</span>
+}
+
 <script type="text/javascript">
     pageController = new TestRunnerController();
 </script>

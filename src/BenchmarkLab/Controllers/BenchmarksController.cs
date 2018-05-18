@@ -80,7 +80,14 @@ namespace MeasureThat.Net.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Add(BenchmarkDto model)
         {
-            await this.ValidateInputModel(model);
+            var titles = await m_benchmarkRepository.GetTitles();
+            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
+            {
+                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                return View("Add", model);
+            }
+
+            this.ValidateInputModel(model);
             if (this.ModelState.ErrorCount > 0)
             {
                 return View("Add", model);
@@ -215,7 +222,7 @@ namespace MeasureThat.Net.Controllers
 
             ApplicationUser user = await this.GetCurrentUserAsync();
 
-            await this.ValidateInputModel(model);
+            this.ValidateInputModel(model);
             if (this.ModelState.ErrorCount > 0)
             {
                 return View("Add", model);
@@ -255,17 +262,10 @@ namespace MeasureThat.Net.Controllers
             return benchmark;
         }
 
-        private async Task ValidateInputModel(BenchmarkDto model)
+        private void ValidateInputModel(BenchmarkDto model)
         {
             if (!this.ModelState.IsValid)
             {
-                return;
-            }
-
-            var titles = await m_benchmarkRepository.GetTitles();
-            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
-            {
-                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
                 return;
             }
 
