@@ -11,6 +11,18 @@
     <h2>
         Latest JavaScript Performance benchmarks
     </h2>
+    <script>
+  (function() {
+    var cx = 'partner-pub-2889218219879125:ksyao2-t1h7';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+    </script>
+    <gcse:search></gcse:search>
 </div>
 
 
@@ -24,20 +36,20 @@
         else
         {
             <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="disabled"><a href="#" >Previous</a></li>
+            <li class="disabled"><a href="#">Previous</a></li>
         }
         @foreach (var page in Model.AvailablePages)
         {
             if (page == Model.Page)
             {
-                <li class="active disabled"><a>@(page+1)<span class="sr-only">(current)</span></a></li>
+                <li class="active disabled"><a>@(page + 1)<span class="sr-only">(current)</span></a></li>
             }
             else
             {
                 <li><a asp-action="Index" asp-route-page="@(page)">@(page + 1)</a></li>
             }
         }
-        
+
         @if (Model.ButtonNextActive)
         {
             <li><a asp-action="Index" asp-route-page="@(Model.Page+1)">Next</a></li>
@@ -60,7 +72,7 @@
             </tr>
         </thead>
         @foreach (var b in Model.Entities)
-            {
+        {
             <tr>
                 <td>
                     <a asp-action="Show" asp-route-id="@b.Id" asp-route-version="@b.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(b.BenchmarkName)">@b.BenchmarkName</a>

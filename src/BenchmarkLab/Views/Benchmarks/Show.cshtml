@@ -71,6 +71,15 @@
                     <button class="btn btn-default" id="fork-btn">
                         <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
                     </button>
+                    @if (showEditButton)
+                    {
+                        <div class="hidden" id="delete-form">
+                            <form action="/Benchmarks/Delete" method="post">
+                                <input type="hidden" name="id">
+                                @Html.AntiForgeryToken()
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -133,6 +142,7 @@
     <script type="text/javascript">
         DisqusComments.setupLoad();
         new ShowPageController();
+        new DeleteBenchmarkHandler();
     </script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

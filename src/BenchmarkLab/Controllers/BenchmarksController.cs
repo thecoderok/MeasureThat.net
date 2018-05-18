@@ -22,6 +22,7 @@ namespace MeasureThat.Net.Controllers
     using BenchmarkLab.Models;
     using BenchmarkLab.Logic.Web;
     using Wangkanai.Detection;
+    using System.Net;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -219,6 +220,17 @@ namespace MeasureThat.Net.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(long id)
+        {
+            BenchmarkDto benchmark = await this.ValidateOwner(id);
+
+            await this.m_benchmarkRepository.DeleteById(id);
+
+            return RedirectToAction("My");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Edit(BenchmarkDto model)
         {
@@ -301,15 +313,6 @@ namespace MeasureThat.Net.Controllers
                     return;
                 }
             }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
-        public async Task<IActionResult> Delete(long id)
-        {
-            await this.m_benchmarkRepository.DeleteById(id);
-            return RedirectToAction("Index");
         }
 
         public IActionResult Error()
