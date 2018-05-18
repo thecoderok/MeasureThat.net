@@ -45,7 +45,7 @@ namespace MeasureThat.Net.Data
                 entity.HasOne(d => d.Benchmark)
                     .WithMany(p => p.BenchmarkTest)
                     .HasForeignKey(d => d.BenchmarkId)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_BenchmarkTest_ToBenchmark");
             });
 
@@ -67,7 +67,7 @@ namespace MeasureThat.Net.Data
                 entity.HasOne(d => d.Benchmark)
                     .WithMany(p => p.Result)
                     .HasForeignKey(d => d.BenchmarkId)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Results_ToBenchmark");
             });
 
@@ -80,7 +80,7 @@ namespace MeasureThat.Net.Data
                 entity.HasOne(d => d.Result)
                     .WithMany(p => p.ResultRow)
                     .HasForeignKey(d => d.ResultId)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ResultRow_ToResult");
             });
         }

@@ -85,14 +85,14 @@ namespace MeasureThat.Net.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Add(BenchmarkDto model)
         {
+            this.ValidateInputModel(model);
+
             var titles = await m_benchmarkRepository.GetTitles();
             if (titles.ContainsKey(model.BenchmarkName.ToLower()))
             {
                 this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
-                return View("Add", model);
             }
 
-            this.ValidateInputModel(model);
             if (this.ModelState.ErrorCount > 0)
             {
                 return View("Add", model);
@@ -292,13 +292,11 @@ namespace MeasureThat.Net.Controllers
             if (testCases.Count() < 2)
             {
                 this.ModelState.AddModelError("TestCases", "At least two test cases are required.");
-                return;
             }
 
             if (testCases.Any(t => string.IsNullOrWhiteSpace(t.BenchmarkCode)))
             {
                 this.ModelState.AddModelError("TestCases", "Benchmark code must not be empty.");
-                return;
             }
 
             model.TestCases = new List<TestCaseDto>(testCases);
@@ -307,10 +305,18 @@ namespace MeasureThat.Net.Controllers
             var set = new HashSet<string>();
             foreach (var testCase in model.TestCases)
             {
+                if (testCase == null)
+                {
+                    continue;
+                }
+                if (string.IsNullOrWhiteSpace(testCase.TestCaseName))
+                {
+                    this.ModelState.AddModelError("TestCases", "Test name must not be empty");
+                    continue;
+                }
                 if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
                 {
                     this.ModelState.AddModelError("TestCases", "Test cases must have unique names");
-                    return;
                 }
             }
         }
