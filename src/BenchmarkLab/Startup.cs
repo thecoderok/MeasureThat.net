@@ -18,7 +18,11 @@ using Microsoft.AspNetCore.Identity;
 namespace MeasureThat.Net
 {
     using System.IO;
+    using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.FileProviders;
     // using MySQL.Data.EntityFrameworkCore.Extensions;
 
@@ -88,6 +92,14 @@ namespace MeasureThat.Net
             });
 
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x => {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+                return factory.GetUrlHelper(actionContext);
+            });
+            services.AddScoped<SitemapGenerator>();
 
             AddExternalAuthentication(services);
         }

@@ -17,12 +17,14 @@ namespace BenchmarkLab.Controllers
 
         private readonly SqlServerBenchmarkRepository m_benchmarkRepository;
         private readonly ILogger m_logger;
+        private readonly SitemapGenerator sitemapGenerator;
 
         public ApiController([NotNull] SqlServerBenchmarkRepository benchmarkRepository,
-            [NotNull] ILoggerFactory loggerFactory)
+            [NotNull] ILoggerFactory loggerFactory, SitemapGenerator sitemapGenerator)
         {
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_logger = loggerFactory.CreateLogger<ApiController>();
+            this.sitemapGenerator = sitemapGenerator;
         }
 
         // GET: api/Api
@@ -39,6 +41,7 @@ namespace BenchmarkLab.Controllers
 
         public async Task<SitemapInfo> GenerateSitemap()
         {
+            await this.sitemapGenerator.Generate();
             return new SitemapInfo()
             {
                 WhenGenerated = DateTime.Now
