@@ -83,3 +83,7 @@ deploy:
 sitemap:
     path: sitemap.xml
     template: ./sitemap_template.xml
+
+
+# Disqus comments
+disqus_shortname: https-www-measurethat-net

@@ -1,17 +1,18 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace BenchmarkLab.Logic.Web.Blog
 {
-    public static class BlogLocationUtil
+    public class BlogLocationUtil
     {
-        public static string GetBlogFilesLocation()
+        public static string GetBlogFilesLocation(IHostingEnvironment env)
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("blog_source", "public"));
+            return Path.Combine(env.WebRootPath, Path.Combine("blog_source", "public"));
         }
 
-        public static string SitemapLocation()
+        public static string SitemapLocation(IHostingEnvironment env)
         {
-            return Path.Combine(GetBlogFilesLocation(), "sitemap.xml");
+            return Path.Combine(GetBlogFilesLocation(env), "sitemap.xml");
         }
     }
 }

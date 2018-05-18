@@ -76,7 +76,7 @@
                         <br>
                         <small>@b.Description</small>
                     </td>
-                    <td>@b.WhenCreated.Humanize(utcDate: false)</td>
+                    <td>@b.WhenCreated.Humanize()</td>
                     <td>
                         <a class="btn btn-default" asp-action="Edit" asp-route-id="@b.Id">Edit</a>
                         <a class="btn btn-default" data-entity-id="@b.Id" data-role="fork-benchmark">Fork</a>

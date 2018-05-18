@@ -113,11 +113,19 @@ namespace MeasureThat.Logic.Web.Sitemap
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Weekly
             });
+
+            nodes.Add(new SitemapNode()
+            {
+                LastModified = DateTime.Now,
+                Url = this.urlHelper.Action("", "blog", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Priority = DefaultPriority,
+                Frequency = SitemapFrequency.Weekly
+            });
         }
 
         private void AppendBlogSitemap(List<SitemapNode> nodes)
         {
-            string blogSitemap = BlogLocationUtil.SitemapLocation();
+            string blogSitemap = BlogLocationUtil.SitemapLocation(this.environment);
             if (!File.Exists(blogSitemap))
             {
                 m_logger.LogWarning("Not including Blog's sitemap as file does not exist");
@@ -147,7 +155,7 @@ namespace MeasureThat.Logic.Web.Sitemap
 
         private async Task AppendBenchmarksToSitemap(List<SitemapNode> nodes)
         {
-            var benchmarks = await this.benchmarkRepository.ListAll(1000, 0).ConfigureAwait(false);
+            var benchmarks = await this.benchmarkRepository.ListAll(2000, 0).ConfigureAwait(false);
             foreach(var benchmark in benchmarks)
             {
                 nodes.Add(new SitemapNode()

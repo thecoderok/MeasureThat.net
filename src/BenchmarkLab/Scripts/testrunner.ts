@@ -26,7 +26,10 @@ class TestRunnerController {
     }
 
     handleMessage(event: any): void {
-        if (event.origin !== "http://localhost:5000" && event.origin !== "https://measurethat.net/") {
+        if (event.origin !== "http://localhost:5000"
+            && event.origin !== "https://measurethat.net/"
+            && event.origin !== "https://measurethat.net"
+            && event.origin !== "https://benchmarklab.azurewebsites.net") {
             // Where did this message came from?
             return;
         }

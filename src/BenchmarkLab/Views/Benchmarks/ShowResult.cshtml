@@ -21,12 +21,12 @@
             @Html.Label("User agent:")
             <span>@Model.ResultModel.RawUserAgenString</span>
         </div>
-        
+
         <div class="form-group">
             @Html.Label("Browser:")
             <span>@Model.ResultModel.Browser</span>
         </div>
-        
+
         <div class="form-group">
             @Html.Label("Operating system:")
             <span>@Model.ResultModel.OS</span>
@@ -36,10 +36,10 @@
             @Html.Label("Device Platform:")
             <span>@Model.ResultModel.DevicePlatform</span>
         </div>
-        
+
         <div class="form-group">
             @Html.Label("Date tested:")
-            <span>@Model.ResultModel.WhenCreated.Humanize(utcDate: false)</span>
+            <span>@Model.ResultModel.WhenCreated.Humanize()</span>
         </div>
     </div>
 </div>
@@ -67,16 +67,16 @@
 @await Html.PartialAsync("_ShowBenchmark", Model.Benchmark)
 
 @section Styles
-{
+    {
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
 @section Scripts {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
-@{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 
-<script type="text/javascript">
+    <script type="text/javascript">
     var pageController = new ShowResultsPageController();
     var chartItem = [];
     var header = ['Test case', 'Executions Per Second'];
@@ -91,5 +91,10 @@
         </text>
     }
     pageController.draw();
-</script>
+    </script>
+}
+
+
+@section headAdditions{
+    <link rel="canonical" href="@Url.Action("ShowResult", "Benchmarks", new { id = Model.ResultModel.Id}, Url.ActionContext.HttpContext.Request.Scheme)" />
 }

@@ -2,6 +2,7 @@
 @using Humanizer
 @using MeasureThat.Net.Models
 @using Microsoft.AspNetCore.Identity
+@using MeasureThat.Net.Logic.Web
 @model MeasureThat.Net.Models.BenchmarkDto
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -29,7 +30,7 @@
         &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
     <h3>@Model.Description</h3>
-    <h5><b>Created:</b> @Model.WhenCreated.Humanize(utcDate: false)</h5>
+    <h5><b>Created:</b> @Model.WhenCreated.Humanize()</h5>
     <h5>
         <b>Created by:</b>
         @if (string.IsNullOrWhiteSpace(Model.OwnerId))
@@ -55,7 +56,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4>
-                        <b>Suite status:</b> 
+                        <b>Suite status:</b>
                         <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span>
                         <i id='spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
                     </h4>
@@ -97,7 +98,7 @@
 </div>
 
 @section Styles
-{
+    {
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
@@ -128,7 +129,7 @@
 
 @section Scripts {
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
-    
+
     <script type="text/javascript">
         DisqusComments.setupLoad();
         new ShowPageController();
@@ -139,8 +140,6 @@
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 }
 
-<iframe id="test-runner-iframe" src="/Benchmarks/TestFrame?id=@Model.Id"></iframe>
-
 <hr />
 <div class="text-center">
     <!-- An element a visitor can click if they <3 comments! -->
@@ -148,3 +147,6 @@
 </div>
 <!-- The empty element required for Disqus to loads comments into -->
 <div id="disqus_thread"></div>
+@section headAdditions{
+    <link rel="canonical" href="@Url.Action("Show", "Benchmarks", new { id = Model.Id, version = Model.Version, name = SeoFriendlyStringConverter.Convert(Model.BenchmarkName)}, Url.ActionContext.HttpContext.Request.Scheme)" />
+}

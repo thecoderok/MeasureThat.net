@@ -14,8 +14,10 @@
     {
         <div class="panel-body">
             <textarea class="form-control" readonly data-code="html">@Model.HtmlPreparationCode</textarea>
+
         </div>
     }
+    <iframe id="test-runner-iframe" src="@Url.Action("TestFrame", "Benchmarks", new { id = Model.Id}, Url.ActionContext.HttpContext.Request.Scheme)" style="border:none; max-height: 900px; overflow:scroll"></iframe>
 </div>
 
 <div class="panel panel-default">

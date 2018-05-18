@@ -149,7 +149,7 @@ namespace MeasureThat.Net
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    BlogLocationUtil.GetBlogFilesLocation()),
+                    BlogLocationUtil.GetBlogFilesLocation(env)),
                 RequestPath = new PathString("/blog")
             });
             
@@ -157,7 +157,7 @@ namespace MeasureThat.Net
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    BlogLocationUtil.GetBlogFilesLocation()),
+                    BlogLocationUtil.GetBlogFilesLocation(env)),
                 RequestPath = "/blog",
                 OnPrepareResponse = ctx =>
                 {
