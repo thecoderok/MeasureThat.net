@@ -173,6 +173,7 @@ class ShowPageController {
         google.charts.setOnLoadCallback(() => ShowPageController.drawChart(chartData));
         
         $("#runTest").removeAttr("disabled");
+        document.getElementById('spinner').style.display = 'none';
     }
 
     private static  drawChart(chartData: Array<Array<string>>) {

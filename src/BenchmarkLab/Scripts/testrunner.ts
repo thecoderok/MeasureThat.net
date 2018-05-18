@@ -38,7 +38,9 @@ class TestRunnerController {
     }
 
     runTests(): void {
+        // TODO: Group these in funciton to enable-disable elements
         window.parent.document.getElementById('runTest').setAttribute('disabled', 'true');
+        window.parent.document.getElementById('spinner').style.display = 'inline-block';
         // Clean up any previous status
         var labels = getElementsByDataAttribute('[data-role="result-label"]');
         for (var i = 0; i < labels.length; ++i) {
@@ -46,8 +48,8 @@ class TestRunnerController {
         }
         getElementByDataAttribute('[data-role="fastest-label"]').textContent = '';
         getElementByDataAttribute('[data-role="slowest-label"]').textContent = '';
-        getElementByDataAttribute('#results-placeholder').innerHTML = '';
-        getElementByDataAttribute('#results-placeholder').style.display = 'none';
+        window.parent.document.getElementById('results-placeholder').innerHTML = '';
+        window.parent.document.getElementById('results-placeholder').style.display = 'none';
 
         var preparation = document.getElementById("jspreparation").innerHTML;
         var content = document.getElementById("benchmark").innerHTML;
@@ -81,6 +83,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Aborted';
         suiteStatusLabels.setAttribute("class", "label label-warning");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('spinner').style.display = 'inline-block';
     }
 
     onErrorHandler(evt): void {
@@ -93,6 +96,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Error';
         suiteStatusLabels.setAttribute("class", "label label-danger");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('spinner').style.display = 'none';
     }
 
     onResetHandler(): void {
@@ -100,6 +104,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Reset';
         suiteStatusLabels.setAttribute("class", "label label-warning");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('spinner').style.display = 'none';
     }
 
     onCompleteHandler(suites: Event): void {
@@ -117,6 +122,7 @@ class TestRunnerController {
         getElementByDataAttribute("[data-role='slowest-label']").textContent = benchmark.filter("slowest").map("name");
 
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('spinner').style.display = 'none';
 
         (window.parent as any)._benchmark_listener.handleRunCompleted(suites);
         //this.postResults();
