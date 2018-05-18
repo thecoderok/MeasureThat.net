@@ -119,6 +119,7 @@ namespace MeasureThat.Net.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ConfirmationEmailsEnabled"] = this.m_emailConfirmationOptions.Value.RequireEmailConfirmation;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
