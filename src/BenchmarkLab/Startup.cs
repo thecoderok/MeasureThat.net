@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 namespace MeasureThat.Net
 {
     using System.IO;
+    using BenchmarkLab.Logic.Web.Blog;
     using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -148,7 +149,7 @@ namespace MeasureThat.Net
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("blog_source", "public"))),
+                    BlogLocationUtil.GetBlogFilesLocation()),
                 RequestPath = new PathString("/blog")
             });
             
@@ -156,7 +157,7 @@ namespace MeasureThat.Net
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), Path.Combine("blog_source", "public"))),
+                    BlogLocationUtil.GetBlogFilesLocation()),
                 RequestPath = "/blog",
                 OnPrepareResponse = ctx =>
                 {

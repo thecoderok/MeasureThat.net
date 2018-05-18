@@ -29,7 +29,7 @@
         &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
     <h3>@Model.Description</h3>
-    <h5><b>Created:</b>@Model.WhenCreated.Humanize(utcDate: false)</h5>
+    <h5><b>Created:</b> @Model.WhenCreated.Humanize(utcDate: false)</h5>
     <h5>
         <b>Created by:</b>
         @if (string.IsNullOrWhiteSpace(Model.OwnerId))

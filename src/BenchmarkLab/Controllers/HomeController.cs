@@ -1,15 +1,20 @@
+using MeasureThat.Logic.Web.Sitemap;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly SitemapGenerator sitemapGenerator;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, SitemapGenerator sitemapGenerator)
         {
             this._logger = logger;
+            this.sitemapGenerator = sitemapGenerator;
         }
 
         public IActionResult Index()
@@ -25,6 +30,13 @@ namespace MeasureThat.Net.Controllers
         public IActionResult Discussions()
         {
             return View();
+        }
+
+        [Route("sitemap.xml")]
+        public async Task<IActionResult> Sitemap()
+        {
+            var sitemap = await this.sitemapGenerator.Generate();
+            return this.Content(sitemap, "application/xml", Encoding.UTF8);
         }
     }
 }
