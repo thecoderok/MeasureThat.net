@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MeasureThat.Logic.Web.Sitemap;
+using System;
 
 namespace BenchmarkLab.Controllers
 {
@@ -33,6 +35,14 @@ namespace BenchmarkLab.Controllers
             }
             Dictionary<string, long> titles = await m_benchmarkRepository.GetTitles();
             return titles.ContainsKey(title.ToLower());
+        }
+
+        public async Task<SitemapInfo> GenerateSitemap()
+        {
+            return new SitemapInfo()
+            {
+                WhenGenerated = DateTime.Now
+            };
         }
     }
 }
