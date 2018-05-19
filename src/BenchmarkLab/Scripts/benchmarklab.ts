@@ -337,6 +337,49 @@ class ClientValidationHandler {
         $('#BenchmarkName').change(this.validate);
         $('#dup-title').hide();
         this.validate();
+        $('[data-role="test-benchmark"]').on('click', () => this.handleValidateButton());
+    }
+
+    private setValidateBtnState(enabled: boolean): void {
+        if (enabled) {
+            $('[data-role="test-benchmark"]').removeAttr('disabled');
+            $('#validate-spinner').hide();
+        } else {
+            $('[data-role="test-benchmark"]').attr('disabled', 'true');
+            $('#validate-spinner').show();
+        }
+    }
+    private handleValidateButton(): void {
+        this.setValidateBtnState(false);
+
+        const form = $("#new-benchmark-form");
+        const url: string = "/Benchmarks/ValidateBenchmark";
+        const _thisMy = this;
+        $.ajax({
+            type: "POST",
+            url: url,
+            cache: false,
+            data: form.serialize(), // serializes the form's elements.
+            success(data) {
+                if (!data) {
+                    alert('Invalid validation response!');
+                    _thisMy.setValidateBtnState(true);
+                } else if (data.valid === true) {
+                    _thisMy.continueBenchmarkValidation();
+                } else if (data.valid === false) {
+                    alert('Benchmark is not valid.\nErrors: ' + JSON.stringify(data.errors));
+                    _thisMy.setValidateBtnState(true);
+                } else {
+                    alert('Invalid validation response!');
+                    _thisMy.setValidateBtnState(true);
+                }
+            }
+        });
+    }
+
+    private continueBenchmarkValidation(): void {
+        // Cleanup previous
+        $('#validation-iframe').remove();
     }
 
     private validate(): void {

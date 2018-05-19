@@ -23,6 +23,8 @@ namespace MeasureThat.Net.Controllers
     using BenchmarkLab.Logic.Web;
     using Wangkanai.Detection;
     using System.Net;
+    using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -85,13 +87,7 @@ namespace MeasureThat.Net.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Add(BenchmarkDto model)
         {
-            this.ValidateInputModel(model);
-
-            var titles = await m_benchmarkRepository.GetTitles();
-            if (titles.ContainsKey(model.BenchmarkName.ToLower()))
-            {
-                this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
-            }
+            await this.ValidateBenchmarkForAdd(model);
 
             if (this.ModelState.ErrorCount > 0)
             {
@@ -105,6 +101,20 @@ namespace MeasureThat.Net.Controllers
 
             return this.RedirectToAction("Show",
                 new { Id = id, Version = 0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
+        }
+
+        private async Task ValidateBenchmarkForAdd(BenchmarkDto model)
+        {
+            this.ValidateInputModel(model);
+
+            if (model != null && !string.IsNullOrWhiteSpace(model.BenchmarkName))
+            {
+                var titles = await m_benchmarkRepository.GetTitles();
+                if (titles.ContainsKey(model.BenchmarkName.ToLower()))
+                {
+                    this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                }
+            }
         }
 
         [HttpGet]
@@ -335,6 +345,35 @@ namespace MeasureThat.Net.Controllers
             }
 
             return this.View(benchmarkToRun);
+        }
+
+        [HttpPost]
+        [Produces("application/json")]
+        public async Task<IActionResult> ValidateBenchmark(BenchmarkDto model)
+        {
+            await this.ValidateBenchmarkForAdd(model);
+            if (this.ModelState.ErrorCount == 0)
+            {
+                return new JsonResult(new { valid = true });
+            }
+            else
+            {
+                var errors = new List<string>();
+                foreach (ModelStateEntry modelState in ViewData.ModelState.Values)
+                {
+                    foreach (ModelError error in modelState.Errors)
+                    {   
+                        errors.Add(error.ErrorMessage);   
+                    }
+                }
+
+                return new JsonResult(new { valid  = false, errors = errors});
+            }
+        }
+
+        public IActionResult TestFrameForValidation()
+        {
+            return this.View("TestFrame", new BenchmarkDto());
         }
     }
 }
