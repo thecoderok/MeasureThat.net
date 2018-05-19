@@ -338,6 +338,7 @@ class ClientValidationHandler {
         $('#dup-title').hide();
         this.validate();
         $('[data-role="test-benchmark"]').on('click', () => this.handleValidateButton());
+        (window as any)._validation_handler = this;
     }
 
     private setValidateBtnState(enabled: boolean): void {
@@ -351,6 +352,7 @@ class ClientValidationHandler {
     }
     private handleValidateButton(): void {
         this.setValidateBtnState(false);
+        $('#benchmark_submit').hide();
 
         const form = $("#new-benchmark-form");
         const url: string = "/Benchmarks/ValidateBenchmark";
@@ -364,6 +366,9 @@ class ClientValidationHandler {
                 if (!data) {
                     alert('Invalid validation response!');
                     _thisMy.setValidateBtnState(true);
+                } else if (data.error) {
+                    alert('Error occurred during validation: ' + data.error);
+                    _thisMy.setValidateBtnState(true);
                 } else if (data.valid === true) {
                     _thisMy.continueBenchmarkValidation();
                 } else if (data.valid === false) {
@@ -373,13 +378,26 @@ class ClientValidationHandler {
                     alert('Invalid validation response!');
                     _thisMy.setValidateBtnState(true);
                 }
+            },
+            error(e) {
+                alert('Error occurred during validation: ' + JSON.stringify(e));
+                _thisMy.setValidateBtnState(true);
             }
         });
     }
 
     private continueBenchmarkValidation(): void {
-        // Cleanup previous
+        // Cleanup previous validation frames
         $('#validation-iframe').remove();
+
+        // add new one
+        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autostart=1" style="border:none; max-height: 900px; overflow:scroll"></iframe>';
+        $('#validation-frame-holder').html(html);
+    }
+
+    allowSave(): void {
+        this.setValidateBtnState(true);
+        $('#benchmark_submit').show();
     }
 
     private validate(): void {

@@ -351,6 +351,18 @@ namespace MeasureThat.Net.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> ValidateBenchmark(BenchmarkDto model)
         {
+            try
+            {
+                return await ValidateBenchmarkInternal(model);
+            }
+            catch(Exception e)
+            {
+                return new JsonResult(new { error = e.Message });
+            }
+        }
+
+        private async Task<IActionResult> ValidateBenchmarkInternal(BenchmarkDto model)
+        {
             await this.ValidateBenchmarkForAdd(model);
             if (this.ModelState.ErrorCount == 0)
             {
@@ -362,12 +374,12 @@ namespace MeasureThat.Net.Controllers
                 foreach (ModelStateEntry modelState in ViewData.ModelState.Values)
                 {
                     foreach (ModelError error in modelState.Errors)
-                    {   
-                        errors.Add(error.ErrorMessage);   
+                    {
+                        errors.Add(error.ErrorMessage);
                     }
                 }
 
-                return new JsonResult(new { valid  = false, errors = errors});
+                return new JsonResult(new { valid = false, errors = errors });
             }
         }
 

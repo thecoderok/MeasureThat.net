@@ -158,20 +158,24 @@
     {
         <div class="alert alert-warning" role="alert">
             Users that are not signed can't edit newly created benchmarks.
-            <br/>You need to press <b>Test</b> benchmark first.
+            <br />You need to press <b>Test</b> benchmark first.
             After test is successful, you will be able to save benchmark.
             <br> Also consider signing in.
             <br>
             <button class="btn btn-primary" data-toggle="modal" data-target="#authenticateModal">Log in</button>
         </div>
-        <a class="btn btn-default" data-role="test-benchmark">Test<span>&nbsp;</span><i id='validate-spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i></a>
+        <a class="btn btn-default" data-role="test-benchmark">
+            Test<span>&nbsp;</span>
+            <i id='validate-spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
+        </a>
+        <input id="benchmark_submit" type="submit" class="btn btn-default hidden" value="Submit" />
     }
     else
     {
         <input type="submit" class="btn btn-default" value="Submit" />
     }
-    
-    
+
+
     <a href="@Url.Action("Index")" class="btn btn-link">Cancel</a>
 }
 
@@ -185,6 +189,8 @@
         }
     }
 </div>
+
+<div id="validation-frame-holder"></div>
 
 @section Styles{
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
