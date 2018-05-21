@@ -48,17 +48,38 @@ class TestRunnerController {
                 var testBody = (tc[i].querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
                 
                 suite.add(testName, function () {
-                    testBody
+                    eval(testBody);
                 });
             }
+            /*
+             * suite.on('start', pageController.onStartHandler);
+    suite.on('cycle', pageController.onCycleHandler);
+    suite.on('abort', pageController.onAbortHandler);
+    suite.on('error', pageController.onErrorHandler);
+    suite.on('reset', pageController.onResetHandler);
+    suite.on('complete', pageController.onCompleteHandler);
+             */ 
             suite.on('cycle', function (event) {
                 console.log(String(event.target));
             })
-                .on('complete', function () {
-                    console.log('Fastest is ' + this.filter('fastest').map('name'));
-                })
-                // run async
-                .run({ 'async': true });
+            .on('complete', function () {
+                console.log('Fastest is ' + this.filter('fastest').map('name'));
+            })
+                .on('abort', function (evt) {
+                    console.log('abort: ' + JSON.stringify(evt));
+            })
+                .on('error', function (evt) {
+                    let message = "Some error occurred.";
+                    if (evt && evt.target && evt.target.error) {
+                        message = evt.target.error;
+                    }
+                    console.log('error: ' + message);
+            })
+                .on('reset', function (evt) {
+                    console.log('reset: ' + JSON.stringify(evt));
+            })
+            // run async
+            .run({ 'async': true });
         } catch (e) {
             outerRunner.validationFailed(JSON.stringify(e));
         }
