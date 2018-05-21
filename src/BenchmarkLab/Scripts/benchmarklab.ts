@@ -90,7 +90,6 @@ class ShowPageController {
 
         document.getElementById('runTest').removeAttribute('disabled');
         document.getElementById('runTest').addEventListener('click', this.startRun);
-        window.addEventListener("message", this.handleMessage);
         (window as any)._benchmark_listener = this;
     }
 
@@ -125,10 +124,6 @@ class ShowPageController {
                     viewportMargin: Infinity
                 });
             });
-    }
-
-    handleMessage(event: Event): void {
-
     }
 
     startRun(): void {
@@ -341,6 +336,16 @@ class ClientValidationHandler {
         (window as any)._validation_handler = this;
     }
 
+    validationFailed(errorMessage: string): void {
+        alert('Benchmark failed during validation.\nError: ' + errorMessage);
+        this.setValidateBtnState(true);
+    }
+
+    validationSuccess(): void {
+        this.setValidateBtnState(true);
+        $('#benchmark_submit').show();
+    }
+
     private setValidateBtnState(enabled: boolean): void {
         if (enabled) {
             $('[data-role="test-benchmark"]').removeAttr('disabled');
@@ -391,7 +396,7 @@ class ClientValidationHandler {
         $('#validation-iframe').remove();
 
         // add new one
-        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autostart=1" style="border:none; max-height: 900px; overflow:scroll"></iframe>';
+        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autostart=1" style="border:none; max-height: 2px; overflow:none"></iframe>';
         $('#validation-frame-holder').html(html);
     }
 

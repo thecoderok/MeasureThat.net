@@ -1,4 +1,9 @@
-﻿/// <reference path="../typings/globals/mustache/index.d.ts" />
+﻿/// <reference path="../typings/globals/jquery/index.d.ts" />
+/// <reference path="../typings/globals/codemirror/index.d.ts" />
+/// <reference path="../typings/globals/mustache/index.d.ts" />
+/// <reference path="../typings/globals/google.visualization/index.d.ts" />
+/// <reference path="../typings/globals/benchmark/index.d.ts" />
+/// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
 function getElementByDataAttribute(attr: string): HTMLElement {
     const row = window.parent.document.querySelectorAll(attr);
@@ -23,15 +28,52 @@ class TestRunnerController {
 
     private initialize(): void {
         window.addEventListener("message", (e) => this.handleMessage(e));
+        var url = window.location.href;
+        if (url.indexOf('?autostart=1') != -1) {
+            this.autostartTest();
+        }
+    }
+
+    private autostartTest(): void {
+        var outerRunner: any = (parent.window as any)._validation_handler;
+        try {
+            document.getElementById('validation-html-preparation').innerHTML =
+                (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
+            eval((parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value);
+
+            var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
+            var suite:any = eval("new Benchmark.Suite");
+            for (var i = 0; i < tc.length; i++) {
+                var testName = (tc[i].querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
+                var testBody = (tc[i].querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
+                
+                suite.add(testName, function () {
+                    testBody
+                });
+            }
+            suite.on('cycle', function (event) {
+                console.log(String(event.target));
+            })
+                .on('complete', function () {
+                    console.log('Fastest is ' + this.filter('fastest').map('name'));
+                })
+                // run async
+                .run({ 'async': true });
+        } catch (e) {
+            outerRunner.validationFailed(JSON.stringify(e));
+        }
     }
 
     handleMessage(event: any): void {
         if (event.origin !== "http://localhost:5000"
             && event.origin !== "https://measurethat.net/"
             && event.origin !== "https://measurethat.net"
+            && event.origin !== "https://www.measurethat.net"
+            && event.origin !== "http://measurethat.net"
+            && event.origin !== "http://www.measurethat.net"
             && event.origin !== "https://benchmarklab.azurewebsites.net") {
             // Where did this message came from?
-            return;
+            console.warn('Message from uknown origin: '+ event.origin);
         }
 
 
