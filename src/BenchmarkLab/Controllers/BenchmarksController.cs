@@ -25,6 +25,8 @@ namespace MeasureThat.Net.Controllers
     using System.Net;
     using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Microsoft.AspNetCore.Http;
+    using MeasureThat.Net.Logic.Web.Security;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -77,9 +79,36 @@ namespace MeasureThat.Net.Controllers
             return this.View(new ResultsPaginationHolder<BenchmarkDtoForIndex>(list, page, count, numOfItemsPerPage));
         }
 
-        public IActionResult Add()
+        public IActionResult Add(bool dummyTest)
         {
-            return this.View(new BenchmarkDto());
+            BenchmarkDto model = null;
+            if (!dummyTest)
+            {
+                model = new BenchmarkDto();
+            } 
+            else
+            {
+                model = new BenchmarkDto
+                {
+                    BenchmarkName = "Test name for add",
+                    HtmlPreparationCode = "<div id='myid'>yoyo</div><script src = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script> ",
+                    TestCases = new List<TestCaseDto>()
+                {
+                    new TestCaseDto()
+                    {
+                        TestCaseName = "Test case name 1",
+                        BenchmarkCode = "var t = document.getElementById('myid');",
+                    },
+                    new TestCaseDto()
+                    {
+                        TestCaseName = "Test case name 2",
+                        BenchmarkCode = "var z = $('myid');",
+                    },
+                }
+                };
+            }
+            
+            return this.View(model);
         }
 
         [HttpPost]
@@ -172,7 +201,7 @@ namespace MeasureThat.Net.Controllers
 
                     if (clientInfo != null)
                     {
-                        model.Browser = detection.Browser?.Maker + detection.Browser?.Type.ToString() + detection.Browser?.Version;
+                        model.Browser = detection.Browser?.Maker + " " + detection.Browser?.Type.ToString() + " " + detection.Browser?.Version;
                         model.DevicePlatform = detection.Device?.Type.ToString();
                         model.OS = clientInfo.OS.ToString();
                     }
@@ -386,6 +415,17 @@ namespace MeasureThat.Net.Controllers
         public IActionResult TestFrameForValidation()
         {
             return this.View("TestFrame", new BenchmarkDto());
+        }
+
+        public IActionResult TestFrameForValidationWithHtmlPrepCode(string htmlPrepCode, bool autostart)
+        {
+            if (this.HttpContext.Response.Headers.ContainsKey(XssProtectionConstants.Header))
+            {
+                // HTML Preparation code can contain text that browsers will consider as XSS attack.
+                this.HttpContext.Response.Headers.Remove(XssProtectionConstants.Header);
+                this.HttpContext.Response.Headers.Add(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
+            }
+            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode });
         }
     }
 }

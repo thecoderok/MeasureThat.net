@@ -339,11 +339,18 @@ class ClientValidationHandler {
     validationFailed(errorMessage: string): void {
         alert('Benchmark failed during validation.\nError: ' + errorMessage);
         this.setValidateBtnState(true);
+        $("#benchmark_submit").removeClass('btn-primary');
+        $("#benchmark_submit").removeClass('btn-success');
+        $("#benchmark_submit").addClass('btn-danger');
+        $('#validation_log').append($('<li>Error when running benchmark: ' + errorMessage + '</li>'));
     }
 
     validationSuccess(): void {
         this.setValidateBtnState(true);
-        $('#benchmark_submit').show();
+        $('#validation_log').append($('<li>Success! Validation completed.</li>'));
+        $("#benchmark_submit").removeClass('btn-primary');
+        $("#benchmark_submit").removeClass('btn-danger');
+        $("#benchmark_submit").addClass('btn-success');
     }
 
     private setValidateBtnState(enabled: boolean): void {
@@ -357,7 +364,9 @@ class ClientValidationHandler {
     }
     private handleValidateButton(): void {
         this.setValidateBtnState(false);
-        $('#benchmark_submit').hide();
+        $('#validation_log').html('');
+        $('#validation_log_holder').show();
+        $('#validation_log').append($('<li>Checking necessary properties...</li>'));
 
         const form = $("#new-benchmark-form");
         const url: string = "/Benchmarks/ValidateBenchmark";
@@ -375,7 +384,7 @@ class ClientValidationHandler {
                     alert('Error occurred during validation: ' + data.error);
                     _thisMy.setValidateBtnState(true);
                 } else if (data.valid === true) {
-                    _thisMy.continueBenchmarkValidation();
+                    setTimeout(_thisMy.continueBenchmarkValidation(), 0);
                 } else if (data.valid === false) {
                     alert('Benchmark is not valid.\nErrors: ' + JSON.stringify(data.errors));
                     _thisMy.setValidateBtnState(true);
@@ -387,6 +396,9 @@ class ClientValidationHandler {
             error(e) {
                 alert('Error occurred during validation: ' + JSON.stringify(e));
                 _thisMy.setValidateBtnState(true);
+            },
+            complete(e) {
+                $('#validation_log').append($('<li>Checking necessary properties...Done.</li>'));
             }
         });
     }
@@ -396,8 +408,9 @@ class ClientValidationHandler {
         $('#validation-iframe').remove();
 
         // add new one
-        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autostart=1" style="border:none; max-height: 2px; overflow:none"></iframe>';
+        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autorefresh=1" style="border:none; max-height: 2px; overflow:none"></iframe>';
         $('#validation-frame-holder').html(html);
+        $('#validation_log').append($('<li>Loading iframe for testing...</li>'));
     }
 
     allowSave(): void {

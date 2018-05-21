@@ -32,13 +32,29 @@ class TestRunnerController {
         if (url.indexOf('?autostart=1') != -1) {
             this.autostartTest();
         }
+        if (url.indexOf('?autorefresh=1') != -1) {
+            this.autorefreshPage();
+        }
+    }
+
+    private autorefreshPage(): void {
+        // To properly test the HTML Preparation code we need to reload the iframe again.
+        this.appendToLog('Taking care of HTML Preparation code...');
+        var htmlPrep: string = (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
+        (document.getElementById('htmlPrepCode') as HTMLInputElement).value = htmlPrep;
+        (document.getElementById('autoreload_form') as HTMLFormElement).submit();
     }
 
     private autostartTest(): void {
         var outerRunner: any = (parent.window as any)._validation_handler;
+        this.appendToLog('Loading iframe for testing...Done.');
+        this.appendToLog('Attempting to run benchmark...');
+        var _myThis = this;
         try {
-            document.getElementById('validation-html-preparation').innerHTML =
-                (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
+            var htmlPrep: string = (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
+            //window.parent["$"](htmlPrep).appendTo(document.body);
+            /*document.getElementById('validation-html-preparation').innerHTML =
+                (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;*/
             eval((parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value);
 
             var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
@@ -46,43 +62,47 @@ class TestRunnerController {
             for (var i = 0; i < tc.length; i++) {
                 var testName = (tc[i].querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
                 var testBody = (tc[i].querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
-                
-                suite.add(testName, function () {
-                    eval(testBody);
-                });
+
+                eval("suite.add(testName, function () { " + testBody + " })");
             }
-            /*
-             * suite.on('start', pageController.onStartHandler);
-    suite.on('cycle', pageController.onCycleHandler);
-    suite.on('abort', pageController.onAbortHandler);
-    suite.on('error', pageController.onErrorHandler);
-    suite.on('reset', pageController.onResetHandler);
-    suite.on('complete', pageController.onCompleteHandler);
-             */ 
             suite.on('cycle', function (event) {
                 console.log(String(event.target));
+                _myThis.appendToLog('Checked test: ' + String(event.target));
             })
-            .on('complete', function () {
-                console.log('Fastest is ' + this.filter('fastest').map('name'));
+            .on('complete', function (suites: Event) {
+                var benchmark = suites.currentTarget as any;
+                if ((suites.target as any).aborted === true) {
+                    return;
+                }
+                outerRunner.validationSuccess();
+                
             })
-                .on('abort', function (evt) {
-                    console.log('abort: ' + JSON.stringify(evt));
+            .on('abort', function (evt) {
+                console.log('abort: ' + JSON.stringify(evt));
+                _myThis.appendToLog('Benchmark abort');
             })
-                .on('error', function (evt) {
-                    let message = "Some error occurred.";
-                    if (evt && evt.target && evt.target.error) {
-                        message = evt.target.error;
-                    }
-                    console.log('error: ' + message);
+            .on('error', function (evt) {
+                let message = "Some error occurred.";
+                if (evt && evt.target && evt.target.error) {
+                    message = evt.target.error;
+                }
+                
+                outerRunner.validationFailed(message);
             })
-                .on('reset', function (evt) {
-                    console.log('reset: ' + JSON.stringify(evt));
-            })
-            // run async
-            .run({ 'async': true });
+            .on('reset', function (evt) {
+                _myThis.appendToLog('Benchmark reset.');
+                });
+            _myThis.appendToLog('Starting benchmark...');
+            suite.run({ 'async': true });
         } catch (e) {
-            outerRunner.validationFailed(JSON.stringify(e));
+            outerRunner.validationFailed(e.message);
         }
+    }
+
+    private appendToLog(message: string): void {
+        var el = document.createElement('li');
+        el.textContent = message;
+        window.parent.document.getElementById('validation_log').appendChild(el);
     }
 
     handleMessage(event: any): void {

@@ -49,3 +49,7 @@
     suite.on('complete', pageController.onCompleteHandler);
     suite.run({ 'async': true });
 </script>
+
+<form style="display:none;" id="autoreload_form" action="/Benchmarks/TestFrameForValidationWithHtmlPrepCode?autostart=1" method="post">
+    <input type="hidden" name="htmlPrepCode" id="htmlPrepCode">
+</form>

@@ -154,28 +154,20 @@
         </div>
     }
 
-    @if (!SignInManager.IsSignedIn(User))
-    {
-        <div class="alert alert-warning" role="alert">
-            Users that are not signed can't edit newly created benchmarks.
-            <br />You need to press <b>Test</b> benchmark first.
-            After test is successful, you will be able to save benchmark.
-            <br> Also consider signing in.
-            <br>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#authenticateModal">Log in</button>
-        </div>
-        <a class="btn btn-default" data-role="test-benchmark">
-            Test<span>&nbsp;</span>
-            <i id='validate-spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
-        </a>
-        <input id="benchmark_submit" type="submit" class="btn btn-default hidden" value="Submit" />
-    }
-    else
-    {
-        <input type="submit" class="btn btn-default" value="Submit" />
-    }
+    <div class="alert alert-warning" role="alert">
+        To avoid adding broken tests, please use <strong>Validate benchmark</strong> button to check for errors in benchmark definition.
+    </div>
 
+    <div style="display:none" id="validation_log_holder">
+        <h5>Validation log:</h5>
+        <ul id="validation_log"></ul>
+    </div>
 
+    <a class="btn btn-default" data-role="test-benchmark">
+        Validate benchmark<span>&nbsp;</span>
+        <i id='validate-spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
+    </a>
+    <input id="benchmark_submit" type="submit" class="btn btn-primary" value="Submit" />
     <a href="@Url.Action("Index")" class="btn btn-link">Cancel</a>
 }
 
