@@ -62,6 +62,7 @@
                     </h4>
                 </div>
                 <div class="col-md-6 text-right">
+                    <button style="display:none" class="btn btn-primary" id="runTestWithMemory" disabled>Run tests (record memory info)(@Model.TestCases.Count())</button>
                     <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
                     <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
                     @if (showEditButton)
@@ -123,6 +124,7 @@
 }
 
 <div id="chart_div" style="width: 90%; height: 35%;"></div>
+<div id="memory_chart_div"></div>
 <div id="results-placeholder"></div>
 
 @using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))

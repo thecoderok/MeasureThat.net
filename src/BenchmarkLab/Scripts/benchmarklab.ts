@@ -131,7 +131,7 @@ class ShowPageController {
         iframe.contentWindow.postMessage("start_test", "*");
     }
 
-    handleRunCompleted(suites: Event): void {
+    handleRunCompleted(suites: Event, memoryInfo: Array<any>): void {
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
 
@@ -165,13 +165,13 @@ class ShowPageController {
         });
 
         google.charts.load("current", { packages: ["corechart", "bar"] });
-        google.charts.setOnLoadCallback(() => ShowPageController.drawChart(chartData));
+        google.charts.setOnLoadCallback(() => ShowPageController.drawChart(chartData, memoryInfo));
         
         $("#runTest").removeAttr("disabled");
         document.getElementById('spinner').style.display = 'none';
     }
 
-    private static  drawChart(chartData: Array<Array<string>>) {
+    private static  drawChart(chartData: Array<Array<string>>, memoryInfo: Array<any>) {
         const data = google.visualization.arrayToDataTable(chartData);
         var options = {
             title: "Benchmark results",
@@ -185,6 +185,39 @@ class ShowPageController {
         };
         const chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
         chart.draw(data, options);
+
+        // experimental feature: draw memory chart
+        if (memoryInfo && memoryInfo.length > 3) {
+            ShowPageController.drawMemoryChart(memoryInfo)
+        }
+    }
+
+    private static drawMemoryChart(memoryInfo: Array<any>) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'X');
+        //data.addColumn('number', 'jsHeapSizeLimit');
+        data.addColumn('number', 'totalJSHeapSize');
+        data.addColumn('number', 'usedJSHeapSize');
+
+        for (var i = 0; i < memoryInfo.length; i++) {
+            data.addRow([i,
+                //memoryInfo[i].jsHeapSizeLimit/1024,
+                memoryInfo[i].totalJSHeapSize/1024/1024,
+                memoryInfo[i].usedJSHeapSize / 1024 / 1024]);
+        }
+
+        var options = {
+            hAxis: {
+                title: 'Sample #'
+            },
+            vAxis: {
+                title: 'Memory, MB'
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('memory_chart_div'));
+
+        chart.draw(data as any, options);
     }
 }
 

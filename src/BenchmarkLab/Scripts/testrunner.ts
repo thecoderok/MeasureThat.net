@@ -22,8 +22,12 @@ function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
 }
 
 class TestRunnerController {
+    private memInfo = Array();
+    private shouldRecordMemory = false;
+    
     constructor() {
         document.addEventListener("DOMContentLoaded", () => this.initialize());
+        (window as any)._test_runner = this;
     }
 
     private initialize(): void {
@@ -119,11 +123,18 @@ class TestRunnerController {
 
 
         if (event.data === 'start_test') {
+            this.shouldRecordMemory = false;
+            this.runTests();
+        }
+
+        if (event.data === 'start_test_with_memory_recordings') {
+            this.shouldRecordMemory = true;
             this.runTests();
         }
     }
 
     runTests(): void {
+        this.recordMemoryInfo();
         // TODO: Group these in funciton to enable-disable elements
         window.parent.document.getElementById('runTest').setAttribute('disabled', 'true');
         window.parent.document.getElementById('spinner').style.display = 'inline-block';
@@ -149,12 +160,14 @@ class TestRunnerController {
     }
 
     onStartHandler(): void {
+        (window as any)._test_runner.recordMemoryInfo();
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Running';
         suiteStatusLabels.setAttribute("class", "label label-info");
     }
 
     onCycleHandler(targets: Event): void {
+        (window as any)._test_runner.recordMemoryInfo();
         const completedTarget = targets.target as any;
         const testName: string = completedTarget.name;
         const row = window.parent.document.querySelectorAll(`[data-row-for='${testName}']`);
@@ -194,6 +207,7 @@ class TestRunnerController {
     }
 
     onCompleteHandler(suites: Event): void {
+        (window as any)._test_runner.recordMemoryInfo();
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
@@ -210,7 +224,15 @@ class TestRunnerController {
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
 
-        (window.parent as any)._benchmark_listener.handleRunCompleted(suites);
-        //this.postResults();
+        (window.parent as any)._benchmark_listener.handleRunCompleted(suites, (window as any)._test_runner.memInfo);
     }
+
+    private recordMemoryInfo(): void {
+        if (!this.shouldRecordMemory) {
+            return;
+        }
+        if ((window.performance as any).memory) {
+            this.memInfo.push((window.performance as any).memory);
+        }
+    } 
 }
