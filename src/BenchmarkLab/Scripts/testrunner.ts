@@ -134,9 +134,9 @@ class TestRunnerController {
     }
 
     runTests(): void {
-        this.recordMemoryInfo();
         // TODO: Group these in funciton to enable-disable elements
         window.parent.document.getElementById('runTest').setAttribute('disabled', 'true');
+        window.parent.document.getElementById('runTestWithMemory').setAttribute('disabled', 'true');
         window.parent.document.getElementById('spinner').style.display = 'inline-block';
         // Clean up any previous status
         var labels = getElementsByDataAttribute('[data-role="result-label"]');
@@ -182,6 +182,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Aborted';
         suiteStatusLabels.setAttribute("class", "label label-warning");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'inline-block';
     }
 
@@ -195,6 +196,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Error';
         suiteStatusLabels.setAttribute("class", "label label-danger");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
     }
 
@@ -203,6 +205,7 @@ class TestRunnerController {
         suiteStatusLabels.textContent = 'Reset';
         suiteStatusLabels.setAttribute("class", "label label-warning");
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
     }
 
@@ -222,6 +225,7 @@ class TestRunnerController {
         getElementByDataAttribute("[data-role='slowest-label']").textContent = benchmark.filter("slowest").map("name");
 
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
+        window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
 
         (window.parent as any)._benchmark_listener.handleRunCompleted(suites, (window as any)._test_runner.memInfo);

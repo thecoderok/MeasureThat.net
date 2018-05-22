@@ -89,7 +89,14 @@ class ShowPageController {
         (window as any)._benchmark_listener = this;
 
         document.getElementById('runTest').removeAttribute('disabled');
-        document.getElementById('runTest').addEventListener('click', this.startRun);
+        document.getElementById('runTest').addEventListener('click', () => this.startRun(false));
+
+        if (window && window.performance && (window.performance as any).memory) {
+            document.getElementById('runTestWithMemory').style.display = 'inline-block';
+            document.getElementById('runTestWithMemory').removeAttribute('disabled');
+            document.getElementById('runTestWithMemory').addEventListener('click', () => this.startRun(true));
+        }
+        
         (window as any)._benchmark_listener = this;
     }
 
@@ -126,9 +133,14 @@ class ShowPageController {
             });
     }
 
-    startRun(): void {
+    startRun(measureMemory: boolean): void {
         var iframe = document.getElementById('test-runner-iframe') as HTMLIFrameElement;
-        iframe.contentWindow.postMessage("start_test", "*");
+
+        if (measureMemory) {
+            iframe.contentWindow.postMessage("start_test_with_memory_recordings", "*");
+        } else {
+            iframe.contentWindow.postMessage("start_test", "*");
+        }
     }
 
     handleRunCompleted(suites: Event, memoryInfo: Array<any>): void {
@@ -168,6 +180,7 @@ class ShowPageController {
         google.charts.setOnLoadCallback(() => ShowPageController.drawChart(chartData, memoryInfo));
         
         $("#runTest").removeAttr("disabled");
+        $("#runTestWithMemory").removeAttr("disabled");
         document.getElementById('spinner').style.display = 'none';
     }
 
