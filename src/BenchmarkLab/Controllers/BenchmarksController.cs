@@ -201,7 +201,12 @@ namespace MeasureThat.Net.Controllers
 
                     if (clientInfo != null)
                     {
-                        model.Browser = detection.Browser?.Maker + " " + detection.Browser?.Type.ToString() + " " + detection.Browser?.Version;
+                        string browser = clientInfo.UserAgent.Family + " " + clientInfo.UserAgent.Major;
+                        if (detection.Browser != null && detection.Browser.Type.ToString().ToLower().Contains("edge"))
+                        {
+                            browser = detection.Browser?.Maker + " " + detection.Browser?.Type.ToString() + " " + detection.Browser?.Version;
+                        }
+                        model.Browser = browser;
                         model.DevicePlatform = detection.Device?.Type.ToString();
                         model.OS = clientInfo.OS.ToString();
                     }
