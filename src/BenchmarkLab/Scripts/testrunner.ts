@@ -24,6 +24,7 @@ function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
 class TestRunnerController {
     private memInfo = Array();
     private shouldRecordMemory = false;
+    private invervalId: number = -1;
     
     constructor() {
         document.addEventListener("DOMContentLoaded", () => this.initialize());
@@ -130,6 +131,7 @@ class TestRunnerController {
         if (event.data === 'start_test_with_memory_recordings') {
             this.shouldRecordMemory = true;
             this.runTests();
+            this.invervalId = setInterval(() => this.recordMemoryInfo(""), 500);
         }
     }
 
@@ -148,6 +150,9 @@ class TestRunnerController {
         window.parent.document.getElementById('results-placeholder').innerHTML = '';
         window.parent.document.getElementById('results-placeholder').style.display = 'none';
 
+        window.parent.document.getElementById('chart_div').innerHTML = '';
+        window.parent.document.getElementById('memory_chart_div').innerHTML = '';
+
         var preparation = document.getElementById("jspreparation").innerHTML;
         var content = document.getElementById("benchmark").innerHTML;
         try {
@@ -160,14 +165,14 @@ class TestRunnerController {
     }
 
     onStartHandler(): void {
-        (window as any)._test_runner.recordMemoryInfo();
+        (window as any)._test_runner.recordMemoryInfo("on start");
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Running';
         suiteStatusLabels.setAttribute("class", "label label-info");
     }
 
     onCycleHandler(targets: Event): void {
-        (window as any)._test_runner.recordMemoryInfo();
+        (window as any)._test_runner.recordMemoryInfo("test end");
         const completedTarget = targets.target as any;
         const testName: string = completedTarget.name;
         const row = window.parent.document.querySelectorAll(`[data-row-for='${testName}']`);
@@ -210,7 +215,8 @@ class TestRunnerController {
     }
 
     onCompleteHandler(suites: Event): void {
-        (window as any)._test_runner.recordMemoryInfo();
+        clearInterval((window as any)._test_runner.intervalId);
+        (window as any)._test_runner.recordMemoryInfo("complete");
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
@@ -231,12 +237,12 @@ class TestRunnerController {
         (window.parent as any)._benchmark_listener.handleRunCompleted(suites, (window as any)._test_runner.memInfo);
     }
 
-    private recordMemoryInfo(): void {
+    private recordMemoryInfo(sampleName: string): void {
         if (!this.shouldRecordMemory) {
             return;
         }
         if ((window.performance as any).memory) {
-            this.memInfo.push((window.performance as any).memory);
+            this.memInfo.push({ name: sampleName, mem: (window.performance as any).memory });
         }
     } 
 }

@@ -45,6 +45,7 @@
     </environment>
 
     @RenderSection("styles", required: false)
+    @RenderSection("googleAutoAds", required: false)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -82,7 +83,7 @@
                 @RenderSection("ads", required: false)
             </div>
         </footer>
-        
+
     </div>
 
     <environment names="Development">
@@ -104,6 +105,7 @@
 
     @await Html.PartialAsync("_SharedDialogs.cshtml")
 
+    <environment names="Staging,Production">
     @{
         GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
         if (gaconfig != null && gaconfig.Enabled)
@@ -111,5 +113,6 @@
             @await Html.PartialAsync("_GoogleAnalytics.cshtml", gaconfig);
         }
     }
+    </environment>
 </body>
 </html>

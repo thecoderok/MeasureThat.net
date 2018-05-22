@@ -30,7 +30,7 @@
         &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
     <h3>@Model.Description</h3>
-    <h4><b>Tests:</b> @string.Join(" vs ", Model.TestCases.Select(t => t.TestCaseName).ToList())</h4>
+    <h4><b>Comparing performance of:</b> @string.Join(" vs ", Model.TestCases.Select(t => t.TestCaseName).ToList())</h4>
     <h5><b>Created:</b> @Model.WhenCreated.Humanize()
         <b>by:</b>
         @if (string.IsNullOrWhiteSpace(Model.OwnerId))
@@ -62,7 +62,6 @@
                     </h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <button style="display:none" class="btn btn-primary" id="runTestWithMemory" disabled>Run tests (record memory info)(@Model.TestCases.Count())</button>
                     <button class="btn btn-primary" id="runTest" disabled>Run tests (@Model.TestCases.Count())</button>
                     <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
                     @if (showEditButton)
@@ -76,6 +75,25 @@
                     {
                         <a class="btn btn-default" data-entity-id="@Model.Id" data-role="delete-benchmark">Delete</a>
                     }
+                </div>
+            </div>
+        </div>
+        <div class="panel-heading"id="experimental_features" style="display:none">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>
+                        <b>Experimental features:</b>
+                    </h4>
+                    <div class="alert alert-info" role="alert">
+                        Memory measurements supported only in Chrome.
+                        <br>
+                        Also, Chrome must be launched with <code>--enable-precise-memory-info</code> flag.
+                        
+                        More information: <a href="https://trackjs.com/blog/monitoring-javascript-memory/" target="_blank">Monitoring JavaScript Memory</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button class="btn btn-primary" id="runTestWithMemory">Run tests (record memory info)</button>
                 </div>
             </div>
         </div>

@@ -92,8 +92,7 @@ class ShowPageController {
         document.getElementById('runTest').addEventListener('click', () => this.startRun(false));
 
         if (window && window.performance && (window.performance as any).memory) {
-            document.getElementById('runTestWithMemory').style.display = 'inline-block';
-            document.getElementById('runTestWithMemory').removeAttribute('disabled');
+            document.getElementById('experimental_features').style.display = 'block';
             document.getElementById('runTestWithMemory').addEventListener('click', () => this.startRun(true));
         }
         
@@ -207,21 +206,25 @@ class ShowPageController {
 
     private static drawMemoryChart(memoryInfo: Array<any>) {
         var data = new google.visualization.DataTable();
-        data.addColumn('number', 'X');
-        //data.addColumn('number', 'jsHeapSizeLimit');
+        data.addColumn('string', 'Name');
         data.addColumn('number', 'totalJSHeapSize');
         data.addColumn('number', 'usedJSHeapSize');
 
         for (var i = 0; i < memoryInfo.length; i++) {
-            data.addRow([i,
+            data.addRow([memoryInfo[i].name,
                 //memoryInfo[i].jsHeapSizeLimit/1024,
-                memoryInfo[i].totalJSHeapSize/1024/1024,
-                memoryInfo[i].usedJSHeapSize / 1024 / 1024]);
+                memoryInfo[i].mem.totalJSHeapSize/1024/1024,
+                memoryInfo[i].mem.usedJSHeapSize / 1024 / 1024]);
         }
 
         var options = {
             hAxis: {
-                title: 'Sample #'
+                title: 'Measurement name',
+                titleTextStyle: { color: 'black' },
+                count: -1,
+                viewWindowMode: 'pretty',
+                slantedText: true,
+                textPosition: 'in'
             },
             vAxis: {
                 title: 'Memory, MB'
@@ -424,19 +427,15 @@ class ClientValidationHandler {
             data: form.serialize(), // serializes the form's elements.
             success(data) {
                 if (!data) {
-                    alert('Invalid validation response!');
-                    _thisMy.setValidateBtnState(true);
+                    _thisMy.validationFailed('Invalid validation response!');
                 } else if (data.error) {
-                    alert('Error occurred during validation: ' + data.error);
-                    _thisMy.setValidateBtnState(true);
+                    _thisMy.validationFailed('Error occurred during validation: ' + data.error);
                 } else if (data.valid === true) {
                     setTimeout(_thisMy.continueBenchmarkValidation(), 0);
                 } else if (data.valid === false) {
-                    alert('Benchmark is not valid.\nErrors: ' + JSON.stringify(data.errors));
-                    _thisMy.setValidateBtnState(true);
+                    _thisMy.validationFailed('Benchmark is not valid.\nErrors: ' + JSON.stringify(data.errors));
                 } else {
-                    alert('Invalid validation response!');
-                    _thisMy.setValidateBtnState(true);
+                    _thisMy.validationFailed('Invalid validation response!');
                 }
             },
             error(e) {
