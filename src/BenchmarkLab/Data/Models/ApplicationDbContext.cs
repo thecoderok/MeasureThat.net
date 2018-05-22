@@ -23,7 +23,7 @@ namespace MeasureThat.Net.Data
 
             modelBuilder.Entity<Benchmark>(entity =>
             {
-                entity.Property(e => e.Description).HasMaxLength(400);
+                entity.Property(e => e.Description).HasMaxLength(4000);
 
                 entity.Property(e => e.Name)
                     .IsRequired()

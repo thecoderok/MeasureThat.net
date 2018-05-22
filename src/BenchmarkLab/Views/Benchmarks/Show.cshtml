@@ -29,7 +29,7 @@
         <a href="@Url.Action("Index")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
         &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
     </h2>
-    <h3>@Model.Description</h3>
+    <h4>@Model.Description</h4>
     <h4><b>Comparing performance of:</b> @string.Join(" vs ", Model.TestCases.Select(t => t.TestCaseName).ToList())</h4>
     <h5><b>Created:</b> @Model.WhenCreated.Humanize()
         <b>by:</b>

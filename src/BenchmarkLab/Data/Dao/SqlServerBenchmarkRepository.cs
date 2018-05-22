@@ -19,7 +19,6 @@ namespace MeasureThat.Net.Data.Dao
         const string titles_cache_key = "titles";
         private readonly ApplicationDbContext m_db;
         private readonly IMemoryCache memoryCache;
-        //private readonly Dictionary<string, int> titles = null;
 
         public SqlServerBenchmarkRepository([NotNull] ApplicationDbContext db, [NotNull] IMemoryCache memoryCache)
         {
@@ -29,9 +28,6 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<long> Add([NotNull] BenchmarkDto entity)
         {
-            DateTime utcTime = DateTime.UtcNow;
-            DateTime currentDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, TimeZoneInfo.Local);
-
             var newEntity = new Benchmark()
             {
                 Name = entity.BenchmarkName,
@@ -40,7 +36,7 @@ namespace MeasureThat.Net.Data.Dao
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
                 BenchmarkTest = new List<BenchmarkTest>(),
-                WhenCreated = currentDateTime,
+                WhenCreated = DateTime.UtcNow,
             };
 
             foreach (var test in entity.TestCases)

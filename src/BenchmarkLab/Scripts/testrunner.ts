@@ -159,8 +159,13 @@ class TestRunnerController {
             eval(preparation);
             eval(content);
         } catch (e) {
-            alert("Error:" + JSON.stringify(e));
-            throw e;
+            alert("Error:" + e.message);
+            const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
+            suiteStatusLabels.textContent = 'Error';
+            suiteStatusLabels.setAttribute("class", "label label-warning");
+            window.parent.document.getElementById('runTest').removeAttribute('disabled');
+            window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
+            window.parent.document.getElementById('spinner').style.display = 'none';
         }
     }
 

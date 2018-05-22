@@ -2,7 +2,7 @@ CREATE TABLE [dbo].[Benchmark]
 (
 	[Id] BIGINT IDENTITY NOT NULL PRIMARY KEY, 
     [Name] NVARCHAR(200) NOT NULL, 
-    [Description] NVARCHAR(4000) NULL, 
+    [Description] NVARCHAR(MAX) NULL, 
     [OwnerId] nvarchar(450) NULL, 
     [WhenCreated] DATETIME2 NOT NULL , 
     [ScriptPreparationCode] NVARCHAR(MAX) NULL, 
