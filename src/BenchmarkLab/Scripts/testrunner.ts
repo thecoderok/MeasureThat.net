@@ -131,7 +131,7 @@ class TestRunnerController {
         if (event.data === 'start_test_with_memory_recordings') {
             this.shouldRecordMemory = true;
             this.runTests();
-            this.invervalId = setInterval(() => this.recordMemoryInfo(""), 500);
+            this.invervalId = setInterval(() => this.recordMemoryInfo(""), 900);
         }
     }
 
@@ -165,7 +165,7 @@ class TestRunnerController {
     }
 
     onStartHandler(): void {
-        (window as any)._test_runner.recordMemoryInfo("on start");
+        (window as any)._test_runner.recordMemoryInfo("start");
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         suiteStatusLabels.textContent = 'Running';
         suiteStatusLabels.setAttribute("class", "label label-info");

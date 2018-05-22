@@ -218,13 +218,12 @@ class ShowPageController {
         }
 
         var options = {
+            chartArea: {
+                top: 28,
+                height: '40%'
+            },
             hAxis: {
-                title: 'Measurement name',
-                titleTextStyle: { color: 'black' },
-                count: -1,
-                viewWindowMode: 'pretty',
-                slantedText: true,
-                textPosition: 'in'
+                title: 'Measurement name'
             },
             vAxis: {
                 title: 'Memory, MB'
