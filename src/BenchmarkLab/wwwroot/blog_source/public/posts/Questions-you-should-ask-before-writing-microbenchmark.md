@@ -1,5 +1,5 @@
 ---
-title: Questions you should ask before optimizing performance and writing a microbenchmark
+title: Questions you should ask before optimizing performance and writing microbenchmark
 date: 2018-06-06 10:06:51
 tags:
 - microbenchmarking
@@ -7,16 +7,14 @@ tags:
 ---
 Multiple [studies](https://www.webperformance.com/load-testing-tools/blog/2010/06/microsoft-affirms-the-importance-of-web-performance/) have shown that performance is the business-critical requirement for the software. For example, [this study](https://www.fastcompany.com/1825005/how-one-second-could-cost-amazon-16-billion-sales) from Amazon shows that 1 second performance degradation can cost $1.6B in sales revenue (yes, billions). It means that even though performance is [non-functional software requirement](https://en.wikipedia.org/wiki/Non-functional_requirement), it has difect effect on the key business metrics and it is highly critical to treat it seriously. 
 
-![](https://user-images.githubusercontent.com/3173477/41115761-514a9b32-6a3d-11e8-9269-b506a99f03b9.png)
+![charts](https://user-images.githubusercontent.com/3173477/41115761-514a9b32-6a3d-11e8-9269-b506a99f03b9.png)
 
 
 Software engineers have multiple tools & approaches that help to tackle the problem with performance. One such tool is `benchmarking`. [Wikipedia](https://en.wikipedia.org/wiki/Benchmark_(computing)) defines benchmarking as "the act of running a computer program, a set of programs, or other operations, in order to assess the relative performance of an object, normally by running a number of standard tests and trials against it". 
 
 `Microbenchmarking` is the type of benchmarking which is focused on specific and isolated subset of the software. Microbenchmarking is the powerful tool which enables developer not only to reason about performance, but also make an attempts to improve it.
 
-However, as every tool, it can be misused. As result, in best case, it won't not provide any effect, in the worst case it will lead to wasted time, increased maintenance costs and the opposite effect (performance may degrade).
-
-Consider following questions before you try to optimize performance and use microbenchmaking:
+However, as every tool, it can be misused which, in best case, will not provide any effect, in the worst case it will lead to wasted time, increased maintenance costs and the opposite effect (performance may degrade).
 
 # Are you optimizing performance at the appropriate time?
 Donald Knuth once wrote: _"Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%."_

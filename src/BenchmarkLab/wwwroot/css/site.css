@@ -68,7 +68,8 @@ body {
     font-family: monospace;
     position: relative;
     overflow: hidden;
-    height: auto!important;
+    height: auto !important;
+    max-height: 1200px;
 }
 
 .CodeMirror-focused {
@@ -77,6 +78,11 @@ body {
     outline: 0;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.CodeMirror-scroll {
+    height: auto;
+    max-height: 1200px;
 }
 
 .bar {
