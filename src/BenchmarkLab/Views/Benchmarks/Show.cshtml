@@ -199,3 +199,10 @@
 @section headAdditions{
     <link rel="canonical" href="@Url.Action("Show", "Benchmarks", new { id = Model.Id, version = Model.Version, name = SeoFriendlyStringConverter.Convert(Model.BenchmarkName)}, Url.ActionContext.HttpContext.Request.Scheme)" />
 }
+
+@if (TempData["AddedTest"] != null)
+{
+    <script>
+        fbq('track', 'CreatedBenchmark');
+    </script>
+}
