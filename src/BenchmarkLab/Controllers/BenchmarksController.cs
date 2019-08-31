@@ -128,8 +128,6 @@ namespace MeasureThat.Net.Controllers
 
             long id = await this.m_benchmarkRepository.Add(model);
 
-            TempData["AddedTest"] = true;
-
             return this.RedirectToAction("Show",
                 new { Id = id, Version = 0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
         }
