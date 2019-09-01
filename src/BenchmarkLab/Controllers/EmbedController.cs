@@ -37,7 +37,7 @@ namespace BenchmarkLab.Controllers
             {
                 return PartialView("DoesNotExists", id);
             }
-            return View();
+            return View(model);
         }
 
         /*
