@@ -27,7 +27,7 @@
 <div class="page-header">
     <h2>
         <a href="@Url.Action("Index")"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
-        &nbsp;Run the benchmark: <small>@Model.BenchmarkName (version: @Model.Version)</small>
+        &nbsp;@Model.BenchmarkName (version: @Model.Version)
     </h2>
     <h4>@Model.Description</h4>
     <h4><b>Comparing performance of:</b> @string.Join(" vs ", Model.TestCases.Select(t => t.TestCaseName).ToList())</h4>

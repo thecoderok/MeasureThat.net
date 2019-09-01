@@ -5,5 +5,7 @@ namespace MeasureThat.Net.Logic.Options
         public bool UploadResultsToDb { get; set; }
 
         public bool UploadGuestUserResultsToDb { get; set; }
+
+        public bool BenchmarkEmbeddingEnabled { get; set; }
     }
 }
