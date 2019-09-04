@@ -61,7 +61,6 @@
     <Exec Command="bower install" />
     <Exec Command="gulp clean" />
     <Exec Command="gulp min" />
-    <Exec Command="gulp bump" />
   </Target>
 
   <ItemGroup>

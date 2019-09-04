@@ -6,7 +6,6 @@ var gulp = require("gulp"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
-    bump = require("gulp-bump"),
     del = require("del");
 var ts = require("gulp-typescript");
 var tsProject = ts.createProject("Scripts/tsconfig.json");
@@ -41,7 +40,7 @@ gulp.task("clean:css",
         rimraf(paths.concatCssDest, cb);
     });
 
-gulp.task("clean", ["clean:js", "clean:css"]);
+gulp.task("clean", gulp.parallel("clean:js", "clean:css"));
 
 gulp.task("min:js",
     function() {
@@ -59,14 +58,7 @@ gulp.task("min:css",
             .pipe(gulp.dest("."));
     });
 
-gulp.task("bump",
-    function() {
-        gulp.src("./project.json")
-            .pipe(bump())
-            .pipe(gulp.dest("./"));
-    });
-
-gulp.task("min", ["min:js", "min:css"]);
+gulp.task("min", gulp.parallel("min:js", "min:css"));
 
 gulp.task("copy-html",
     function() {
@@ -75,7 +67,7 @@ gulp.task("copy-html",
     });
 
 gulp.task('default',
-    ["copy-html"],
+    gulp.series("copy-html"),
     function() {
         gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
         tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
