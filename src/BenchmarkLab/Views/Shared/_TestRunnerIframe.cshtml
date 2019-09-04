@@ -1,0 +1,7 @@
+@model MeasureThat.Net.Models.BenchmarkDto
+<div class="panel panel-default">
+
+    <div class="panel-heading"><b>Rendered benchmark preparation results:</b></div>
+
+    <iframe id="test-runner-iframe" src="@Url.Action("TestFrame", "Benchmarks", new { id = Model.Id}, Url.ActionContext.HttpContext.Request.Scheme)" style="border:none; max-height: 900px; min-height: px; overflow:scroll"></iframe>
+</div>    

@@ -1,4 +1,14 @@
 ﻿@model int
 
-<h1>Such Benchmark result does not exist: @Model.</h1>
-<a class="btn btn-default" asp-controller="Home">Go to MeasureThat.net</a>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @await Html.PartialAsync("_SharedStyles")
+</head>
+<body style="padding-top: 0">
+    <h1>Such Benchmark result does not exist: @Model.</h1>
+    <a class="btn btn-default" target="_blank" asp-controller="Home">Go to MeasureThat.net</a>
+</body>
+</html>

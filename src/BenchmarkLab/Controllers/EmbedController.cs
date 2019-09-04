@@ -27,6 +27,7 @@ namespace BenchmarkLab.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
+            this.RemoveFrameOptionsHeader();
             if (!this.m_resultsConfig.Value.BenchmarkEmbeddingEnabled)
             {
                 return View("Disabled", id);

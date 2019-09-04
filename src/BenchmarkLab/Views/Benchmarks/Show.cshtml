@@ -46,11 +46,13 @@
             </text>
         }
     </h5>
-    <h5><a href="#latest_results_block">See latest result</a>
+    <h5>
+        <a class="btn btn-primary" href="#latest_results_block">Jump to the latest result</a>
     </h5>
 </div>
 
 @await Html.PartialAsync("_ShowBenchmark", Model)
+@await Html.PartialAsync("_TestRunnerIframe", Model)
 
 <div id="result">
     <div class="panel panel-info">
