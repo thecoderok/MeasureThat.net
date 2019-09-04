@@ -1,7 +1,72 @@
-
+@using Humanizer
+@using MeasureThat.Net.Logic.Web
 @model MeasureThat.Net.Models.BenchmarkResultDto
 
-<h3>Result</h3>
-<ul>
-    @Model.RawUserAgenString
-</ul>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Run details:</b></div>
+    <div class="panel-body">
+        <div class="form-group">
+            @Html.Label("User agent:")
+            <span>@Model.RawUserAgenString</span>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Browser:")
+            <span>@Model.Browser</span>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Operating system:")
+            <span>@Model.OS</span>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Device Platform:")
+            <span>@Model.DevicePlatform</span>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Date tested:")
+            <span>@Model.WhenCreated.Humanize()</span>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Test name</th>
+            <th>Executions per second</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ResultRows)
+        {
+            <tr>
+                <th scope="row">@row.TestName</th>
+                <td>@row.ExecutionsPerSecond.ToString("F1") Ops/sec</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+window.addEventListener('load', function(){
+    var chartData = [];
+    var chartItem = [];
+    var header = ['Test case', 'Executions Per Second'];
+    chartData.push(header);
+    @foreach (var row in Model.ResultRows)
+    {
+        <text>
+        chartItem = [];
+        chartItem.push('@row.TestName');
+        chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
+        chartData.push(chartItem);
+        </text>
+    }
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(chartData));
+});
+</script>

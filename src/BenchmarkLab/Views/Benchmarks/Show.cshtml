@@ -46,6 +46,8 @@
             </text>
         }
     </h5>
+    <h5><a href="#latest_results_block">See latest result</a>
+    </h5>
 </div>
 
 @await Html.PartialAsync("_ShowBenchmark", Model)
@@ -57,7 +59,7 @@
                 <div class="col-md-6">
                     <h4>
                         <b>Suite status:</b>
-                        <span class="label label-primary" data-role="suite-status">&lt;idle&gt;</span>
+                        <span class="label label-primary" data-role="suite-status">&lt;idle, ready to run&gt;</span>
                         <i id='spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
                     </h4>
                 </div>
@@ -119,6 +121,15 @@
     </div>
 </div>
 
+<div class="panel panel-default" id="latest_results_block">
+    <div class="panel-heading"><b>Latest run results:</b></div>
+    <div class="panel-body" id="results-placeholder">
+        @await Component.InvokeAsync("LatestBenchmarkResult", new { benchmarkId = Model.Id })
+    </div>
+    <div id="chart_div" style="width: 90%; height: 35%;"></div>
+    <div id="memory_chart_div"></div>
+</div>  
+
 @section Styles
     {
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
@@ -140,9 +151,6 @@
     }
 }
 
-<div id="chart_div" style="width: 90%; height: 35%;"></div>
-<div id="memory_chart_div"></div>
-<div id="results-placeholder"></div>
 
 @using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
 {

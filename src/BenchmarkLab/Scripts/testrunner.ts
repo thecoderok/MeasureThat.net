@@ -151,6 +151,7 @@ class TestRunnerController {
         window.parent.document.getElementById('results-placeholder').style.display = 'none';
 
         window.parent.document.getElementById('chart_div').innerHTML = '';
+        alert('cleanupo');
         window.parent.document.getElementById('memory_chart_div').innerHTML = '';
 
         var preparation = document.getElementById("jspreparation").innerHTML;
