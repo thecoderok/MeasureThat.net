@@ -72,25 +72,25 @@
 
     </div>
 
-    @await Html.PartialAsync("_SharedCoreJS.cshtml")
+    @await Html.PartialAsync("_SharedCoreJS")
 
     @RenderSection("scripts", required: false)
 
-    @await Html.PartialAsync("_SharedDialogs.cshtml")
+    @await Html.PartialAsync("_SharedDialogs")
 
     <environment names="Staging,Production">
     @{
         GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
         if (gaconfig != null && gaconfig.Enabled)
         {
-            @await Html.PartialAsync("_GoogleAnalytics.cshtml", gaconfig);
+            @await Html.PartialAsync("_GoogleAnalytics", gaconfig);
         }
     }
     </environment>
     @{
         if (staticConfig.GetNewsletterSignupConfig().Enabled)
         {
-            @await Html.PartialAsync("_SharedNewsletterSignup.cshtml");
+            @await Html.PartialAsync("_SharedNewsletterSignup");
         }
     }
 </body>

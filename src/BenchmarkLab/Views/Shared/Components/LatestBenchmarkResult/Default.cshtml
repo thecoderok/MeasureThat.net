@@ -4,7 +4,8 @@
 
 
 <div class="panel panel-default">
-    <div class="panel-heading"><b>Run details:</b></div>
+    <div class="panel-heading"><b>Run details:</b> (Test run date:
+            <span>@Model.WhenCreated.Humanize()</span>)</div>
     <div class="panel-body">
         <div class="form-group">
             @Html.Label("User agent:")
@@ -12,24 +13,10 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Browser:")
-            <span>@Model.Browser</span>
+            @Html.Label("Browser/OS:")
+            @Model.Browser on @Model.OS
         </div>
-
-        <div class="form-group">
-            @Html.Label("Operating system:")
-            <span>@Model.OS</span>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Device Platform:")
-            <span>@Model.DevicePlatform</span>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Date tested:")
-            <span>@Model.WhenCreated.Humanize()</span>
-        </div>
+        @await Html.PartialAsync("SharedResultButtons", Model)
     </div>
 </div>
 

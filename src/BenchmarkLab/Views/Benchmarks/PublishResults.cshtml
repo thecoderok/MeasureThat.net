@@ -4,7 +4,7 @@
     <div class="panel-heading"><b>Results were published to the server.</b></div>
     <div class="panel-body">
         <div class="form-group">
-            <a asp-action="ShowResult" asp-route-id="@Model.Id" target="_blank" class="btn btn-default">View result in another tab</a>
+            @await Html.PartialAsync("SharedResultButtons", Model)
         </div>
         <div class="form-group">
             @Html.Label("Browser:")

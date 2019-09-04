@@ -7,13 +7,14 @@
 }
 
 <div class="page-header">
-    <h2>Run results for: <small>@Model.Benchmark.BenchmarkName</small></h2>
+    <h2><small>Run results for:</small> @Model.Benchmark.BenchmarkName</h2>
     <h3>@Model.Benchmark.Description</h3>
     <a class="btn btn-primary"
        asp-action="Show"
        asp-route-id="@Model.Benchmark.Id"
        asp-route-name="@SeoFriendlyStringConverter.Convert(Model.Benchmark.BenchmarkName)"
-       asp-route-version="@Model.Benchmark.Version">Open benchmark</a>
+       asp-route-version="@Model.Benchmark.Version">Go to the benchmark</a>
+    @await Html.PartialAsync("EmbedButton", Model.ResultModel)
 </div>
 
 <div class="panel panel-default">

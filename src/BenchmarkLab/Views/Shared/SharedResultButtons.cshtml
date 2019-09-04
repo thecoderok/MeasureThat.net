@@ -1,0 +1,4 @@
+@model MeasureThat.Net.Models.BenchmarkResultDto
+
+<a asp-action="ShowResult" asp-route-id="@Model.Id" target="_blank" class="btn btn-default">View result in a separate tab</a>
+@await Html.PartialAsync("EmbedButton", Model)

@@ -1,7 +1,14 @@
 ﻿@model int
-@{
-    Layout = null;
-}
 
-<h1>This feature is disabled.</h1>
-<h2>See this benchmark on <a class="btn btn-default" asp-action="ShowResult" asp-controller="Benchmarks" asp-route-id="@Model">MeasureThat.net</a>.</h2>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @await Html.PartialAsync("_SharedStyles")
+</head>
+<body style="padding-top: 0">
+    <h1>Embedding is disabled.</h1>
+    <h2>See this benchmark on <a class="btn btn-default" asp-action="ShowResult" asp-controller="Benchmarks" asp-route-id="@Model">MeasureThat.net</a>.</h2>
+</body>
+</html>

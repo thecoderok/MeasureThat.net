@@ -1,6 +1,8 @@
 ﻿@using Humanizer
 @using MeasureThat.Net.Logic.Web
 @model MeasureThat.Net.Models.ShowResultModel
+@using MeasureThat.Net.Models
+@inject StaticSiteConfigProvider staticConfig
 @{
 Layout = null;
 }
@@ -71,10 +73,21 @@ Layout = null;
                     </div>
                 </div>
             </div>
+            <a class="btn btn-default" target="_blank" asp-controller="Benchmarks" asp-action="ShowResult" asp-route-id=@Model.ResultModel.Id>Open this result on MeasureThat.net</a>
         </div>
     </div>
 
     @{await Html.RenderPartialAsync("_SharedInitBenchmarkEditorsAndDrawChart", Model.ResultModel);}
+
+    <environment names="Staging,Production">
+    @{
+        GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
+        if (gaconfig != null && gaconfig.Enabled)
+        {
+            @await Html.PartialAsync("_GoogleAnalytics", gaconfig);
+        }
+    }
+    </environment>
 </body>
 
 </html>
