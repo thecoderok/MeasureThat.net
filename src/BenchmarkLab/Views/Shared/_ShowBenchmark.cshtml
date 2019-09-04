@@ -8,6 +8,14 @@
     string messageHtml = !hasHtmlPreparationCode ? "<Not specified>" : string.Empty;
     string messageScript = !hasScriptPreparationCode ? "<Not specified>" : string.Empty;
 }
+<div class="panel panel-default">
+
+        <div class="panel-heading"><b>Latest run results:</b> @messageHtml</div>
+
+        <div class="panel-body">
+            @await Component.InvokeAsync("LatestBenchmarkResult", new { benchmarkId = Model.Id })
+        </div>
+    </div>  
 @if (hasHtmlPreparationCode)
 {
     <div class="panel panel-default">

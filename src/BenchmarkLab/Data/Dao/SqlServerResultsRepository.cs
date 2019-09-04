@@ -101,6 +101,23 @@ namespace MeasureThat.Net.Data.Dao
             return new ShowResultModel(result, benchmark);
         }
 
+        public virtual async Task<BenchmarkResultDto> GetLatestResultForBenchmark(long benchmarkId)
+        {
+            var entity = await this.m_db.Result
+                .OrderByDescending(m => m.Created)
+                .Include(b => b.ResultRow)
+                .FirstOrDefaultAsync(m => m.BenchmarkId == benchmarkId)
+                .ConfigureAwait(false);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            BenchmarkResultDto result = DbEntityToModel(entity);
+
+            return result;
+        }
+
         /// <summary>
         /// Returns total number of results for given benchmark
         /// Total # is needed to create pagination

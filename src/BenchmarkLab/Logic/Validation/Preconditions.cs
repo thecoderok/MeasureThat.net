@@ -13,6 +13,14 @@ namespace MeasureThat.Net.Logic.Validation
             }
         }
 
+        public static void ToBeNonNegative(long val)
+        {
+            if (val.CompareTo(0L) < 0)
+            {
+                throw new ValidationException(nameof(val) + " is expected to be non-negative.");
+            }
+        }
+
         public static void ToBePositive<T>(T val) where T : IComparable<int>
         {
             if (val.CompareTo(0) <= 0)
