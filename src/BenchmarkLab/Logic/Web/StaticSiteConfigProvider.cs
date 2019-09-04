@@ -14,6 +14,7 @@ namespace MeasureThat.Net.Logic.Web
         private readonly IConfiguration m_configuration;
         //private readonly ILogger m_logger;
         private GoogleAnalyticsConfig googleAnalyticsConfig = null;
+        private NewsletterSubscriptionConfig newsletterConfig = null;
 
         public StaticSiteConfigProvider(
             [NotNull] IConfiguration mConfiguration
@@ -42,6 +43,24 @@ namespace MeasureThat.Net.Logic.Web
             }
 
             return this.googleAnalyticsConfig;
+        }
+
+        public NewsletterSubscriptionConfig GetNewsletterSignupConfig()
+        {
+            try
+            {
+                if (newsletterConfig == null)
+                {
+                    bool enabled = Boolean.Parse(this.m_configuration["NewsletterConfig:Enabled"]);
+                    this.newsletterConfig = new NewsletterSubscriptionConfig(enabled);
+                }
+            }
+            catch (Exception)
+            {
+                return new NewsletterSubscriptionConfig(false);
+            }
+
+            return this.newsletterConfig;
         }
     }
 }

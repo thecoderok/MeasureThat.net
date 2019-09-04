@@ -100,5 +100,11 @@
         }
     }
     </environment>
+    @{
+        if (staticConfig.GetNewsletterSignupConfig().Enabled)
+        {
+            @await Html.PartialAsync("_SharedNewsletterSignup.cshtml");
+        }
+    }
 </body>
 </html>
