@@ -1,5 +1,4 @@
-﻿@using System.Threading.Tasks
-@using MeasureThat.Net.Logic.Web
+﻿@using MeasureThat.Net.Logic.Web
 @using MeasureThat.Net.Models
 @inject StaticSiteConfigProvider staticConfig
 <!DOCTYPE html>
@@ -87,11 +86,5 @@
         }
     }
     </environment>
-    @{
-        if (staticConfig.GetNewsletterSignupConfig().Enabled)
-        {
-            @await Html.PartialAsync("_SharedNewsletterSignup");
-        }
-    }
 </body>
 </html>

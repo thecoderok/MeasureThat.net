@@ -1,6 +1,8 @@
 @using System.Threading.Tasks
 @using MeasureThat.Net.Models
 @using Microsoft.AspNetCore.Identity
+@using MeasureThat.Net.Logic.Web
+@inject StaticSiteConfigProvider staticConfig
 @inject SignInManager<ApplicationUser> SignInManager
 
 @{
@@ -8,178 +10,89 @@
 }
 
 <div class="jumbotron">
-    <h1>MeasureThat.net&nbsp;<i class="fa fa-bar-chart" aria-hidden="true"></i></h1>
-    <p class="lead">Find out how to improve the speed of your web application with microbenchmarks!</p>
-    <p>This website allows you to measure performance of JavaScript code and helps to pick the fastest one.</p>
-    <p>Click <strong>New benchmark</strong> to get started</p>
-    <p>
-        @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
+    <div class="row">
+        <div class="col-md-4">
+            <img src="/blog/images/Picture1.png"/>
+        </div>
+        <div class="col-md-8">
+            <h1>MeasureThat.net&nbsp;<i class="fa fa-bar-chart" aria-hidden="true"></i></h1>
+            <p class="lead">Find out how to improve the speed of your web application with microbenchmarks!</p>
+            <p>This website allows you to measure performance of JavaScript code and helps to pick the fastest one.</p>
+            <p>Click <strong>New benchmark</strong> to get started</p>
+            <p>
+                @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
 
-        <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Latest benchmarks</a>
-        <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
-    </p>
+                <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Latest benchmarks</a>
+                <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
+            </p>
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h2>Recent selected benchmarks:</h2>
+        <ul>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/5905/0/mathpow-vs-vs">Math.pow vs ** vs *</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/5918/0/classname-vs-setattribute-vs-classlist">className vs setAttribute vs classList</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/2/caching-length-property-vs-getting-it-each-ti">CSS dynamic rules: insertRule vs insertAdjacentText</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/5895/0/es6-destructuring-vs-lodash-get-string-and-array-keys-w">es6 destructuring vs lodash _.get string and array keys with toPath and manual caching</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/5879/0/corrected-filter-map-lodash-vs-native">Filter-Map: Lodash vs Native: Native filter-map vs Lazy Lodash filter-map</a>
+            </li>
+        </ul>
+    </div>
+    <br/>
+    <div class="col-md-6">
+        <h2>Sample benchmarks:</h2>
+        <ul>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/373/0/empty-an-array-in-javascript">Clear the array</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/1/demo-benchmark">Demo benchmark (example from benchmarkjs.com)</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/2/caching-length-property-vs-getting-it-each-ti">Caching length property vs getting it each time in the loop</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/3/jquery-by-id-vs-documentgetelementbyid">jQuery by id vs Document.getElementById</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/4/ecmascript6-int16array-vs-regular-js-array">EcmaScript6 Int16Array vs regular JS array</a>
+            </li>
+            <li>
+                <a href="https://www.measurethat.net/Benchmarks/Show/19/0/which-equals-operator-vs-is-faster">Which equals operator (== vs ===) is faster?</a>
+            </li>
+        </ul>
+    </div>
 </div>
 
-<div class="col-md-4">
-    <h2>Help to improve this website</h2>
-    <p>Please report any issues or make suggestions on the projec'ts GitHub page. Also feel free to join development effort, source code available on GitHub.</p>
-    <p><a target="_blank" class="btn btn-default" href="https://github.com/thecoderok/MeasureThat.net">GitHub/MeasureThat.net &raquo;</a></p>
-</div>
-<div class="col-md-4">
-    <h2>Open Source & Cross platform</h2>
-    <p>This website was built using Microsoft .Net Core and can be ran & developed on Windows/Linux/Mac. (instructions about how to get started in building and running it locally will be posted later)</p>
-    <p><a target="_blank" href="http://the-coderok.azurewebsites.net/2016/10/11/Run-MeasureThat-net-application-on-Linux-building-and-running-the-application/">How to run the application on Linux using PostgreSQL as a database</a></p>
-</div>
+@{
+    if (staticConfig.GetNewsletterSignupConfig().Enabled)
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Stay in touch:</h2>
+                @await Html.PartialAsync("_SharedNewsletterSignup")
+            </div>
+        </div>
+        
+    }
+}
 
-<div class="col-md-4">
-    <h2>Sample benchmarks:</h2>
-    <ul>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/373/0/empty-an-array-in-javascript">Clear the array</a>
-        </li>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/1/demo-benchmark">Demo benchmark (example from benchmarkjs.com)</a>
-        </li>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/2/caching-length-property-vs-getting-it-each-ti">Caching length property vs getting it each time in the loop</a>
-        </li>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/3/jquery-by-id-vs-documentgetelementbyid">jQuery by id vs Document.getElementById</a>
-        </li>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/4/ecmascript6-int16array-vs-regular-js-array">EcmaScript6 Int16Array vs regular JS array</a>
-        </li>
-        <li>
-            <a href="https://www.measurethat.net/Benchmarks/Show/19/0/which-equals-operator-vs-is-faster">Which equals operator (== vs ===) is faster?</a>
-        </li>
-    </ul>
-</div>
-<hr />
-<br>
-<div class="col-md-6">
-    <br>
-
-    <p style="display:none;" id="github_buttons">
-        <a class="github-button" href="https://github.com/thecoderok" data-count-href="/thecoderok/followers" data-count-api="/users/thecoderok#followers" data-count-aria-label="# followers on GitHub" aria-label="Follow @@thecoderok on GitHub">Follow @@thecoderok</a>
-        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/fork" data-icon="octicon-repo-forked" data-count-href="/thecoderok/MeasureThat.net/network" data-count-api="/repos/thecoderok/MeasureThat.net#forks_count" data-count-aria-label="# forks on GitHub" aria-label="Fork thecoderok/MeasureThat.net on GitHub">Fork</a>
-        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net" data-icon="octicon-star" data-count-href="/thecoderok/MeasureThat.net/stargazers" data-count-api="/repos/thecoderok/MeasureThat.net#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star thecoderok/MeasureThat.net on GitHub">Star</a>
-        <a class="github-button" href="https://github.com/thecoderok/MeasureThat.net/issues" data-icon="octicon-issue-opened" data-count-api="/repos/thecoderok/MeasureThat.net#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue thecoderok/MeasureThat.net on GitHub">Issue</a>
-    </p>
-    <p>
-        <div class="fb-like" data-href="https://measurethat.net/" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
-    </p>
-
-    <div class="fb-page" data-href="https://www.facebook.com/MeasureThat.Net/" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/MeasureThat.Net/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/MeasureThat.Net/">MeasureThat.net</a></blockquote></div>
-</div>
-<div class="col-md-6">
-    <h2>Change log:</h2>
-    <h3>v1.3.0.0 (05/09/2019)</h3>
-    <ul>
-        <li>
-            Benchmnark results can now be embedded into third party websites (via iframes)
-        </li>
-        <li>
-            Latest benchmark run result now displayed directly on the benchmark page
-        </li>
-        <li>
-            Improved website loading speed by removing unnecessary third party scripts.
-        </li>
-        <li>
-            Changed website theme for better readability
-        </li>
-        <li>
-            Number of UI tweaks and minor changes.
-        </li>
-    </ul>
-    <h3>v1.0.48.0 (12/20/2017)</h3>
-    <ul>
-        <li>
-            Release after long pause
-        </li>
-        <li>
-            Improved performance
-        </li>
-        <li>
-            Better pagination
-        </li>
-    </ul>
-    <h3>v1.0.41.0 (9/9/2016)</h3>
-    <ul>
-        <li>
-            Support local accounts (in addition to OpenId providers) (<a href="https://github.com/thecoderok/MeasureThat.net/issues/37" target="_blank">#37</a>)
-        </li>
-        <li>
-            Multiple bug fixes.
-        </li>
-    </ul>
-    <h3>v1.0.38.0 (9/7/2016)</h3>
-    <ul>
-        <li>
-            Show info to the user that benchmark will be posted as guest and unable to edit (<a href="https://github.com/thecoderok/MeasureThat.net/issues/45" target="_blank">#45</a>)
-        </li>
-        <li>
-            Edit button for the owner on the Show page (<a href="https://github.com/thecoderok/MeasureThat.net/issues/46" target="_blank">#46</a>)
-        </li>
-        <li>
-            Fix alignment of the latest benchmarks & history sections on the home page bug (<a href="https://github.com/thecoderok/MeasureThat.net/issues/48" target="_blank">#48</a>)
-        </li>
-        <li>
-            Use correct benchmark version when saving result bug (<a href="https://github.com/thecoderok/MeasureThat.net/issues/44" target="_blank">#44</a>)
-        </li>
-    </ul>
-    <h3>v1.0.36.0 (9/2/2016)</h3>
-    <ul>
-        <li>
-            Fixed bug with 404 error which made adding new benchmarks impossible (lesson learned: do not make late night deployment when tired :( ))
-        </li>
-    </ul>
-    <h3>v1.0.34.0 (9/2/2016)</h3>
-    <ul>
-        <li>
-            Ability to edit own benchmarks (user must be authenticated)
-        </li>
-    </ul>
-    <br>
-    <h3>v1.0.33.0 (9/1/2016)</h3>
-    <ul>
-        <li>
-            Authentication not needed to create benchmarks
-        </li>
-        <li>
-            Fixed bug when test case parsing (Server was unable to read input provided by user when user delted some test case.)
-        </li>
-        <li>
-            "My" benchmarks now ordered by date when they were created.
-        </li>
-    </ul>
-</div>
-
-
-<div id="fb-root"></div>
-
-<!--GitHub stuff-->
-<!--<a target="_blank" href="https://github.com/thecoderok/MeasureThat.net"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1500;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>-->
 @section Scripts
     {
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script type="text/javascript">
         document.getElementById('github_buttons').style.display = 'block';
     </script>
-    <script>
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=146317889326102&autoLogAppEvents=1';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-
-    <script>
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=195401741011598&autoLogAppEvents=1';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
 }
