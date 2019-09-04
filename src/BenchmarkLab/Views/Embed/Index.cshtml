@@ -12,90 +12,69 @@ Layout = null;
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Benchmark Run Result for: @Model.Benchmark.BenchmarkName</title>
+    @await Html.PartialAsync("_SharedCoreJS")
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
     @await Html.PartialAsync("_SharedStyles")
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
-
-    <script type="text/javascript">
-        var pageController = new ShowResultsPageController();
-        var chartItem = [];
-        var header = ['Test case', 'Executions Per Second'];
-        pageController.chartData.push(header);
-        @foreach(var row in Model.ResultModel.ResultRows)
-        {
-            <text>
-                chartItem = [];
-                chartItem.push('@row.TestName');
-                chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
-                pageController.chartData.push(chartItem);
-                </text>
-        }
-        pageController.draw();
-    </script>
 </head>
 
 <body style="padding-top: 0">
-    <div class="page-header">
-        <h4>@Model.Benchmark.BenchmarkName</h4>
-        <h5>@Model.Benchmark.Description</h5>
-    </div>
-    <div class="panel-body">
-        <div class="form-group">
-            @Html.Label("User agent:")
-            <span>@Model.ResultModel.RawUserAgenString</span>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div>
+                <h4>@Model.Benchmark.BenchmarkName</h4>
+                <h5>@Model.Benchmark.Description</h5>
+                <h5>
+                    @Html.Label("Date tested:")
+                    <span>@Model.ResultModel.WhenCreated.Humanize()</span>
+                </h5>
+                <h5>
+                    User agent:
+                    <span>@Model.ResultModel.RawUserAgenString</span>
+                </h5>
+            </div>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Test name</th>
+                        <th>Executions per second</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.ResultModel.ResultRows)
+                    {
+                    <tr>
+                        <th scope="row">@row.TestName</th>
+                        <td>@row.ExecutionsPerSecond.ToString("F1") Ops/sec</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="chart_div" style="width: 90%; height: 35%;"></div>
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Benchmark definition (click to collapse):
+                        </a>
+                    </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        @await Html.PartialAsync("_ShowBenchmark", Model.Benchmark)
+                    </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            @Html.Label("Date tested:")
-            <span>@Model.ResultModel.WhenCreated.Humanize()</span>
-        </div>
     </div>
-    <table class="table table-striped table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>Test name</th>
-                <th>Executions per second</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var row in Model.ResultModel.ResultRows)
-            {
-            <tr>
-                <th scope="row">@row.TestName</th>
-                <td>@row.ExecutionsPerSecond.ToString("F1") Ops/sec</td>
-            </tr>
-            }
-        </tbody>
-    </table>
 
-    <div id="chart_div" style="width: 90%; height: 35%;"></div>
-
-    @await Html.PartialAsync("_ShowBenchmark", Model.Benchmark)
-
-    <script type="text/javascript">
-        window.addEventListener('load', function () {
-            var chartData = [];
-            var chartItem = [];
-            var header = ['Test case', 'Executions Per Second'];
-            chartData.push(header);
-            @foreach(var row in Model.ResultModel.ResultRows)
-        {
-            <text>
-                chartItem = [];
-                chartItem.push('@row.TestName');
-                chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
-                chartData.push(chartItem);
-            </text>
-        }
-        google.charts.load('current', { packages: ['corechart', 'bar'] });
-        google.charts.setOnLoadCallback(() => ShowResultsPageController.drawChart(chartData));
-    });
-    </script>
-    <a class="btn btn-primary" target="_blank" asp-controller="Benchmarks" asp-action="Show"
-    asp-route-id="@Model.Benchmark.Id"
-    asp-route-name="@SeoFriendlyStringConverter.Convert(Model.Benchmark.BenchmarkName)"
-    asp-route-version="@Model.Benchmark.Version">Open benchmark</a>
+    @{await Html.RenderPartialAsync("_SharedInitBenchmarkEditorsAndDrawChart", Model.ResultModel);}
 </body>
 
 </html>

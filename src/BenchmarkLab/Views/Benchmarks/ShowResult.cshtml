@@ -77,23 +77,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
-
-    <script type="text/javascript">
-    var pageController = new ShowResultsPageController();
-    var chartItem = [];
-    var header = ['Test case', 'Executions Per Second'];
-    pageController.chartData.push(header);
-    @foreach (var row in Model.ResultModel.ResultRows)
-    {
-        <text>
-        chartItem = [];
-        chartItem.push('@row.TestName');
-        chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
-        pageController.chartData.push(chartItem);
-        </text>
-    }
-    pageController.draw();
-    </script>
+    @{await Html.RenderPartialAsync("_SharedInitBenchmarkEditorsAndDrawChart", Model.ResultModel);}
 }
 
 

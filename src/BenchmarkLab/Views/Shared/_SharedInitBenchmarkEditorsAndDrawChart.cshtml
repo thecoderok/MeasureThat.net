@@ -1,0 +1,18 @@
+@model MeasureThat.Net.Models.BenchmarkResultDto
+
+<script type="text/javascript">
+var pageController = new ShowResultsPageController();
+var chartItem = [];
+var header = ['Test case', 'Executions Per Second'];
+pageController.chartData.push(header);
+@foreach (var row in Model.ResultRows)
+{
+    <text>
+    chartItem = [];
+    chartItem.push('@row.TestName');
+    chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
+    pageController.chartData.push(chartItem);
+    </text>
+}
+pageController.draw();
+</script>
