@@ -112,12 +112,10 @@ body {
 #carbonads {
     font-family: var(--font-body);
     display: flex;
-    position: fixed;
+    
     bottom: 30px;
     right: 30px;
     max-width: 330px;
-    /*background-color: var(--nav-bg);
-    box-shadow: var(--nav-shadow);*/
     background-color: hsl(0, 0%, 98%);
     box-shadow: 0 1px 4px 1px hsla(0, 0%, 0%, .1);
     z-index: 999;
@@ -175,7 +173,17 @@ body {
         bottom: 0;
         right: 0;
         width: 100%;
-        max-width: 480px
+        max-width: 480px;
+    }
+}
+
+@media (min-width: 481px) {
+    #carbonads {
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        max-width: 480px;
+        position: fixed;
     }
 }
 

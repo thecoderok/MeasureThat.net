@@ -2,9 +2,13 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/BenchmarkLab",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:24918/",
-      "sslPort": 0
+      "sslPort": 44366
     }
   },
   "profiles": {

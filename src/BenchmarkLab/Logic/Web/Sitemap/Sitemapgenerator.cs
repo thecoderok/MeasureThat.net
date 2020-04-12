@@ -121,6 +121,14 @@ namespace MeasureThat.Logic.Web.Sitemap
                 Priority = DefaultPriority,
                 Frequency = SitemapFrequency.Weekly
             });
+
+            nodes.Add(new SitemapNode()
+            {
+                LastModified = DateTime.Now,
+                Url = this.urlHelper.Action("Index", "Tools", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Priority = HighestPriority,
+                Frequency = SitemapFrequency.Monthly
+            });
         }
 
         private void AppendBlogSitemap(List<SitemapNode> nodes)
