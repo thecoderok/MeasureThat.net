@@ -1,4 +1,72 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{
+    ViewData["Title"] = "Beautify JSON Online";
+}
+
+<div class="page-header">
+    <h1>Beautify JSON: <small>Format JSON Online</small></h1>
+
+</div>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading"><b>Raw JSON:</b></div>
+
+    <div class="panel-body">
+        <textarea placeholder="Input your JSON here" rows="20" id="raw_json" class="form-control"></textarea>
+        <br />
+        <div class="btn-group btn-group-justified" role="group">
+            <a id="btn_format" class="btn btn-primary">Format</a>
+
+            <a id="btn_clear_all" class="btn btn-info">Clear all</a>
+        </div>
+        <br />
+        <div class="alert alert-danger" id="error_message" style="display:none;" role="alert"></div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Formatted JSON:</b></div>
+    <div class="panel-body">
+        <textarea rows="20" id="formatted_json" class="form-control" onfocus="this.select();"></textarea>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const raw_json_element_name = "raw_json";
+    const formatted_json_element_name = "formatted_json";
+
+    window.addEventListener('load', function () {
+        document.getElementById("btn_format").addEventListener("click", doFormat);
+        document.getElementById("btn_clear_all").addEventListener("click", doClearAll);
+
+        var editor = CodeMirror.fromTextArea(document.getElementById(formatted_json_element_name), {
+            lineNumbers: true,
+
+        });
+    });
+
+    function doClearAll() {
+        var input = document.getElementById(raw_json_element_name).value = '';
+        var input = document.getElementById(formatted_json_element_name).value = '';
+    }
+
+    function doFormat() {
+        var error_message = document.getElementById("error_message");
+        error_message.style.display = 'none';
+        var input = document.getElementById(raw_json_element_name).value;
+        try {
+            document.getElementById(formatted_json_element_name).value = JSON.stringify(JSON.parse(input), null, 4);
+        } catch (e) {
+            error_message.style.display = 'block';
+            error_message.textContent = "Error:\n" + e;
+        }
+    }
+</script>
+
+@section Styles
+    {
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+@section Scripts {
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+}
