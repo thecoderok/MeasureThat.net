@@ -12,7 +12,7 @@
     <div class="panel-heading"><b>Raw JSON:</b></div>
 
     <div class="panel-body">
-        <textarea placeholder="Input your JSON here" rows="20" id="raw_json" class="form-control"></textarea>
+        <textarea placeholder="Input your JSON here" rows="15" id="raw_json" class="form-control"></textarea>
         <br />
         <div class="btn-group btn-group-justified" role="group">
             <a id="btn_format" class="btn btn-primary">Format</a>
@@ -27,22 +27,16 @@
 <div class="panel panel-default">
     <div class="panel-heading"><b>Formatted JSON:</b></div>
     <div class="panel-body">
-        <textarea rows="20" id="formatted_json" class="form-control" onfocus="this.select();"></textarea>
+        <textarea rows="15" id="formatted_json" class="form-control" onfocus="this.select();"></textarea>
     </div>
 </div>
 
-<script type="text/javascript">
-    const raw_json_element_name = "raw_json";
+<script type="text/javascript">const raw_json_element_name = "raw_json";
     const formatted_json_element_name = "formatted_json";
 
     window.addEventListener('load', function () {
         document.getElementById("btn_format").addEventListener("click", doFormat);
         document.getElementById("btn_clear_all").addEventListener("click", doClearAll);
-
-        var editor = CodeMirror.fromTextArea(document.getElementById(formatted_json_element_name), {
-            lineNumbers: true,
-
-        });
     });
 
     function doClearAll() {
@@ -60,13 +54,20 @@
             error_message.style.display = 'block';
             error_message.textContent = "Error:\n" + e;
         }
-    }
-</script>
+    }</script>
 
-@section Styles
-    {
-    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+@section Styles{ 
+    <!-- Include EnlighterJS Styles -->
+    <link rel="stylesheet" type="text/css" href="~/css/EnlighterJS.min.css" />
+
 }
 @section Scripts {
-    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+    <!-- Monospace Fonts on Google Webfonts !-->
+    <link href='http://fonts.googleapis.com/css?family=Cutive+Mono|Roboto+Mono:400,700,400italic,500,500italic,700italic|Ubuntu+Mono:400,700,400italic,700italic|Droid+Sans+Mono|Source+Code+Pro:400,600' rel='stylesheet' type='text/css'>
+
+    <!-- Include MooTools Framework -->
+    <script type="text/javascript" src="MooTools.min.js"></script>
+
+    <!-- Include EnlighterJS -->
+    <script type="text/javascript" src="EnlighterJS.min.js"></script>
 }

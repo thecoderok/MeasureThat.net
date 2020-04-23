@@ -17,5 +17,20 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
+
+        public IActionResult JavaScriptBeautify()
+        {
+            return View();
+        }
+
+        public IActionResult HTMLBeautify()
+        {
+            return View();
+        }
+
+        public IActionResult CSSBeautify()
+        {
+            return View();
+        }
     }
 }
