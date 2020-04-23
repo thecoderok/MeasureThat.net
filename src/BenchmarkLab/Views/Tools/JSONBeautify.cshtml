@@ -12,7 +12,7 @@
     <div class="panel-heading"><b>Raw JSON:</b></div>
 
     <div class="panel-body">
-        <textarea placeholder="Input your JSON here" rows="15" id="raw_json" class="form-control"></textarea>
+        <textarea placeholder="Input your JSON here" rows="15" id="raw_json" class="form-control" spellcheck="false"></textarea>
         <br />
         <div class="btn-group btn-group-justified" role="group">
             <a id="btn_format" class="btn btn-primary">Format</a>
@@ -27,12 +27,17 @@
 <div class="panel panel-default">
     <div class="panel-heading"><b>Formatted JSON:</b></div>
     <div class="panel-body">
-        <textarea rows="15" id="formatted_json" class="form-control" onfocus="this.select();"></textarea>
+        <!--<textarea rows="15" id="formatted_json" class="form-control" onfocus="this.select();"></textarea>-->
+        <div id="formatted_json_wrapper">
+            <pre id="formatted_json" class="form-control"></pre>
+        </div>
     </div>
 </div>
 
-<script type="text/javascript">const raw_json_element_name = "raw_json";
+<script type="text/javascript">
+    const raw_json_element_name = "raw_json";
     const formatted_json_element_name = "formatted_json";
+    const enlighterjs_wrapper_class = "EnlighterJSWrapper";
 
     window.addEventListener('load', function () {
         document.getElementById("btn_format").addEventListener("click", doFormat);
@@ -41,20 +46,46 @@
 
     function doClearAll() {
         var input = document.getElementById(raw_json_element_name).value = '';
-        var input = document.getElementById(formatted_json_element_name).value = '';
+        removeElementsByClass(enlighterjs_wrapper_class);
     }
 
     function doFormat() {
         var error_message = document.getElementById("error_message");
         error_message.style.display = 'none';
         var input = document.getElementById(raw_json_element_name).value;
+        removeElementsByClass(enlighterjs_wrapper_class);
         try {
-            document.getElementById(formatted_json_element_name).value = JSON.stringify(JSON.parse(input), null, 4);
+            document.getElementById(formatted_json_element_name).innerHTML = JSON.stringify(JSON.parse(input), null, 4);
+            syntaxHighlightOutput(formatted_json_element_name, "json")            
         } catch (e) {
             error_message.style.display = 'block';
             error_message.textContent = "Error:\n" + e;
         }
-    }</script>
+    }
+
+    function removeElementsByClass(className) {
+        var elements = document.getElementsByClassName(className);
+        while (elements.length > 0) {
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+
+    function syntaxHighlightOutput(element_id, language) {
+        // create config
+        var options = {
+            language: language,
+            theme: 'classic',
+            indent: 4,
+            windowButton: true,
+            rawButton: true,
+            rawcodeDoubleclick: true,
+        };
+
+        // create new instance
+        var enlighter = new EnlighterJS(document.getElementById(element_id), options);
+        enlighter.enlight(true);
+    }
+</script>
 
 @section Styles{
     <!-- Include EnlighterJS Styles -->
@@ -63,7 +94,7 @@
 }
 @section Scripts {
     <!-- Monospace Fonts on Google Webfonts !-->
-    <link href='http://fonts.googleapis.com/css?family=Cutive+Mono|Roboto+Mono:400,700,400italic,500,500italic,700italic|Ubuntu+Mono:400,700,400italic,700italic|Droid+Sans+Mono|Source+Code+Pro:400,600' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Cutive+Mono|Roboto+Mono:400,700,400italic,500,500italic,700italic|Ubuntu+Mono:400,700,400italic,700italic|Droid+Sans+Mono|Source+Code+Pro:400,600' rel='stylesheet' type='text/css'>
 
     <!-- Include MooTools Framework -->
     <script type="text/javascript" src="~/js/MooTools.min.js"></script>
