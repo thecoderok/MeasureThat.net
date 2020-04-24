@@ -52,6 +52,10 @@ function doFormat() {
             // TODO: syntax highlight text area
             document.getElementById(formatted_output_textarea_element_name).value = doFormatImpl();
             document.getElementById(formatted_output_textarea_element_name).style.display = "block";
+            var editor = CodeMirror.fromTextArea(document.getElementById(formatted_output_textarea_element_name), {
+                lineNumbers: true,
+                mode: "xml",
+            });
         } else {
             document.getElementById(formatted_output_element_name).innerHTML = doFormatImpl();
             syntaxHighlightOutput(formatted_output_element_name, getLanguage())

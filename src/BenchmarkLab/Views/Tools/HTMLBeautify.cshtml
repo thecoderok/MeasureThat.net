@@ -10,10 +10,12 @@
 
 @section Styles{
     @{await Html.RenderPartialAsync("_OnlineToolsStyles");}
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify-html.min.js"></script>
 
     <script type="text/javascript">
@@ -23,7 +25,7 @@
 
         function shouldOutputToTextarea() {
             // TODO: refactor this hack
-            // Some html elements can't be placed in <pre> tags and get 
+            // Some html elements can't be placed in <pre> tags and get
             // stripped out by browsers. So we need to put them into text area
             return true;
         }
