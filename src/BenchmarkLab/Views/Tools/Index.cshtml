@@ -1,8 +1,13 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-<h1>Tools:</h1>
+﻿@{
+    ViewData["Title"] = "Free online tools";
+}
+
+<div class="page-header">
+    <h1>Free online tools</h1>
+</div>
+
 <ul>
     <li><a asp-controller="Tools" asp-action="JSONBeautify">Online JSON Beautifier/JSON Formatter</a></li>
+    <li><a asp-controller="Tools" asp-action="JSONMinify">Online JSON Minifier</a></li>
+    <li><a asp-controller="Tools" asp-action="JavaScriptBeautify">Online JavaScript Beautifier/Formatter</a></li>
 </ul>

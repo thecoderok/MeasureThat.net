@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BenchmarkLab.Controllers
 {
@@ -14,6 +10,11 @@ namespace BenchmarkLab.Controllers
         }
 
         public IActionResult JSONBeautify()
+        {
+            return View();
+        }
+
+        public IActionResult JSONMinify()
         {
             return View();
         }

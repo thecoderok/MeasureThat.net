@@ -1,20 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Beautify JSON Online";
+    ViewData["Title"] = "Beautify JavaScript Online";
 }
 
 <div class="page-header">
-    <h1>Beautify JSON: <small>Format JSON Online</small></h1>
+    <h1>Beautify JavaScript: <small>Beautify JavaScript Online</small></h1>
 </div>
 
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
 
 <script type="text/javascript">
     function getLanguage() {
-        return "json";
+        return "js";
     }
 
     function doFormatImpl() {
-        return JSON.stringify(JSON.parse(document.getElementById(raw_input_element_name).value), null, 4);
+        return js_beautify(document.getElementById(raw_input_element_name).value);
     }
 </script>
 
@@ -24,4 +24,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify.js"></script>
 }

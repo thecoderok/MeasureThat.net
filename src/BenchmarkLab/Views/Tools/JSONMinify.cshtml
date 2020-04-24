@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Beautify JSON Online";
+    ViewData["Title"] = "Minify JSON Online";
 }
 
 <div class="page-header">
-    <h1>Beautify JSON: <small>Format JSON Online</small></h1>
+    <h1>Minify JSON: <small>Minify JSON Online</small></h1>
 </div>
 
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
@@ -14,7 +14,7 @@
     }
 
     function doFormatImpl() {
-        return JSON.stringify(JSON.parse(document.getElementById(raw_input_element_name).value), null, 4);
+        return JSON.stringify(JSON.parse(document.getElementById(raw_input_element_name).value));
     }
 </script>
 

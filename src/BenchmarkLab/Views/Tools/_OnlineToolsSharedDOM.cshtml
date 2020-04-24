@@ -1,0 +1,23 @@
+﻿<div class="panel panel-default">
+
+    <div class="panel-heading"><b>Raw input:</b></div>
+
+    <div class="panel-body">
+        <textarea placeholder="Raw input goes here" rows="15" id="raw_input" class="form-control" spellcheck="false"></textarea>
+        <br />
+        <div class="btn-group btn-group-justified" role="group">
+            <a id="btn_format" class="btn btn-primary">Format</a>
+
+            <a id="btn_clear_all" class="btn btn-info">Clear all</a>
+        </div>
+        <br />
+        <div class="alert alert-danger" id="error_message" style="display:none;" role="alert"></div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Formatted output:</b></div>
+    <div class="panel-body">
+        <pre id="formatted_output" class="form-control"></pre>
+    </div>
+</div>

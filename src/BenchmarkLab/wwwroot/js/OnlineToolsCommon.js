@@ -42,8 +42,8 @@ function doFormat() {
     var input = document.getElementById(raw_input_element_name).value;
     removeElementsByClass(enlighterjs_wrapper_class);
     try {
-        document.getElementById(formatted_output_element_name).innerHTML = JSON.stringify(JSON.parse(input), null, 4);
-        syntaxHighlightOutput(formatted_output_element_name, "json")
+        document.getElementById(formatted_output_element_name).innerHTML = doFormatImpl();
+        syntaxHighlightOutput(formatted_output_element_name, getLanguage())
     } catch (e) {
         error_message.style.display = 'block';
         error_message.textContent = "Error:\n" + e;
