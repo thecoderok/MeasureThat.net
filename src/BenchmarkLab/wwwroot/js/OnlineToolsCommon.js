@@ -1,0 +1,51 @@
+﻿const raw_input_element_name = "raw_input";
+const formatted_output_element_name = "formatted_output";
+const enlighterjs_wrapper_class = "EnlighterJSWrapper";
+
+function removeElementsByClass(className) {
+    var elements = document.getElementsByClassName(className);
+    while (elements.length > 0) {
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+}
+
+function syntaxHighlightOutput(element_id, language) {
+    // create config
+    var options = {
+        language: language,
+        theme: 'classic',
+        indent: 4,
+        windowButton: true,
+        rawButton: true,
+        rawcodeDoubleclick: true,
+    };
+
+    // create new instance
+    var enlighter = new EnlighterJS(document.getElementById(element_id), options);
+    enlighter.enlight(true);
+}
+
+function doClearAll() {
+    var input = document.getElementById(raw_input_element_name).value = '';
+    removeElementsByClass(enlighterjs_wrapper_class);
+}
+
+window.addEventListener('load', function () {
+    document.getElementById("btn_format").addEventListener("click", doFormat);
+    document.getElementById("btn_clear_all").addEventListener("click", doClearAll);
+});
+
+
+function doFormat() {
+    var error_message = document.getElementById("error_message");
+    error_message.style.display = 'none';
+    var input = document.getElementById(raw_input_element_name).value;
+    removeElementsByClass(enlighterjs_wrapper_class);
+    try {
+        document.getElementById(formatted_output_element_name).innerHTML = JSON.stringify(JSON.parse(input), null, 4);
+        syntaxHighlightOutput(formatted_output_element_name, "json")
+    } catch (e) {
+        error_message.style.display = 'block';
+        error_message.textContent = "Error:\n" + e;
+    }
+}
