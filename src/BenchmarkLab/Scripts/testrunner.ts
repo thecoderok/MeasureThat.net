@@ -57,9 +57,6 @@ class TestRunnerController {
         var _myThis = this;
         try {
             var htmlPrep: string = (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
-            //window.parent["$"](htmlPrep).appendTo(document.body);
-            /*document.getElementById('validation-html-preparation').innerHTML =
-                (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;*/
             eval((parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value);
 
             var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');

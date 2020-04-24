@@ -72,7 +72,6 @@ class AddNewTestPageController {
             (instance as CodeMirror.EditorFromTextArea).save();
             
         });
-        //editor.setValue(' \n \n \n');
 
         $("[data-action='new-test']").on("click", () => this.makeNewTestCase("", ""));
 
