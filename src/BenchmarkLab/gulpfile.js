@@ -9,11 +9,6 @@ var gulp = require("gulp"),
     del = require("del");
 var ts = require("gulp-typescript");
 var tsProject = ts.createProject("Scripts/tsconfig.json");
-var browserify = require("browserify");
-var source = require('vinyl-source-stream');
-var tsify = require("tsify");
-var watchify = require("watchify");
-var gutil = require("gulp-util");
 
 var webroot = "./wwwroot/";
 var scriptsRoot = "./Scripts/";
@@ -58,7 +53,13 @@ gulp.task("min:css",
             .pipe(gulp.dest("."));
     });
 
-gulp.task("min", gulp.parallel("min:js", "min:css"));
+gulp.task("build:ts",
+    function () {
+        gulp.src(paths.scripts).pipe(gulp.dest('wwwroot/js'));
+        return tsProject.src().pipe(tsProject()).js.pipe(gulp.dest('wwwroot/js'));
+    });
+
+gulp.task("min", gulp.parallel("min:js", "min:css", "build:ts"));
 
 gulp.task("copy-html",
     function() {

@@ -1,6 +1,6 @@
-﻿const raw_input_element_name = "raw_input";
-const formatted_output_element_name = "formatted_output";
-const formatted_output_textarea_element_name = "formatted_output_text";
+﻿raw_input_element_name = "raw_input";
+formatted_output_element_name = "formatted_output";
+formatted_output_textarea_element_name = "formatted_output_text";
 
 function removeElementsByClass(className) {
     var elements = document.getElementsByClassName(className);

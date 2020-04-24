@@ -106,6 +106,9 @@
                                 <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js'></script>">angular.js</a></li>
                             </ul>
                         </div>
+                        <button type="button" class="btn btn-default">
+                            Format
+                        </button>
                     </div>
                     <hr>
                     <div class="form-group">
@@ -191,7 +194,10 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 
+    @if (bool.Parse(configuration["ReCaptchaEnabled"]))
+    {
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    }
 
     <environment names="Development">
         <script src="~/lib/mustache/mustache.js" asp-append-version="true"></script>
@@ -201,6 +207,8 @@
     </environment>
 
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify-html.min.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
@@ -221,9 +229,7 @@
         </li>
     </script>
 
-    <script type="text/javascript">
-        var addPageController = new AddNewTestPageController();
+    <script type="text/javascript">var addPageController = new AddNewTestPageController();
         new AppendSnippetHandler();
-        new ClientValidationHandler();
-    </script>
-}
+        new ClientValidationHandler();</script>
+    }
