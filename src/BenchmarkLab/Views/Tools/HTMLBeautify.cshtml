@@ -1,20 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Beautify JavaScript Online";
+    ViewData["Title"] = "Beautify HTML Online";
 }
 
 <div class="page-header">
-    <h1>Beautify JavaScript: <small>Format JavaScript Online</small></h1>
+    <h1>Beautify HTML: <small>Format HTML Online</small></h1>
 </div>
 
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
 
 <script type="text/javascript">
     function getLanguage() {
-        return "js";
+        return "html";
     }
 
     function doFormatImpl() {
-        return js_beautify(document.getElementById(raw_input_element_name).value);
+        return html_beautify(document.getElementById(raw_input_element_name).value);
     }
 </script>
 
@@ -24,5 +24,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify-html.min.js"></script>
 }
