@@ -30,6 +30,7 @@ function doClearAll() {
     var input = document.getElementById(raw_input_element_name).value = '';
     removeElementsByClass(enlighterjs_wrapper_class);
     document.getElementById(formatted_output_textarea_element_name).value = '';
+    removeElementsByClass("CodeMirror");
 }
 
 window.addEventListener('load', function () {
