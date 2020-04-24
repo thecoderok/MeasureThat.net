@@ -8,20 +8,22 @@
 
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
 
-<script type="text/javascript">
-    function getLanguage() {
-        return "json";
-    }
-
-    function doFormatImpl() {
-        return JSON.stringify(JSON.parse(document.getElementById(raw_input_element_name).value));
-    }
-</script>
-
 @section Styles{
-    @{await Html.RenderPartialAsync("_OnlineToolsStyles");}
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+
+    <script type="text/javascript">
+        function getLanguage() {
+            return "javascript";
+        }
+
+        function doFormatImpl() {
+            return JSON.stringify(JSON.parse(document.getElementById(raw_input_element_name).value));
+        }
+    </script>
+
 }

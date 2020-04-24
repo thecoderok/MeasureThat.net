@@ -191,8 +191,6 @@
     <None Include="wwwroot\blog_source\themes\landscape\_config.yml" />
     <None Include="wwwroot\blog_source\yarn.lock" />
     <None Include="wwwroot\blog_source\_config.yml" />
-    <None Include="wwwroot\js\EnlighterJS.min.js" />
-    <None Include="wwwroot\js\MooTools.min.js" />
   </ItemGroup>
 
   <ItemGroup>

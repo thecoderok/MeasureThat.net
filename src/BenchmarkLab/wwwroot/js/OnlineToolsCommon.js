@@ -1,6 +1,5 @@
 ﻿const raw_input_element_name = "raw_input";
 const formatted_output_element_name = "formatted_output";
-const enlighterjs_wrapper_class = "EnlighterJSWrapper";
 const formatted_output_textarea_element_name = "formatted_output_text";
 
 function removeElementsByClass(className) {
@@ -10,25 +9,8 @@ function removeElementsByClass(className) {
     }
 }
 
-function syntaxHighlightOutput(element_id, language) {
-    // create config
-    var options = {
-        language: language,
-        theme: 'classic',
-        indent: 4,
-        windowButton: true,
-        rawButton: true,
-        rawcodeDoubleclick: true,
-    };
-
-    // create new instance
-    var enlighter = new EnlighterJS(document.getElementById(element_id), options);
-    enlighter.enlight(true);
-}
-
 function doClearAll() {
-    var input = document.getElementById(raw_input_element_name).value = '';
-    removeElementsByClass(enlighterjs_wrapper_class);
+    document.getElementById(raw_input_element_name).value = '';
     document.getElementById(formatted_output_textarea_element_name).value = '';
     removeElementsByClass("CodeMirror");
 }
@@ -42,25 +24,13 @@ window.addEventListener('load', function () {
 function doFormat() {
     var error_message = document.getElementById("error_message");
     error_message.style.display = 'none';
-    var input = document.getElementById(raw_input_element_name).value;
-    removeElementsByClass(enlighterjs_wrapper_class);
+    removeElementsByClass("CodeMirror");
     try {
-        var outputToTextArea = false;
-        if (typeof shouldOutputToTextarea == 'function') {
-            outputToTextArea = true;
-        }
-        if (outputToTextArea) {
-            // TODO: syntax highlight text area
-            document.getElementById(formatted_output_textarea_element_name).value = doFormatImpl();
-            document.getElementById(formatted_output_textarea_element_name).style.display = "block";
-            var editor = CodeMirror.fromTextArea(document.getElementById(formatted_output_textarea_element_name), {
-                lineNumbers: true,
-                mode: "xml",
-            });
-        } else {
-            document.getElementById(formatted_output_element_name).innerHTML = doFormatImpl();
-            syntaxHighlightOutput(formatted_output_element_name, getLanguage())
-        }
+        document.getElementById(formatted_output_textarea_element_name).value = doFormatImpl();
+        CodeMirror.fromTextArea(document.getElementById(formatted_output_textarea_element_name), {
+            lineNumbers: true,
+            mode: getLanguage(),
+        });
     } catch (e) {
         error_message.style.display = 'block';
         error_message.textContent = "Error:\n" + e;

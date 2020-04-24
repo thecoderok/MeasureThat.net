@@ -8,21 +8,23 @@
 
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
 
-<script type="text/javascript">
-    function getLanguage() {
-        return "js";
-    }
-
-    function doFormatImpl() {
-        return js_beautify(document.getElementById(raw_input_element_name).value);
-    }
-</script>
 
 @section Styles{
-    @{await Html.RenderPartialAsync("_OnlineToolsStyles");}
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify.min.js"></script>
+
+    <script type="text/javascript">
+        function getLanguage() {
+            return "javascript";
+        }
+
+        function doFormatImpl() {
+            return js_beautify(document.getElementById(raw_input_element_name).value);
+        }
+    </script>
 }

@@ -9,7 +9,6 @@
 @{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
 
 @section Styles{
-    @{await Html.RenderPartialAsync("_OnlineToolsStyles");}
     @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
 }
 
@@ -17,17 +16,11 @@
     @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.11.0/beautify-html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.50.2/mode/htmlmixed/htmlmixed.min.js" integrity="sha256-9Dta/idKg17o/o0a3PEsL6JjkYvijj9UMh3Z86HhUcg=" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
         function getLanguage() {
-            return "html";
-        }
-
-        function shouldOutputToTextarea() {
-            // TODO: refactor this hack
-            // Some html elements can't be placed in <pre> tags and get
-            // stripped out by browsers. So we need to put them into text area
-            return true;
+            return "htmlmixed";
         }
 
         function doFormatImpl() {
