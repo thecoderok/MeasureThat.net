@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Format SQL Online";
+}
+
+<div class="page-header">
+    <h1>Format SQL: <small>pretty-print SQL queries</small></h1>
+</div>
+
+@{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
+
+@section Styles{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/2.3.3/sql-formatter.min.js" integrity="sha256-vnWqa9aj6dKD1mp2bF+obSd+MvYUM1vJrEpFrbd0Hxs=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.50.2/mode/sql/sql.min.js" integrity="sha256-3WAHA5h12+TuoFn+CFUM0NUrDiM68m2Iu6v7ijJYh20=" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+        function getLanguage() {
+            return "sql";
+        }
+
+        function doFormatImpl() {
+            return sqlFormatter.format(document.getElementById(raw_input_element_name).value);
+        }
+    </script>
+}

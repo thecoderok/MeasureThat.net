@@ -33,5 +33,10 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
+        
+        public IActionResult FormatSQL()
+        {
+            return View();
+        }
     }
 }
