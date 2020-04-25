@@ -106,8 +106,8 @@
                                 <li><a data-role="insert-snippet" data-target="HtmlPreparationCode" data-text="<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js'></script>">angular.js</a></li>
                             </ul>
                         </div>
-                        <button type="button" class="btn btn-default">
-                            Format
+                        <button type="button" class="btn btn-default" data-format-type="html" data-role="format-input" data-target="HtmlPreparationCode" id="format_html">
+                            Format HTML
                         </button>
                     </div>
                     <hr>
@@ -126,6 +126,9 @@
                                 <li><a data-role="insert-snippet" data-target="ScriptPreparationCode" data-text="console.log('');">console.log</a></li>
                             </ul>
                         </div>
+                        <button type="button" class="btn btn-default" data-target="ScriptPreparationCode" data-format-type="js" data-role="format-input">
+                            Format JavaScript
+                        </button>
                     </div>
                 </div>
             </div>
@@ -229,7 +232,10 @@
         </li>
     </script>
 
-    <script type="text/javascript">var addPageController = new AddNewTestPageController();
+    <script type="text/javascript">
+        var addPageController = new AddNewTestPageController();
         new AppendSnippetHandler();
-        new ClientValidationHandler();</script>
-    }
+        new ClientValidationHandler();
+        new InputFormatHandler();
+    </script>
+}

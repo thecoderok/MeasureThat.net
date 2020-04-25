@@ -79,6 +79,7 @@ class AddNewTestPageController {
         $("[data-content='existing-test']").each((idx, el) => {
             this.makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
         });
+        $("#format_html").on("click", () => { });
     }
 }
 
@@ -369,6 +370,39 @@ class AppendSnippetHandler {
         var targetEl = document.getElementById(target) as HTMLTextAreaElement;
         var editor = (targetEl.nextSibling as any).CodeMirror as CodeMirror.EditorFromTextArea;
         editor.setValue(editor.getValue() + "\n" + snippet);
+        editor.save();
+    }
+}
+
+declare var html_beautify: any;
+declare var js_beautify: any;
+class InputFormatHandler {
+
+    constructor() {
+        $(document).ready(() => this.initialize());
+    }
+
+    private initialize(): void {
+        $("[data-role='format-input']").on("click", this.handleFormat);
+    }
+
+    private handleFormat(eventObject: JQueryEventObject): void {
+        var target: string = eventObject.target.getAttribute("data-target");
+        if (target === '') {
+            throw new Error("Can't get target");
+        }
+
+        var type: string = eventObject.target.getAttribute("data-format-type");
+        
+        var targetEl = document.getElementById(target) as HTMLTextAreaElement;
+        var editor = (targetEl.nextSibling as any).CodeMirror as CodeMirror.EditorFromTextArea;
+        var formatted_value: string;
+        if (type === "html") {
+            formatted_value = html_beautify(editor.getValue());
+        } else if (type === "js") {
+            formatted_value = js_beautify(editor.getValue());
+        }
+        editor.setValue(formatted_value);
         editor.save();
     }
 }
