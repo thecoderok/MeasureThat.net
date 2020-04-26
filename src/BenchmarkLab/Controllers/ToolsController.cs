@@ -48,5 +48,10 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
+
+        // User Agent String
+        // Remote IP
+        // Browser features
+        // Base64 Encode/Decode
     }
 }
