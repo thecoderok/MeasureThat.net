@@ -38,5 +38,15 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
+
+        public IActionResult SortLines()
+        {
+            return View();
+        }
+
+        public IActionResult ComputeFileHash()
+        {
+            return View();
+        }
     }
 }
