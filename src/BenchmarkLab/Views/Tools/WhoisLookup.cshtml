@@ -1,0 +1,41 @@
+﻿@model Whois.Models.WhoisResponse
+
+@{
+    ViewData["Title"] = "Whois Domain Lookup";
+}
+
+<div class="page-header">
+    <h1>Whois Domain Lookup</h1>
+    <p>WHOIS is a query and response protocol that is widely used for querying databases that store the registered users or assignees of an Internet resource, such as a domain name, an IP address block or an autonomous system, but is also used for a wider range of other information. The protocol stores and delivers database content in a human-readable format. The current iteration of the WHOIS protocol was drafted by the Internet Society, and is documented in RFC 3912.</p>
+    <a href="https://en.wikipedia.org/wiki/WHOIS" target="_blank">Wikipedia</a>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        @using (Html.BeginForm("WhoisLookup", "Tools", FormMethod.Get))
+        {
+            <div class="form-group">
+                <label for="exampleInputName2">Domain</label>
+                <input type="text" class="form-control" name="domain" placeholder="e.g. measurethat.net, github.com, etc" value="@ViewData["domain"]">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        }
+
+    </div>
+</div>
+
+@if (Model != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>Output:</b></div>
+        <div class="panel-body">
+            <textarea rows="25" id="formatted_output_text" class="form-control" spellcheck="false">@Model.Content</textarea>
+        </div>
+    </div>
+}
+
+@if (ViewData.ContainsKey("error"))
+{
+    <div class="alert alert-danger" role="alert">@ViewData["error"]</div>
+}
