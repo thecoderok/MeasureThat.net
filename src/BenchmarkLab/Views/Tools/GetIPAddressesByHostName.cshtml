@@ -1,0 +1,44 @@
+﻿@model System.Net.IPAddress[]
+
+@{
+    ViewData["Title"] = "Hostname to IP Address Lookup";
+}
+
+<div class="page-header">
+    <h1>Hostname to IP Address Lookup</h1>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        @using (Html.BeginForm("GetIPAddressesByHostName", "Tools", FormMethod.Get))
+        {
+            <div class="form-group">
+                <label for="exampleInputName2">Host name</label>
+                <input type="text" class="form-control" name="host" placeholder="e.g. measurethat.net, github.com, etc" value="@ViewData["host"]">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        }
+
+    </div>
+</div>
+
+@if (Model != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>IP Addresses:</b></div>
+        <div class="panel-body">
+            @{
+                foreach(var ip in @Model)
+                {
+                    <p>@ip.ToString()</p>
+                }
+            }
+        </div>
+    </div>
+}
+
+@if (ViewData.ContainsKey("error"))
+{
+    <div class="alert alert-danger" role="alert">@ViewData["error"]</div>
+}

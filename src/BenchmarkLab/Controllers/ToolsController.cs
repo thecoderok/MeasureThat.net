@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Whois;
@@ -97,9 +98,27 @@ namespace BenchmarkLab.Controllers
             return View();
         }
 
+        public async Task<IActionResult> GetIPAddressesByHostName(string host)
+        {
+            if (String.IsNullOrWhiteSpace(host))
+            {
+                return View();
+            }
+            try
+            {
+                IPAddress[] addresses = await Dns.GetHostAddressesAsync(host);
+                return View(addresses);
+            }
+            catch (Exception e)
+            {
+                ViewData["error"] = e.Message;
+                return View();
+            }
+        }
+
         // User Agent String
         // Remote IP
         // Browser features
-        // Base64 Encode/Decode
+        // https://stackoverflow.com/questions/13798286/ip-address-of-the-user-who-is-browsing-my-website
     }
 }
