@@ -1,4 +1,35 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{
+    ViewData["Title"] = "Base64 Decode Online";
+    ViewData["ButtonNameOverride"] = "Decode";
+}
+
+    <div class="page-header">
+        <h1>Base64 Decode Online</h1>
+        <p>
+            Base64 is a group of binary-to-text encoding schemes that represent binary data in an ASCII string format by translating it into a radix-64 representation. The term Base64 originates from a specific MIME content transfer encoding. Each Base64 digit represents exactly 6 bits of data. Three 8-bit bytes (i.e., a total of 24 bits) can therefore be represented by four 6-bit Base64 digits.
+
+            Common to all binary-to-text encoding schemes, Base64 is designed to carry data stored in binary formats across channels that only reliably support text content. Base64 is particularly prevalent on the World Wide Web where its uses include the ability to embed image files or other binary assets inside textual assets such as HTML and CSS files.
+        </p>
+        <a href="https://en.wikipedia.org/wiki/Base64" target="_blank">Wikipedia</a>
+    </div>
+
+@{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
+
+@section Styles{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.50.2/mode/htmlmixed/htmlmixed.min.js" integrity="sha256-9Dta/idKg17o/o0a3PEsL6JjkYvijj9UMh3Z86HhUcg=" crossorigin="anonymous"></script>
+    <script src="~/js/base64.min.js"></script>
+
+    <script type="text/javascript">function getLanguage() {
+            return "htmlmixed";
+        }
+
+        function doFormatImpl() {
+            return Base64.decode(document.getElementById(raw_input_element_name).value);
+        }</script>
+}
