@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "URL Decode Online";
+    ViewData["ButtonNameOverride"] = "Decode";
+}
+
+<div class="page-header">
+    <h1>URL Decode</h1>
+</div>
+
+@{await Html.RenderPartialAsync("_OnlineToolsSharedDOM");}
+
+@section Styles{
+    @{await Html.RenderPartialAsync("_CodeMirrorStyles");}
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_OnlineToolsScripts");}
+    @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.50.2/mode/htmlmixed/htmlmixed.min.js" integrity="sha256-9Dta/idKg17o/o0a3PEsL6JjkYvijj9UMh3Z86HhUcg=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function getLanguage() {
+            return "htmlmixed";
+        }
+
+        function doFormatImpl() {
+            return decodeURIComponent(document.getElementById(raw_input_element_name).value);
+        }
+    </script>
+}

@@ -1,4 +1,11 @@
-﻿<div class="panel panel-default">
+﻿@{ 
+    var actionButtonName = "Format";
+    if (ViewData.ContainsKey("ButtonNameOverride"))
+    {
+        actionButtonName = (string) ViewData["ButtonNameOverride"];
+    }
+}
+<div class="panel panel-default">
 
     <div class="panel-heading"><b>Raw input:</b></div>
 
@@ -6,7 +13,7 @@
         <textarea placeholder="Raw input goes here" rows="15" id="raw_input" class="form-control" spellcheck="false"></textarea>
         <br />
         <div class="btn-group btn-group-justified" role="group">
-            <a id="btn_format" class="btn btn-primary">Format</a>
+            <a id="btn_format" class="btn btn-primary">@actionButtonName</a>
 
             <a id="btn_clear_all" class="btn btn-info">Clear all</a>
         </div>

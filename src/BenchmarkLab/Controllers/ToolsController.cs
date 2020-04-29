@@ -75,7 +75,16 @@ namespace BenchmarkLab.Controllers
                 ViewData["error"] = e.Message;
                 return View();
             }
-            
+        }
+
+        public IActionResult URLEncode()
+        {
+            return View();
+        }
+
+        public IActionResult URLDecode()
+        {
+            return View();
         }
 
         // User Agent String
