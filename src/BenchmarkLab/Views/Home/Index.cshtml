@@ -23,7 +23,7 @@
                 @{ await Html.RenderPartialAsync("_SharedCreateBenchmark"); }
 
                 <a asp-controller="Benchmarks" asp-action="Index" class="btn btn-default btn-lg">Latest benchmarks</a>
-                <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
+                <a asp-controller="Tools" asp-action="Index" class="btn btn-default btn-lg">Free Online Tools</a>
             </p>
             <br>
             <p>
@@ -90,4 +90,8 @@
             </div>
         }
     }
+    <div class="col-md-6">
+        <h2>Check out our free online tools:</h2>
+        @await Html.PartialAsync("_OnlineToolsList")
+    </div>
 </div>
