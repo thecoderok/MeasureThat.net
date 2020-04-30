@@ -54,7 +54,7 @@
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.0" />
     <PackageReference Include="Wangkanai.Detection" Version="2.0.0-beta8" />
-    <PackageReference Include="Whois" Version="2.0.2" />
+    <PackageReference Include="WhoisClient.NET" Version="3.0.1" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">

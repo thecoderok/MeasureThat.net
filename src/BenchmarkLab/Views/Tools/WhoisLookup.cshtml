@@ -1,4 +1,4 @@
-﻿@model Whois.Models.WhoisResponse
+﻿@model Whois.NET.WhoisResponse
 
 @{
     ViewData["Title"] = "Whois Domain Lookup";
@@ -16,7 +16,7 @@
         @using (Html.BeginForm("WhoisLookup", "Tools", FormMethod.Get))
         {
             <div class="form-group">
-                <label for="exampleInputName2">Domain</label>
+                <label for="exampleInputName2">Domain or IP (without 'http://' or 'https://')</label>
                 <input type="text" class="form-control" name="domain" placeholder="e.g. measurethat.net, github.com, etc" value="@ViewData["domain"]">
             </div>
             <button type="submit" class="btn btn-default">Submit</button>
@@ -30,7 +30,8 @@
     <div class="panel panel-default">
         <div class="panel-heading"><b>Output:</b></div>
         <div class="panel-body">
-            <textarea rows="35" id="formatted_output_text" class="form-control" spellcheck="false">@Model.Content</textarea>
+            <div><b>Responded servers:</b> @String.Join(", ", Model.RespondedServers)</div>
+            <textarea rows="25" id="formatted_output_text" class="form-control" spellcheck="false">@Model.Raw</textarea>
         </div>
     </div>
 }
