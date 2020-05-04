@@ -137,9 +137,16 @@ namespace BenchmarkLab.Controllers
             }
         }
 
+        public IActionResult FormatHTML()
+        {
+            return View();
+        }
+
         // User Agent String
         // Remote IP
         // Browser features
         // https://stackoverflow.com/questions/13798286/ip-address-of-the-user-who-is-browsing-my-website
+        // https://github.com/rtfpessoa/diff2html#diff2htmlui-browser
+        // Sort lines
     }
 }
