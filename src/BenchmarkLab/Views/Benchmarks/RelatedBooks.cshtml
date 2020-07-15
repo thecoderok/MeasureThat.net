@@ -1,0 +1,18 @@
+﻿@using BenchmarkLab.Logic
+@model MeasureThat.Net.Models.BenchmarkDto
+@inject RelatedBooksFinder bookFinder
+@{var links = bookFinder.FindLinks(Model);}
+
+@if (links.Count > 0)
+{
+<h3>Recommended literature:</h3>
+<div class="row">
+    @foreach(var link in links)
+    {
+    <div class="col-md-2">@Html.Raw(link.Code)</div>
+    
+    }
+</div>
+
+<hr />
+}

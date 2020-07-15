@@ -31,19 +31,20 @@
     </h2>
     <h4>@Model.Description</h4>
     <h4><b>Comparing performance of:</b> @string.Join(" vs ", Model.TestCases.Select(t => t.TestCaseName).ToList())</h4>
-    <h5><b>Created:</b> @Model.WhenCreated.Humanize()
+    <h5>
+        <b>Created:</b> @Model.WhenCreated.Humanize()
         <b>by:</b>
         @if (string.IsNullOrWhiteSpace(Model.OwnerId))
         {
-            <text>
-                Guest
-            </text>
+        <text>
+            Guest
+        </text>
         }
         else
         {
-            <text>
-                Registered User
-            </text>
+        <text>
+            Registered User
+        </text>
         }
     </h5>
     <h5>
@@ -70,19 +71,19 @@
                     <a class="btn btn-default" asp-action="ListResults" asp-route-id="@Model.Id">Previous results</a>
                     @if (showEditButton)
                     {
-                        <a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                    <a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
                     }
                     <button class="btn btn-default" id="fork-btn">
                         <i class="fa fa-code-fork" aria-hidden="true">Fork</i>
                     </button>
                     @if (showEditButton)
                     {
-                        <a class="btn btn-default" data-entity-id="@Model.Id" data-role="delete-benchmark">Delete</a>
+                    <a class="btn btn-default" data-entity-id="@Model.Id" data-role="delete-benchmark">Delete</a>
                     }
                 </div>
             </div>
         </div>
-        <div class="panel-heading"id="experimental_features" style="display:none">
+        <div class="panel-heading" id="experimental_features" style="display:none">
             <div class="row">
                 <div class="col-md-6">
                     <h4>
@@ -110,10 +111,10 @@
 
                     @foreach (var test in Model.TestCases)
                     {
-                        <tr data-row-for="@test.TestCaseName">
-                            <td>@test.TestCaseName</td>
-                            <td data-role="result-label"></td>
-                        </tr>
+                    <tr data-row-for="@test.TestCaseName">
+                        <td>@test.TestCaseName</td>
+                        <td data-role="result-label"></td>
+                    </tr>
                     }
                 </table>
                 <h4><b>Fastest:</b> <span data-role="fastest-label">N/A</span></h4>
@@ -130,7 +131,7 @@
     </div>
     <div id="chart_div" style="width: 90%; height: 35%;"></div>
     <div id="memory_chart_div"></div>
-</div>  
+</div>
 
 @section Styles
     {
@@ -139,16 +140,16 @@
 
 @using (Html.BeginForm("PublishResults", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "results-form" }))
 {
-    @Html.AntiForgeryToken()
-    <input name="BenchmarkId" type="hidden" value="@Model.Id" />
-    <input name="BenchmarkVersion" type="hidden" value="@Model.Version" />
+@Html.AntiForgeryToken()
+<input name="BenchmarkId" type="hidden" value="@Model.Id" />
+<input name="BenchmarkVersion" type="hidden" value="@Model.Version" />
     var counter = 0;
     foreach (var testCase in Model.TestCases)
     {
-        <input name="ResultRows[@counter].TestName" type="hidden" />
-        <input name="ResultRows[@counter].NumberOfSamples" type="hidden" />
-        <input name="ResultRows[@counter].ExecutionsPerSecond" type="hidden" />
-        <input name="ResultRows[@counter].RelativeMarginOfError" type="hidden" />
+<input name="ResultRows[@counter].TestName" type="hidden" />
+<input name="ResultRows[@counter].NumberOfSamples" type="hidden" />
+<input name="ResultRows[@counter].ExecutionsPerSecond" type="hidden" />
+<input name="ResultRows[@counter].RelativeMarginOfError" type="hidden" />
         counter++;
     }
 }
@@ -156,8 +157,8 @@
 
 @using (Html.BeginForm("Fork", "Benchmarks", FormMethod.Post, new { @class = "hidden", id = "fork-form" }))
 {
-    @Html.AntiForgeryToken()
-    <input name="id" type="hidden" value="@Model.Id" />
+@Html.AntiForgeryToken()
+<input name="id" type="hidden" value="@Model.Id" />
 }
 
 <div class="hidden" id="delete-form">
@@ -182,6 +183,8 @@
 }
 
 <hr />
+@await Html.PartialAsync("RelatedBooks", Model)
+
 <div class="text-center">
     <button class="show-comments btn btn-default"><i class="fa fa-comments" aria-hidden="true"></i>&nbsp;Comments</button>
 </div>

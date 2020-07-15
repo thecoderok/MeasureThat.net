@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 namespace MeasureThat.Net
 {
     using System.IO;
+    using BenchmarkLab.Logic;
     using BenchmarkLab.Logic.Web.Blog;
     using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Http;
@@ -69,6 +70,7 @@ namespace MeasureThat.Net
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<RelatedBooksFinder, RelatedBooksFinder>();
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
