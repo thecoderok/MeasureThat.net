@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/9abb1bbc-9756-43ad-8275-0d461c2798ad/resourceGroups/Default-ApplicationInsights-CentralUS/providers/Microsoft.Web/sites/BenchmarkLab",
+    "appService.deploySubpath": "src/BenchmarkLab/publish"
+}

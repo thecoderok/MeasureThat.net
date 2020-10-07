@@ -107,3 +107,21 @@ body {
 .x.axis path {
   display: none;
 }
+
+@media(max-width: 600px) {
+  .tjs {
+      flex-direction: column;
+  }
+  .tjs .left {
+      flex: 1;
+      margin-bottom: 10px;
+  }
+  .tjs .right {
+      flex: 1 !important;
+      width: 100%;
+  }
+  .tjs .right img {
+      width: 100%;
+      height: auto;
+  }
+}
