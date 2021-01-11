@@ -70,7 +70,6 @@ namespace MeasureThat.Net
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddSingleton<RelatedBooksFinder, RelatedBooksFinder>();
 
             services.AddScoped<ValidateReCaptchaAttribute>();
 
