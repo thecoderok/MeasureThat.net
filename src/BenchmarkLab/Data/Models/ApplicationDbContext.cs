@@ -83,8 +83,32 @@ namespace MeasureThat.Net.Data
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_ResultRow_ToResult");
             });
+
+            modelBuilder.Entity<SaveThatBlob>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Blob).IsRequired();
+
+                entity.Property(e => e.Language).HasMaxLength(40);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.OwnerId)
+                    .IsRequired()
+                    .HasMaxLength(450);
+
+                /*entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.SaveThatBlob)
+                    .HasForeignKey(d => d.OwnerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SaveThatBlob_ToUsers");*/
+            });
+
         }
-        
+
         public virtual DbSet<Benchmark> Benchmark { get; set; }
         public virtual DbSet<BenchmarkTest> BenchmarkTest { get; set; }
         public virtual DbSet<Result> Result { get; set; }
