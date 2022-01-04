@@ -26,12 +26,6 @@ namespace MeasureThat.Net.Controllers
         {
             return View();
         }
-
-        public IActionResult Changelog()
-        {
-            return View();
-        }
-
         public IActionResult Discussions()
         {
             return View();
