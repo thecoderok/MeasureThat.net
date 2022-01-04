@@ -65,6 +65,7 @@
     <Build Include="Tables\AspNetUsers.sql" />
     <Build Include="Tables\Results.sql" />
     <Build Include="Tables\ResultRow.sql" />
+    <Build Include="Tables\SaveThatBlob.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BenchmarkLab.DB.refactorlog" />
