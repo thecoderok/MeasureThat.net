@@ -54,24 +54,16 @@
             </form>
         </section>
     </div>
-    <div class="col-md-4">
-        <section>
-            <h4>Use another service to log in.</h4>
-            <hr />
+    
             @{
                 var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-                if (loginProviders.Count == 0)
+                if (loginProviders.Count > 0)
                 {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+					<div class="col-md-4">
+					<section>
+						<h4>Use another service to log in.</h4>
+						<hr />
+                     <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                         <div>
                             <p>
                                 @foreach (var provider in loginProviders)
@@ -81,10 +73,12 @@
                             </p>
                         </div>
                     </form>
-                }
-            }
-        </section>
+					        </section>
     </div>
+                }
+
+            }
+
 </div>
 
 @section Scripts {

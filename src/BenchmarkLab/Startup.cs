@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Identity;
 namespace MeasureThat.Net
 {
     using System.IO;
-    using BenchmarkLab.Logic;
     using BenchmarkLab.Logic.Web.Blog;
     using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Http;
@@ -75,6 +74,7 @@ namespace MeasureThat.Net
 
             services.AddTransient<SqlServerBenchmarkRepository>();
             services.AddTransient<SqlServerResultsRepository>();
+            services.AddTransient<SqlServerSaveThatBlobReporitory>();
 
             services.AddOptions();
             services.Configure<ResultsConfig>(options => Configuration.GetSection("ResultsConfig").Bind(options));

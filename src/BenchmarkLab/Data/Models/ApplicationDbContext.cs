@@ -113,5 +113,6 @@ namespace MeasureThat.Net.Data
         public virtual DbSet<BenchmarkTest> BenchmarkTest { get; set; }
         public virtual DbSet<Result> Result { get; set; }
         public virtual DbSet<ResultRow> ResultRow { get; set; }
+        public virtual DbSet<SaveThatBlob> SaveThatBlob { get; set; }
     }
 }

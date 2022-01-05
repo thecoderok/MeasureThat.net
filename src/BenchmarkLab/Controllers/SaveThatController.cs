@@ -1,14 +1,37 @@
-﻿using MeasureThat.Net.Logic.Web;
+﻿using JetBrains.Annotations;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
-namespace BenchmarkLab.Controllers
+namespace MeasureThat.Controllers
 {
     public class SaveThatController : Controller
     {
-        // GET: SaveThat
-        public ActionResult Index()
+        private readonly SqlServerSaveThatBlobReporitory m_saveThatBlobReporitory;
+        private readonly ILogger m_logger;
+        private readonly UserManager<ApplicationUser> m_userManager;
+
+        public SaveThatController(
+            [NotNull] SqlServerSaveThatBlobReporitory saveThatBlobReporitory,
+            [NotNull] UserManager<ApplicationUser> userManager,
+            [NotNull] ILoggerFactory loggerFactory)
         {
+            this.m_saveThatBlobReporitory = saveThatBlobReporitory;
+            this.m_userManager = userManager;
+            this.m_logger = loggerFactory.CreateLogger<SaveThatController>();
+        }
+
+        // GET: SaveThat
+        public async Task<IActionResult> Index()
+        {
+            var user = await this.m_userManager.GetUserAsync(this.HttpContext.User);
+            await m_saveThatBlobReporitory.Add(user.Id);
+            var entities = await m_saveThatBlobReporitory.ListAll(25, 0);
             return View();
         }
 
