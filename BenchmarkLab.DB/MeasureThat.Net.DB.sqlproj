@@ -66,6 +66,7 @@
     <Build Include="Tables\Results.sql" />
     <Build Include="Tables\ResultRow.sql" />
     <Build Include="Tables\SaveThatBlob.sql" />
+    <Build Include="Tables\GenAIDescription.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BenchmarkLab.DB.refactorlog" />
