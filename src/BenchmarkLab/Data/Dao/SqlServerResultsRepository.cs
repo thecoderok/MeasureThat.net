@@ -7,6 +7,7 @@ using MeasureThat.Net.Data.Models;
 using System.Linq;
 using MeasureThat.Net.Exceptions;
 using System;
+using BenchmarkLab.Data.Models;
 
 namespace MeasureThat.Net.Data.Dao
 {
@@ -116,6 +117,15 @@ namespace MeasureThat.Net.Data.Dao
             BenchmarkResultDto result = DbEntityToModel(entity);
 
             return result;
+        }
+
+        public virtual async Task<GenAidescription> GetGenAISummary(long benchmarkId)
+        {
+            const string defaultModel = "llama3.1:latest";
+            var entity = await this.m_db.GenAidescription
+                .FirstOrDefaultAsync(m => m.BenchmarkId == benchmarkId && m.Model == defaultModel)
+                .ConfigureAwait(false);
+            return entity;
         }
 
         /// <summary>

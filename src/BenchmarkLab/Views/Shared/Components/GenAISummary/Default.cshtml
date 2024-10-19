@@ -1,0 +1,18 @@
+﻿@using MeasureThat.Net.Logic.Web
+@model BenchmarkLab.Data.Models.GenAidescription
+
+<textarea id="markdown-input" style="display:none;">@Model.Description</textarea>
+<div id="markdown-output"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    document.getElementById('markdown-input').addEventListener('input', function() {
+        var markdownText = this.value;
+        var htmlContent = marked(markdownText);
+        document.getElementById('markdown-output').innerHTML = htmlContent;
+    });
+
+    // Initial render
+    var initialMarkdown = document.getElementById('markdown-input').value;
+    document.getElementById('markdown-output').innerHTML = marked.parse(initialMarkdown);
+</script>

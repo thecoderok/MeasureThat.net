@@ -1,3 +1,4 @@
+using BenchmarkLab.Data.Models;
 using MeasureThat.Net.Data.Models;
 using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -107,6 +108,28 @@ namespace MeasureThat.Net.Data
                     .HasConstraintName("FK_SaveThatBlob_ToUsers");*/
             });
 
+            modelBuilder.Entity<GenAidescription>(entity =>
+            {
+                entity.ToTable("GenAIDescription");
+
+                entity.Property(e => e.BenchmarkId).HasColumnName("BenchmarkID");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Description).IsRequired();
+
+                entity.Property(e => e.Model)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                //entity.HasOne(d => d.Benchmark)
+                //    .WithMany(p => p.GenAidescription)
+                //    .HasForeignKey(d => d.BenchmarkId)
+                //    .HasConstraintName("FK_GenAI_to_benchmark");
+            });
+
         }
 
         public virtual DbSet<Benchmark> Benchmark { get; set; }
@@ -114,5 +137,10 @@ namespace MeasureThat.Net.Data
         public virtual DbSet<Result> Result { get; set; }
         public virtual DbSet<ResultRow> ResultRow { get; set; }
         public virtual DbSet<SaveThatBlob> SaveThatBlob { get; set; }
+
+        public virtual DbSet<GenAidescription> GenAidescription
+        {
+            get; set;
+        }
     }
 }
