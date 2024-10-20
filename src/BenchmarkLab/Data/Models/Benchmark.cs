@@ -1,3 +1,4 @@
+using BenchmarkLab.Data.Models;
 using System;
 using System.Collections.Generic;
 
@@ -21,6 +22,11 @@ namespace MeasureThat.Net.Data.Models
 
         public virtual ICollection<BenchmarkTest> BenchmarkTest { get; set; }
         public virtual ICollection<Result> Result { get; set; }
+
+        public virtual ICollection<GenAidescription> GenAidescription
+        {
+            get; set;
+        }
 
         public int Version { get; set; }
 

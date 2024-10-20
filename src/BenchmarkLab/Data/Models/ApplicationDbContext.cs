@@ -124,10 +124,10 @@ namespace MeasureThat.Net.Data
                     .IsRequired()
                     .HasMaxLength(100);
 
-                //entity.HasOne(d => d.Benchmark)
-                //    .WithMany(p => p.GenAidescription)
-                //    .HasForeignKey(d => d.BenchmarkId)
-                //    .HasConstraintName("FK_GenAI_to_benchmark");
+                entity.HasOne(d => d.Benchmark)
+                    .WithMany(p => p.GenAidescription)
+                    .HasForeignKey(d => d.BenchmarkId)
+                    .HasConstraintName("FK_GenAI_to_benchmark");
             });
 
         }

@@ -77,6 +77,7 @@ namespace MeasureThat.Net.Data.Dao
         {
             var entity = await this.m_db.Benchmark
                 .Include(b => b.BenchmarkTest)
+                .Include(b => b.GenAidescription)
                 .FirstOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity == null)
@@ -199,7 +200,8 @@ namespace MeasureThat.Net.Data.Dao
                 TestCases = new List<TestCaseDto>(),
                 WhenCreated = entity.WhenCreated,
                 Version = entity.Version,
-                RelatedIds = entity.RelatedBenchmarks
+                RelatedIds = entity.RelatedBenchmarks,
+                LLMSummaries = new List<BenchmarkLab.Data.Models.GenAidescription>()
             };
 
             foreach (var test in entity.BenchmarkTest)
@@ -211,6 +213,12 @@ namespace MeasureThat.Net.Data.Dao
                 };
                 result.TestCases.Add(testCase);
             }
+
+            foreach (var llmSummary in entity.GenAidescription)
+            {
+                result.LLMSummaries.Add(llmSummary);
+            }
+
             return result;
         }
 

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MeasureThat.Net.Models
 {
+    using BenchmarkLab.Data.Models;
     using System;
 
     public class BenchmarkDto
@@ -40,6 +41,11 @@ namespace MeasureThat.Net.Models
         public int Version { get; set; }
 
         public string RelatedIds
+        {
+            get; set;
+        }
+
+        public List<GenAidescription> LLMSummaries
         {
             get; set;
         }
