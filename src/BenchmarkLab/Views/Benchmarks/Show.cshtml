@@ -125,8 +125,13 @@
 </div>
 
 <div class="panel-body" id="genai-placeholder">
-    <p>GENAI placeholder here</p>
+    <p>LLM Description</p>
     @await Component.InvokeAsync("GenAISummary", new { benchmarkId = Model.Id })
+</div>
+
+<div class="panel-body" id="related-benchmarks-placeholder">
+    <p>Related Benchmarks</p>
+    @await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
 </div>
 
 <div class="panel panel-default" id="latest_results_block">

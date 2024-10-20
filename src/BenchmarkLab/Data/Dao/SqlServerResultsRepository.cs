@@ -35,14 +35,14 @@ namespace MeasureThat.Net.Data.Dao
                 Created = DateTime.UtcNow
             };
 
-            foreach(var row in entity.ResultRows)
+            foreach (var row in entity.ResultRows)
             {
                 var dbrow = new ResultRow()
                 {
                     ExecutionsPerSecond = row.ExecutionsPerSecond,
                     TestName = row.TestName,
                     NumberOfSamples = row.NumberOfSamples,
-                    RelativeMarginOfError = row.RelativeMarginOfError                    
+                    RelativeMarginOfError = row.RelativeMarginOfError
                 };
                 newEntity.ResultRow.Add(dbrow);
             }
@@ -126,6 +126,16 @@ namespace MeasureThat.Net.Data.Dao
                 .FirstOrDefaultAsync(m => m.BenchmarkId == benchmarkId && m.Model == defaultModel)
                 .ConfigureAwait(false);
             return entity;
+        }
+
+        public virtual async Task<List<Benchmark>> GetBenchmarksByIds(HashSet<long> benchmarksIds)
+        {
+            var list = await this.m_db.Benchmark
+                .Where(t => benchmarksIds.Contains(t.Id))
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return list;
         }
 
         /// <summary>

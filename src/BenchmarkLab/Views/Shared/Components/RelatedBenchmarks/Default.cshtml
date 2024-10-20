@@ -1,0 +1,44 @@
+﻿@using MeasureThat.Net.Logic.Web
+@model List<MeasureThat.Net.Data.Models.Benchmark>
+
+<div class="related-benchmarks">
+    @if (Model == null || !Model.Any())
+    {
+        <p>No related benchmarks found.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var benchmark in Model)
+            {
+                <li>
+                    <h3>@benchmark.Name</h3>
+                    <p>@benchmark.Description</p>
+                    <p><strong>Created on:</strong> @benchmark.WhenCreated.ToString("MMMM dd, yyyy")</p>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+<style>
+    .related-benchmarks {
+        margin: 20px 0;
+    }
+
+        .related-benchmarks ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .related-benchmarks li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .related-benchmarks h3 {
+            margin: 0 0 5px 0;
+        }
+</style>

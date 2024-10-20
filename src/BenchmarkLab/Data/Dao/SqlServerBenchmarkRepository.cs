@@ -198,7 +198,8 @@ namespace MeasureThat.Net.Data.Dao
                 ScriptPreparationCode = entity.ScriptPreparationCode,
                 TestCases = new List<TestCaseDto>(),
                 WhenCreated = entity.WhenCreated,
-                Version = entity.Version
+                Version = entity.Version,
+                RelatedIds = entity.RelatedBenchmarks
             };
 
             foreach (var test in entity.BenchmarkTest)
