@@ -132,19 +132,7 @@
 
 @if (genAISummaryEnabled)
 {
-    <div class="panel-body" id="genai-placeholder">
-        <p>LLM Description</p>
-        @await Component.InvokeAsync("GenAISummary", new { benchmarkId = Model.Id })
-    </div>
-}
-
-
-@if (relatedBenchmarksEnabled)
-{
-    <div class="panel-body" id="related-benchmarks-placeholder">
-    <p>Related Benchmarks</p>
-    @await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
-    </div> 
+@await Component.InvokeAsync("GenAISummary", new { benchmarkId = Model.Id })
 }
 
 
@@ -206,6 +194,11 @@
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 }
 
+@if (relatedBenchmarksEnabled)
+{
+    @await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
+}
+
 <hr />
 
 <div class="text-center">
@@ -229,6 +222,7 @@
         </div>
     </div>
 </div>
+
 <!-- The empty element required for Disqus to loads comments into -->
 <div id="disqus_thread"></div>
 @section headAdditions{
