@@ -9,5 +9,6 @@ CREATE TABLE [dbo].[Benchmark]
     [HtmlPreparationCode] NVARCHAR(MAX) NULL, 
     [Version] INT NOT NULL DEFAULT 1, 
     [RelatedBenchmarks] NVARCHAR(500) NULL, 
+    [WhenUpdated] DATETIME2 NULL, 
     CONSTRAINT [FK_Benchmark_ToUsers] FOREIGN KEY (OwnerId) REFERENCES [AspNetUsers]([Id])
 )

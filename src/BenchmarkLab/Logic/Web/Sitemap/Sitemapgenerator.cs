@@ -169,7 +169,7 @@ namespace MeasureThat.Logic.Web.Sitemap
                 nodes.Add(new SitemapNode()
                 {
                     LastModified = benchmark.WhenCreated,
-                    Frequency = SitemapFrequency.Never,
+                    Frequency = SitemapFrequency.Monthly,
                     Priority = DefaultPriority,
                     Url = this.urlHelper.Action("Show", "Benchmarks", new { id = benchmark.Id, version = benchmark.Version, name = SeoFriendlyStringConverter.Convert(benchmark.BenchmarkName) }, this.urlHelper.ActionContext.HttpContext.Request.Scheme)
                 });

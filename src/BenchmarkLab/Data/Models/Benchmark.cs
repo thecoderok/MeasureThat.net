@@ -17,6 +17,10 @@ namespace MeasureThat.Net.Data.Models
         public string Description { get; set; }
         public string OwnerId { get; set; }
         public DateTime WhenCreated { get; set; }
+        public DateTime WhenUpdated
+        {
+            get; set;
+        }
         public string ScriptPreparationCode { get; set; }
         public string HtmlPreparationCode { get; set; }
 
