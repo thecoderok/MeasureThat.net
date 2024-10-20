@@ -8,5 +8,6 @@ CREATE TABLE [dbo].[Benchmark]
     [ScriptPreparationCode] NVARCHAR(MAX) NULL, 
     [HtmlPreparationCode] NVARCHAR(MAX) NULL, 
     [Version] INT NOT NULL DEFAULT 1, 
+    [RelatedBenchmarks] NVARCHAR(500) NULL, 
     CONSTRAINT [FK_Benchmark_ToUsers] FOREIGN KEY (OwnerId) REFERENCES [AspNetUsers]([Id])
 )
