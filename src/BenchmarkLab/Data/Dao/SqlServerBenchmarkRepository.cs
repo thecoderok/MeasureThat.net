@@ -214,9 +214,12 @@ namespace MeasureThat.Net.Data.Dao
                 result.TestCases.Add(testCase);
             }
 
-            foreach (var llmSummary in entity.GenAidescription)
+            if (entity.GenAidescription != null)
             {
-                result.LLMSummaries.Add(llmSummary);
+                foreach (var llmSummary in entity.GenAidescription)
+                {
+                    result.LLMSummaries.Add(llmSummary);
+                }
             }
 
             return result;

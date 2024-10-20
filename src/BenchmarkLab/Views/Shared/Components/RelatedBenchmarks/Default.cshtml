@@ -10,7 +10,7 @@
             @foreach (var benchmark in Model)
             {
                 <li>
-                    <a asp-action="Show" asp-route-id="@benchmark.Id" asp-route-version="@benchmark.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(benchmark.Name)">@benchmark.Name</a>
+                    <a asp-action="Show" target="_blank" asp-route-id="@benchmark.Id" asp-route-version="@benchmark.Version" asp-route-name="@SeoFriendlyStringConverter.Convert(benchmark.Name)">@benchmark.Name</a>
                 </li>
             }
         </ul>
