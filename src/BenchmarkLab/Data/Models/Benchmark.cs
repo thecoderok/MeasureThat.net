@@ -23,5 +23,10 @@ namespace MeasureThat.Net.Data.Models
         public virtual ICollection<Result> Result { get; set; }
 
         public int Version { get; set; }
+
+        public string RelatedBenchmarks
+        {
+            get; set;
+        }
     }
 }
