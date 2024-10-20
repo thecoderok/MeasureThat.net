@@ -1,3 +1,4 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
 @using System.Threading.Tasks
 @using Humanizer
 @using MeasureThat.Net.Models
@@ -23,6 +24,11 @@
             showEditButton = true;
         }
     }
+    bool relatedBenchmarksEnabled = false;
+    bool.TryParse(configuration["RelatedBenchmarksEnabled"], out relatedBenchmarksEnabled);
+
+    bool genAISummaryEnabled = false;
+    bool.TryParse(configuration["LLMDescriptionsEnabled"], out genAISummaryEnabled);
 }
 <div class="page-header">
     <h2>
@@ -124,15 +130,23 @@
     </div>
 </div>
 
-<div class="panel-body" id="genai-placeholder">
-    <p>LLM Description</p>
-    @await Component.InvokeAsync("GenAISummary", new { benchmarkId = Model.Id })
-</div>
+@if (genAISummaryEnabled)
+{
+    <div class="panel-body" id="genai-placeholder">
+        <p>LLM Description</p>
+        @await Component.InvokeAsync("GenAISummary", new { benchmarkId = Model.Id })
+    </div>
+}
 
-<div class="panel-body" id="related-benchmarks-placeholder">
+
+@if (relatedBenchmarksEnabled)
+{
+    <div class="panel-body" id="related-benchmarks-placeholder">
     <p>Related Benchmarks</p>
     @await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
-</div>
+    </div> 
+}
+
 
 <div class="panel panel-default" id="latest_results_block">
     <div class="panel-heading"><b>Latest run results:</b></div>
