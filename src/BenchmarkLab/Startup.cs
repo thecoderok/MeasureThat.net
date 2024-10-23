@@ -104,8 +104,6 @@ namespace MeasureThat.Net
                 return factory.GetUrlHelper(actionContext);
             });
             services.AddScoped<SitemapGenerator>();
-
-            AddExternalAuthentication(services);
         }
 
         private void AddDatabaseContext(IServiceCollection services)
@@ -209,50 +207,6 @@ namespace MeasureThat.Net
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        private void AddExternalAuthentication(IServiceCollection services)
-        {
-            // https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-how-to-configure-google-authentication/
-            if (Boolean.Parse(Configuration["UseFacebookAuthentication"]))
-            {
-                services.AddAuthentication()
-                .AddFacebook(options =>
-                {
-                    options.AppId = Configuration["Authentication:Facebook:AppId"];
-                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                });
-            }
-
-            if (Boolean.Parse(Configuration["UseTwitterAuthentication"]))
-            {
-                services.AddAuthentication()
-                .AddTwitter(options =>
-                {
-                    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-                });
-            }
-
-            if (Boolean.Parse(Configuration["UseGoogleAuthentication"]))
-            {
-                services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-                });
-            }
-
-            if (Boolean.Parse(Configuration["UseMicrosoftAuthenticaiton"]))
-            {
-                services.AddAuthentication()
-                .AddMicrosoftAccount(options =>
-                {
-                    options.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-                    options.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-                });
-            }
         }
     }
 }
