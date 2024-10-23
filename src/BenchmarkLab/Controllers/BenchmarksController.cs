@@ -21,12 +21,12 @@ namespace MeasureThat.Net.Controllers
     using MeasureThat.Net.Logic.Validation;
     using BenchmarkLab.Models;
     using BenchmarkLab.Logic.Web;
-    using Wangkanai.Detection;
     using System.Net;
     using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Microsoft.AspNetCore.Http;
     using MeasureThat.Net.Logic.Web.Security;
+    using Wangkanai.Detection.Services;
 
     [Authorize(Policy = "AllowGuests")]
     public class BenchmarksController : Controller
@@ -36,7 +36,7 @@ namespace MeasureThat.Net.Controllers
         private readonly ILogger m_logger;
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
-        private readonly IDetection detection;
+        private readonly IDetectionService detection;
         private const string ErrorMessageKey = "ErrorMessage";
         private const string ErrorActionName = "Error";
         private const int numOfItemsPerPage = 25;
@@ -47,7 +47,7 @@ namespace MeasureThat.Net.Controllers
             [NotNull] IOptions<ResultsConfig> resultsConfig,
             [NotNull] ILoggerFactory loggerFactory,
             [NotNull] SqlServerResultsRepository publishResultRepository,
-            IDetection detection)
+            IDetectionService detection)
         {
             this.m_benchmarkRepository = benchmarkRepository;
             this.m_userManager = userManager;
@@ -202,10 +202,6 @@ namespace MeasureThat.Net.Controllers
                     if (clientInfo != null)
                     {
                         string browser = clientInfo.UserAgent.Family + " " + clientInfo.UserAgent.Major;
-                        if (detection.Browser != null && detection.Browser.Type.ToString().ToLower().Contains("edge"))
-                        {
-                            browser = detection.Browser?.Maker + " " + detection.Browser?.Type.ToString() + " " + detection.Browser?.Version;
-                        }
                         model.Browser = browser;
                         model.DevicePlatform = detection.Device?.Type.ToString();
                         model.OS = clientInfo.OS.ToString();
