@@ -25,6 +25,8 @@ namespace MeasureThat.Net
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Hosting;
+
     // using MySQL.Data.EntityFrameworkCore.Extensions;
 
     public class Startup
@@ -35,12 +37,13 @@ namespace MeasureThat.Net
         {
             Configuration = config;
         }
-
+         
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddMemoryCache();
 
             services.AddDetection();
@@ -61,7 +64,10 @@ namespace MeasureThat.Net
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -136,7 +142,7 @@ namespace MeasureThat.Net
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             //loggerFactory.AddDebug();
@@ -175,8 +181,7 @@ namespace MeasureThat.Net
             {
                 m_logger.LogInformation("Running in development mode");
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
+                app.UseMigrationsEndPoint();
             }
             else
             {

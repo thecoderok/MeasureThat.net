@@ -35,6 +35,7 @@ namespace BenchmarkLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(long id)
         {
+            await Task.Yield();
             return RedirectToAction("Index");
         }
 
@@ -43,6 +44,7 @@ namespace BenchmarkLab.Controllers
         [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Edit(long id)
         {
+            await Task.Yield();
             return RedirectToAction("Index");
         }
     }

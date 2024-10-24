@@ -20,7 +20,7 @@ namespace MeasureThat.Logic.Web.Sitemap
     {
         private readonly ILogger m_logger;
         private readonly IUrlHelper urlHelper;
-        private readonly IHostingEnvironment environment;
+        private readonly IWebHostEnvironment environment;
         private readonly SqlServerBenchmarkRepository benchmarkRepository;
 
         private const double HighestPriority = 1.0;
@@ -28,7 +28,7 @@ namespace MeasureThat.Logic.Web.Sitemap
         private const double DefaultPriority = 0.5;
         private const double LowPriority = 0.1;
 
-        public SitemapGenerator(ILoggerFactory loggerFactory, IUrlHelper urlHelper, IHostingEnvironment environment, SqlServerBenchmarkRepository benchmarkRepository)
+        public SitemapGenerator(ILoggerFactory loggerFactory, IUrlHelper urlHelper, IWebHostEnvironment environment, SqlServerBenchmarkRepository benchmarkRepository)
         {
             this.m_logger = loggerFactory.CreateLogger<SitemapGenerator>();
             this.urlHelper = urlHelper;
@@ -63,7 +63,7 @@ namespace MeasureThat.Logic.Web.Sitemap
                 }
                 XElement urlElement = new XElement(
                     xmlns + "url",
-                    new XElement(xmlns + "loc", Uri.EscapeUriString(sitemapNode.Url)),
+                    new XElement(xmlns + "loc", Uri.EscapeDataString(sitemapNode.Url)),
                     lastMod == null ? null : new XElement(
                         xmlns + "lastmod",
                         lastMod),
