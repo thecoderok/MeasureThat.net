@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MeasureThat.Net.Models;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using MeasureThat.Net.Data.Models;
 using System.Linq;
 using MeasureThat.Net.Exceptions;
 using System;
@@ -30,7 +29,7 @@ namespace MeasureThat.Net.Data.Dao
                 OperatingSystem = entity.OS,
                 RawUastring = entity.RawUserAgenString,
                 UserId = entity.UserId,
-                ResultRow = new List<ResultRow>(),
+                ResultRows = new List<ResultRow>(),
                 Version = entity.BenchmarkVersion,
                 Created = DateTime.UtcNow
             };
@@ -44,12 +43,12 @@ namespace MeasureThat.Net.Data.Dao
                     NumberOfSamples = row.NumberOfSamples,
                     RelativeMarginOfError = row.RelativeMarginOfError
                 };
-                newEntity.ResultRow.Add(dbrow);
+                newEntity.ResultRows.Add(dbrow);
             }
 
             this.Validate(newEntity);
 
-            this.m_db.Result.Add(newEntity);
+            this.m_db.Results.Add(newEntity);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             return newEntity.Id;
@@ -57,10 +56,10 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<long> DeleteById(long id)
         {
-            var entity = await this.m_db.Result.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
+            var entity = await this.m_db.Results.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
             if (entity != null)
             {
-                this.m_db.Result.Remove(entity);
+                this.m_db.Results.Remove(entity);
                 await this.m_db.SaveChangesAsync().ConfigureAwait(false);
             }
 
@@ -69,8 +68,8 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<BenchmarkResultDto> FindById(long id)
         {
-            var entity = await this.m_db.Result
-                .Include(b => b.ResultRow)
+            var entity = await this.m_db.Results
+                .Include(b => b.ResultRows)
                 .FirstOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity == null)
@@ -85,10 +84,10 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<ShowResultModel> GetResultWithBenchmark(long id)
         {
-            var entity = await this.m_db.Result
-                .Include(b => b.ResultRow)
+            var entity = await this.m_db.Results
+                .Include(b => b.ResultRows)
                 .Include(b => b.Benchmark)
-                .Include(b => b.Benchmark.BenchmarkTest)
+                .Include(b => b.Benchmark.BenchmarkTests)
                 .FirstOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity == null)
@@ -104,9 +103,9 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<BenchmarkResultDto> GetLatestResultForBenchmark(long benchmarkId)
         {
-            var entity = await this.m_db.Result
+            var entity = await this.m_db.Results
                 .OrderByDescending(m => m.Created)
-                .Include(b => b.ResultRow)
+                .Include(b => b.ResultRows)
                 .FirstOrDefaultAsync(m => m.BenchmarkId == benchmarkId)
                 .ConfigureAwait(false);
             if (entity == null)
@@ -119,18 +118,9 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<GenAidescription> GetGenAISummary(long benchmarkId)
-        {
-            const string defaultModel = "llama3.1:latest";
-            var entity = await this.m_db.GenAidescription
-                .FirstOrDefaultAsync(m => m.BenchmarkId == benchmarkId && m.Model == defaultModel)
-                .ConfigureAwait(false);
-            return entity;
-        }
-
         public virtual async Task<List<Benchmark>> GetBenchmarksByIds(HashSet<long> benchmarksIds)
         {
-            var list = await this.m_db.Benchmark
+            var list = await this.m_db.Benchmarks
                 .Where(t => benchmarksIds.Contains(t.Id))
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -145,7 +135,7 @@ namespace MeasureThat.Net.Data.Dao
         /// <returns></returns>
         public virtual async Task<IList<BenchmarkResultDto>> ListAll(int benchmarkId)
         {
-            var list = await this.m_db.Result
+            var list = await this.m_db.Results
                 .Where(t => t.BenchmarkId == benchmarkId)
                 .OrderByDescending(t => t.Created)
                 .ToListAsync()
@@ -182,7 +172,7 @@ namespace MeasureThat.Net.Data.Dao
                 WhenCreated = entity.Created
             };
 
-            foreach(var row in entity.ResultRow)
+            foreach(var row in entity.ResultRows)
             {
                 var rowModel = new ResultsRowModel()
                 {
@@ -198,7 +188,7 @@ namespace MeasureThat.Net.Data.Dao
 
         private void Validate(Result newEntity)
         {
-            if (newEntity.ResultRow.Count == 0)
+            if (newEntity.ResultRows.Count == 0)
             {
                 throw new ValidationException("ResultRow count = 0");
             }

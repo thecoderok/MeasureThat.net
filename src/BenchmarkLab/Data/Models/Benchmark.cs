@@ -1,42 +1,35 @@
-using BenchmarkLab.Data.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace MeasureThat.Net.Data.Models
+namespace BenchmarkLab.Data.Models;
+
+public partial class Benchmark
 {
-    public partial class Benchmark
-    {
-        public Benchmark()
-        {
-            BenchmarkTest = new HashSet<BenchmarkTest>();
-            Result = new HashSet<Result>();
-        }
+    public long Id { get; set; }
 
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string OwnerId { get; set; }
-        public DateTime WhenCreated { get; set; }
-        public DateTime WhenUpdated
-        {
-            get; set;
-        }
-        public string ScriptPreparationCode { get; set; }
-        public string HtmlPreparationCode { get; set; }
+    public string Name { get; set; }
 
-        public virtual ICollection<BenchmarkTest> BenchmarkTest { get; set; }
-        public virtual ICollection<Result> Result { get; set; }
+    public string Description { get; set; }
 
-        public virtual ICollection<GenAidescription> GenAidescription
-        {
-            get; set;
-        }
+    public string OwnerId { get; set; }
 
-        public int Version { get; set; }
+    public DateTime WhenCreated { get; set; }
 
-        public string RelatedBenchmarks
-        {
-            get; set;
-        }
-    }
+    public string ScriptPreparationCode { get; set; }
+
+    public string HtmlPreparationCode { get; set; }
+
+    public int Version { get; set; }
+
+    public string RelatedBenchmarks { get; set; }
+
+    public DateTime? WhenUpdated { get; set; }
+
+    public virtual ICollection<BenchmarkTest> BenchmarkTests { get; set; } = new List<BenchmarkTest>();
+
+    public virtual ICollection<GenAidescription> GenAidescriptions { get; set; } = new List<GenAidescription>();
+
+    public virtual AspNetUser Owner { get; set; }
+
+    public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 }

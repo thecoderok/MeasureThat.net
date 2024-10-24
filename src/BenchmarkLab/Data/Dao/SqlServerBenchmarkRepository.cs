@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MeasureThat.Net.Models;
 using JetBrains.Annotations;
-using MeasureThat.Net.Data.Models;
 
 namespace MeasureThat.Net.Data.Dao
 {
@@ -13,6 +12,7 @@ namespace MeasureThat.Net.Data.Dao
     using BenchmarkLab.Models;
     using System;
     using Microsoft.Extensions.Caching.Memory;
+    using BenchmarkLab.Data.Models;
 
     public class SqlServerBenchmarkRepository
     {
@@ -35,7 +35,7 @@ namespace MeasureThat.Net.Data.Dao
                 OwnerId = entity.OwnerId,
                 HtmlPreparationCode = entity.HtmlPreparationCode,
                 ScriptPreparationCode = entity.ScriptPreparationCode,
-                BenchmarkTest = new List<BenchmarkTest>(),
+                BenchmarkTests = new List<BenchmarkTest>(),
                 WhenCreated = DateTime.UtcNow,
             };
 
@@ -46,12 +46,12 @@ namespace MeasureThat.Net.Data.Dao
                     TestName = test.TestCaseName,
                     BenchmarkText = test.BenchmarkCode,
                 };
-                newEntity.BenchmarkTest.Add(newTest);
+                newEntity.BenchmarkTests.Add(newTest);
             }
 
             this.Validate(newEntity);
 
-            this.m_db.Benchmark.Add(newEntity);
+            this.m_db.Benchmarks.Add(newEntity);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             InvalidateCache();
@@ -61,12 +61,12 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<long> DeleteById(long id)
         {
-            var entity = await this.m_db.Benchmark
+            var entity = await this.m_db.Benchmarks
                 .SingleOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity != null)
             {
-                this.m_db.Benchmark.Remove(entity);
+                this.m_db.Benchmarks.Remove(entity);
                 await this.m_db.SaveChangesAsync().ConfigureAwait(false);
             }
 
@@ -75,9 +75,9 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<BenchmarkDto> FindById(long id)
         {
-            var entity = await this.m_db.Benchmark
-                .Include(b => b.BenchmarkTest)
-                .Include(b => b.GenAidescription)
+            var entity = await this.m_db.Benchmarks
+                .Include(b => b.BenchmarkTests)
+                .Include(b => b.GenAidescriptions)
                 .FirstOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity == null)
@@ -95,8 +95,8 @@ namespace MeasureThat.Net.Data.Dao
             Preconditions.ToBePositive(maxEntities);
             Preconditions.ToBeNonNegative(page);
 
-            var entities = await this.m_db.Benchmark
-                .Include(t => t.BenchmarkTest)
+            var entities = await this.m_db.Benchmarks
+                .Include(t => t.BenchmarkTests)
                 .OrderByDescending(t => t.WhenCreated)
                 .Skip(maxEntities * page)
                 .Take(maxEntities)
@@ -109,14 +109,14 @@ namespace MeasureThat.Net.Data.Dao
         // Returns total number of benchmarks
         public virtual async Task<int> CountAll()
         {
-            return await this.m_db.Benchmark.CountAsync();
+            return await this.m_db.Benchmarks.CountAsync();
         }
 
         // Returns total number of benchmarks for the given user
         public virtual async Task<int> CountUserBenchmarks(string userId)
         {
             Preconditions.NonEmptyString(userId);
-            return await this.m_db.Benchmark.CountAsync(t => t.OwnerId == userId);
+            return await this.m_db.Benchmarks.CountAsync(t => t.OwnerId == userId);
         }
 
         // Returns list of benchmarks just for the index (title and when created.)
@@ -125,7 +125,7 @@ namespace MeasureThat.Net.Data.Dao
             Preconditions.ToBePositive(maxEntities);
             Preconditions.ToBeNonNegative(page);
 
-            var entities = await this.m_db.Benchmark
+            var entities = await this.m_db.Benchmarks
                 .OrderByDescending(t => t.WhenCreated)
                 .Skip(maxEntities * page)
                 .Take(maxEntities)
@@ -163,12 +163,12 @@ namespace MeasureThat.Net.Data.Dao
                 throw new ValidationException("Benchmark name is mandatory");
             }
 
-            if (newEntity.BenchmarkTest == null || newEntity.BenchmarkTest.Count == 0)
+            if (newEntity.BenchmarkTests == null || newEntity.BenchmarkTests.Count == 0)
             {
                 throw new ValidationException("Test cases were not specified");
             }
 
-            foreach (BenchmarkTest benchmarkTest in newEntity.BenchmarkTest)
+            foreach (BenchmarkTest benchmarkTest in newEntity.BenchmarkTests)
             {
                 if (benchmarkTest == null)
                 {
@@ -204,7 +204,7 @@ namespace MeasureThat.Net.Data.Dao
                 LLMSummaries = new List<BenchmarkLab.Data.Models.GenAidescription>()
             };
 
-            foreach (var test in entity.BenchmarkTest)
+            foreach (var test in entity.BenchmarkTests)
             {
                 var testCase = new TestCaseDto()
                 {
@@ -214,9 +214,9 @@ namespace MeasureThat.Net.Data.Dao
                 result.TestCases.Add(testCase);
             }
 
-            if (entity.GenAidescription != null)
+            if (entity.GenAidescriptions != null)
             {
-                foreach (var llmSummary in entity.GenAidescription)
+                foreach (var llmSummary in entity.GenAidescriptions)
                 {
                     result.LLMSummaries.Add(llmSummary);
                 }
@@ -227,9 +227,9 @@ namespace MeasureThat.Net.Data.Dao
 
         public virtual async Task<IList<BenchmarkDtoForIndex>> ListByUser(string userId, int page, int numOfItems)
         {
-            var entities = await this.m_db.Benchmark
+            var entities = await this.m_db.Benchmarks
                 .Where(t=> t.OwnerId == userId)
-                .Include(b => b.BenchmarkTest)
+                .Include(b => b.BenchmarkTests)
                 .Skip(page * numOfItems)
                 .Take(numOfItems)
                 .OrderByDescending(b => b.WhenCreated)
@@ -262,8 +262,8 @@ namespace MeasureThat.Net.Data.Dao
                 throw new UserIdEmptyException("User Id is empty");
             }
 
-            var entity = await this.m_db.Benchmark
-                .Include(m => m.BenchmarkTest)
+            var entity = await this.m_db.Benchmarks
+                .Include(m => m.BenchmarkTests)
                 .FirstOrDefaultAsync(m => m.Id == model.Id && m.OwnerId == userId)
                 .ConfigureAwait(false);
 
@@ -272,7 +272,7 @@ namespace MeasureThat.Net.Data.Dao
                 throw new UnableToFindBenchmarkException("Unable to find benchmark by Id and owner id");
             }
 
-            if (entity.BenchmarkTest == null)
+            if (entity.BenchmarkTests == null)
             {
                 // Just sanity check
                 throw new ValidationException("Empty test collection");
@@ -284,35 +284,35 @@ namespace MeasureThat.Net.Data.Dao
             entity.HtmlPreparationCode = model.HtmlPreparationCode;
             entity.ScriptPreparationCode = model.ScriptPreparationCode;
 
-            var entityTestsList = entity.BenchmarkTest.ToList();
-            if (entityTestsList.Count > model.TestCases.Count)
+            var entityTestsList = entity.BenchmarkTests.ToList();
+            if (entityTestsList.Count() > model.TestCases.Count)
             {
                 // Remove extra test cases from the entity
-                for (int i = model.TestCases.Count; i < entity.BenchmarkTest.Count; i++)
+                for (int i = model.TestCases.Count; i < entity.BenchmarkTests.Count; i++)
                 {
-                    this.m_db.BenchmarkTest.Remove(entityTestsList[i]);
-                    entity.BenchmarkTest.Remove(entityTestsList[i]);
+                    this.m_db.BenchmarkTests.Remove(entityTestsList[i]);
+                    entity.BenchmarkTests.Remove(entityTestsList[i]);
                 }
             }
-            else if (entityTestsList.Count < model.TestCases.Count)
+            else if (entityTestsList.Count() < model.TestCases.Count)
             {
-                for (int i = entity.BenchmarkTest.Count; i < model.TestCases.Count; i++)
+                for (int i = entity.BenchmarkTests.Count; i < model.TestCases.Count; i++)
                 {
-                    entity.BenchmarkTest.Add(new BenchmarkTest());
+                    entity.BenchmarkTests.Add(new BenchmarkTest());
                 }
             }
 
 
             // Now both collections of test cases should have same number of elements
             int index = 0;
-            foreach (var benchmarkTest in entity.BenchmarkTest)
+            foreach (var benchmarkTest in entity.BenchmarkTests)
             {
                 benchmarkTest.BenchmarkText = model.TestCases[index].BenchmarkCode;
                 benchmarkTest.TestName = model.TestCases[index].TestCaseName;
                 index++;
             }
 
-            this.m_db.Benchmark.Update(entity);
+            this.m_db.Benchmarks.Update(entity);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
             InvalidateCache();
@@ -328,7 +328,7 @@ namespace MeasureThat.Net.Data.Dao
                 return result;
             }
 
-            var entities = await this.m_db.Benchmark
+            var entities = await this.m_db.Benchmarks
                .OrderByDescending(b => b.WhenCreated)
                .Select(x => new { x.Id, x.Name })
                .ToListAsync()

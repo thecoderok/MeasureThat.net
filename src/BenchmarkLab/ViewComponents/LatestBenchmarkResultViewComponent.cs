@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
-using MeasureThat.Net.Data.Models;
 using MeasureThat.Net.Logic.Validation;
 using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Mvc;

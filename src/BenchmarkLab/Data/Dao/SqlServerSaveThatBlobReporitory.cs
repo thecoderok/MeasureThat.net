@@ -1,6 +1,5 @@
-﻿using JetBrains.Annotations;
-using MeasureThat.Net.Data;
-using MeasureThat.Net.Data.Models;
+﻿using BenchmarkLab.Data.Models;
+using JetBrains.Annotations;
 using MeasureThat.Net.Logic.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -26,7 +25,7 @@ namespace MeasureThat.Net.Data.Dao
         public virtual async Task<long> Add(string ownerId)
         {
             // TODO
-            var obj = new SaveThatBlob()
+            var obj = new SaveThatBlob
             {
                 Name = "Test",
                 OwnerId = ownerId,
@@ -35,7 +34,7 @@ namespace MeasureThat.Net.Data.Dao
                 WhenCreated = DateTime.UtcNow,
             };
 
-            this.m_db.SaveThatBlob.Add(obj);
+            this.m_db.SaveThatBlobs.Add(obj);
             await this.m_db.SaveChangesAsync().ConfigureAwait(false);
 
 
@@ -47,7 +46,7 @@ namespace MeasureThat.Net.Data.Dao
             Preconditions.ToBePositive(maxEntities);
             Preconditions.ToBeNonNegative(page);
 
-            var entities = await this.m_db.SaveThatBlob
+            var entities = await this.m_db.SaveThatBlobs
                 .OrderByDescending(t => t.WhenCreated)
                 .Skip(maxEntities * page)
                 .Take(maxEntities)
