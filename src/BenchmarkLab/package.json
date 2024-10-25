@@ -5,18 +5,17 @@
   "devDependencies": {
     "browserify": "^13.1.0",
     "del": "2.2.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-bump": "2.1.0",
-    "gulp-concat": "2.5.2",
+    "gulp-concat": "^2.6.1",
     "gulp-cssmin": "0.1.7",
     "gulp-typescript": "^5.0.1",
     "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.7",
+    "gulp-util": "^1.0.0",
     "rimraf": "2.2.8",
     "tsify": "^1.0.8",
     "typescript": "2.0.3",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.11.1"
-  },
-  "dependencies": {}
+    "watchify": "^4.0.0"
+  }
 }
