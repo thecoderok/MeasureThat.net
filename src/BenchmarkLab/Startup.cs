@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +16,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MeasureThat.Net
 {
-    using System.IO;
-    using BenchmarkLab.Logic.Web.Blog;
     using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -26,8 +23,6 @@ namespace MeasureThat.Net
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
-
-    // using MySQL.Data.EntityFrameworkCore.Extensions;
 
     public class Startup
     {
@@ -153,29 +148,7 @@ namespace MeasureThat.Net
             options.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(options);
 
-            app.UseDefaultFiles(new DefaultFilesOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    BlogLocationUtil.GetBlogFilesLocation(env)),
-                RequestPath = new PathString("/blog")
-            });
-            
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    BlogLocationUtil.GetBlogFilesLocation(env)),
-                RequestPath = "/blog",
-                OnPrepareResponse = ctx =>
-                {
-                    // Requires the following import:
-                    // using Microsoft.AspNetCore.Http;
-                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600");
-                },
-            }
-            );
-
-            //app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -190,17 +163,11 @@ namespace MeasureThat.Net
 
             }
 
-            //app.UseStatusCodePagesWithRedirects("~/errors/code/{0}");
-
             app.UseSecurityHeadersMiddleware(new SecurityHeadersBuilder()
               .AddDefaultSecurePolicy()
             );
 
-            //app.UseApplicationInsightsExceptionTelemetry();
-
             app.UseAuthentication();
-
-            //AddExternalAuthentication(app);
 
             app.UseMvc(routes =>
             {

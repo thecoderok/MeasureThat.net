@@ -9,7 +9,6 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Xml.Linq;
 using System.Globalization;
-using BenchmarkLab.Logic.Web.Blog;
 using BenchmarkLab.Logic.Web.Sitemap;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Web;
@@ -40,7 +39,6 @@ namespace MeasureThat.Logic.Web.Sitemap
         {
             var list = new List<SitemapNode>();
             AppendMainRoutes(list);
-            AppendBlogSitemap(list);
             await AppendBenchmarksToSitemap(list).ConfigureAwait(false);
             return GetSitemapDocument(list);
         }
@@ -117,48 +115,10 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("", "blog", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
-                Priority = DefaultPriority,
-                Frequency = SitemapFrequency.Weekly
-            });
-
-            nodes.Add(new SitemapNode()
-            {
-                LastModified = DateTime.Now,
                 Url = this.urlHelper.Action("Index", "Tools", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Monthly
             });
-        }
-
-        private void AppendBlogSitemap(List<SitemapNode> nodes)
-        {
-            string blogSitemap = BlogLocationUtil.SitemapLocation(this.environment);
-            if (!File.Exists(blogSitemap))
-            {
-                m_logger.LogWarning("Not including Blog's sitemap as file does not exist");
-                return;
-            }
-            try
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Urlset), "http://www.sitemaps.org/schemas/sitemap/0.9");
-                FileStream myFileStream = new FileStream(blogSitemap, FileMode.Open);
-                var urls = ((Urlset)ser.Deserialize(myFileStream)).urls;
-                foreach(var url in urls)
-                {
-                    nodes.Add(new SitemapNode()
-                    {
-                        Url = url.loc,
-                        Frequency = SitemapFrequency.Monthly,
-                        Priority = DefaultPriority,
-                        LastModifiedRaw = url.lastmod,
-                    });
-                }
-            } 
-            catch(Exception e)
-            {
-                m_logger.LogError(e, "Error when trying to add blog's sitemap to the main one");
-            }
         }
 
         private async Task AppendBenchmarksToSitemap(List<SitemapNode> nodes)
