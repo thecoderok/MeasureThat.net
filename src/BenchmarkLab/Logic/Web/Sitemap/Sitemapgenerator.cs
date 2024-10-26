@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.Serialization;
-using System.Data;
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Xml.Linq;
 using System.Globalization;
-using BenchmarkLab.Logic.Web.Sitemap;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Web;
 
