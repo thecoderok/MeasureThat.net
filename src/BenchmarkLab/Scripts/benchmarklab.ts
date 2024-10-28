@@ -480,14 +480,16 @@ class ClientValidationHandler {
         });
     }
 
-    private continueBenchmarkValidation(): void {
-        // Cleanup previous validation frames
-        $('#validation-iframe').remove();
+    private continueBenchmarkValidation(): TimerHandler {
+        return () => {
+            // Cleanup previous validation frames
+            $('#validation-iframe').remove();
 
-        // add new one
-        const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autorefresh=1" style="border:none; max-height: 2px; overflow:none"></iframe>';
-        $('#validation-frame-holder').html(html);
-        $('#validation_log').append($('<li>Loading iframe for testing...</li>'));
+            // add new one
+            const html = '<iframe id="validation-iframe" src="/Benchmarks/TestFrameForValidation?autorefresh=1" style="border:none; max-height: 2px; overflow:none"></iframe>';
+            $('#validation-frame-holder').html(html);
+            $('#validation_log').append($('<li>Loading iframe for testing...</li>'));
+        };
     }
 
     allowSave(): void {

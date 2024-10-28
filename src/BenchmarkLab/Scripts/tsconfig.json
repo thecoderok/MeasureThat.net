@@ -3,11 +3,12 @@
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "es5",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "amd"
+    "module": "amd",
+    "skipLibCheck": true
   },
   "files": [
     "../typings/index.d.ts",
@@ -16,7 +17,8 @@
   ],
   "exclude": [
     "node_modules",
-    "wwwroot"
+    "wwwroot",
+    "typings"
   ], 
   "compileOnSave": true
 }

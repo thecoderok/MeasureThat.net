@@ -3,5 +3,12 @@ typings search codemirror
 typings install dt~jquery --global
 npm install -g bower
 
+
+gulp --version
+npm install --global gulp-cli
+npm install --save-dev gulp
+      
+
+
 # Scaffold models
 Scaffold-DbContext " Server=tcp:benchmarklabdbserver.database.windows.net,1433;Data Source=benchmarklabdbserver.database.windows.net;Initial Catalog=benchmarklab_db;Persist Security Info=False;User Id=<>;Password=<>;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"   -Provider Microsoft.EntityFrameworkCore.SqlServer  -OutputDir Data\Models -Context ApplicationDbContext   -Force
