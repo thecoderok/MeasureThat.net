@@ -17,7 +17,7 @@
     <PackageId>BenchmarkLab</PackageId>
     <UserSecretsId>aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297</UserSecretsId>
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
-    <TypeScriptToolsVersion>5.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>5.6.2</TypeScriptToolsVersion>
     <Version>1.5</Version>
     <AssemblyVersion>1.5</AssemblyVersion>
     <FileVersion>1.5</FileVersion>
@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.6.2" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     
