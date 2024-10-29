@@ -264,3 +264,4 @@ ModelManifest.xml
 /src/BenchmarkLab/wwwroot/scripts/lib
 /BenchmarkLab.DB/MeasureThat.Net.DB.jfm
 /src/BenchmarkLab/books_data.json
+/src/BenchmarkLab/Scripts/testrunner.js.map
