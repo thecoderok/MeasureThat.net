@@ -37,7 +37,6 @@ namespace MeasureThat.Net.Controllers
         private readonly UserManager<ApplicationUser> m_userManager;
         private readonly IOptions<ResultsConfig> m_resultsConfig;
         private readonly IDetectionService detection;
-        private const string ErrorMessageKey = "ErrorMessage";
         private const string ErrorActionName = "Error";
         private const int numOfItemsPerPage = 25;
 
@@ -94,12 +93,12 @@ namespace MeasureThat.Net.Controllers
                     HtmlPreparationCode = "<div id='myid'>yoyo</div><script src = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script> ",
                     TestCases = new List<TestCaseDto>()
                 {
-                    new TestCaseDto()
+                    new()
                     {
                         TestCaseName = "Test case name 1",
                         BenchmarkCode = "var t = document.getElementById('myid');",
                     },
-                    new TestCaseDto()
+                    new ()
                     {
                         TestCaseName = "Test case name 2",
                         BenchmarkCode = "var z = $('myid');",
@@ -189,7 +188,7 @@ namespace MeasureThat.Net.Controllers
             ApplicationUser user = await this.GetCurrentUserAsync();
             model.UserId = user?.Id;
 
-            ClientInfo clientInfo = null;
+            ClientInfo clientInfo;
             if (HttpContext.Request.Headers.ContainsKey("User-Agent"))
             {
                 string userAgent = HttpContext.Request.Headers["User-Agent"];

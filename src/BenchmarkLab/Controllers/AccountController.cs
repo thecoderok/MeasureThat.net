@@ -82,7 +82,7 @@ namespace MeasureThat.Net.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, model.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
