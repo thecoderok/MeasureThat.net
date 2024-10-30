@@ -424,7 +424,7 @@ namespace MeasureThat.Net.Controllers
             {
                 // HTML Preparation code can contain text that browsers will consider as XSS attack.
                 this.HttpContext.Response.Headers.Remove(XssProtectionConstants.Header);
-                this.HttpContext.Response.Headers.Add(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
+                this.HttpContext.Response.Headers.Append(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
             }
             return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode });
         }

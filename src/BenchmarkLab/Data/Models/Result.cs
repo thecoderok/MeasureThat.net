@@ -26,6 +26,4 @@ public partial class Result
     public virtual Benchmark Benchmark { get; set; }
 
     public virtual ICollection<ResultRow> ResultRows { get; set; } = new List<ResultRow>();
-
-    public virtual AspNetUser User { get; set; }
 }

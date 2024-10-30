@@ -16,6 +16,4 @@ public partial class SaveThatBlob
     public string Blob { get; set; }
 
     public string Language { get; set; }
-
-    public virtual AspNetUser Owner { get; set; }
 }

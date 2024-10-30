@@ -29,7 +29,5 @@ public partial class Benchmark
 
     public virtual ICollection<GenAidescription> GenAidescriptions { get; set; } = new List<GenAidescription>();
 
-    public virtual AspNetUser Owner { get; set; }
-
     public virtual ICollection<Result> Results { get; set; } = new List<Result>();
 }
