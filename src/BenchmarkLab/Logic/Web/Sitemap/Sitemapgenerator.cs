@@ -8,6 +8,14 @@ using System.Xml.Linq;
 using System.Globalization;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Models;
+using System.Linq;
+using MeasureThat.Net.Data;
+using System.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace MeasureThat.Logic.Web.Sitemap
 {
@@ -17,26 +25,42 @@ namespace MeasureThat.Logic.Web.Sitemap
         private readonly IUrlHelper urlHelper;
         private readonly IWebHostEnvironment environment;
         private readonly SqlServerBenchmarkRepository benchmarkRepository;
+        private readonly IConfiguration m_configuration;
 
         private const double HighestPriority = 1.0;
         private const double HighPriority = 0.9;
         private const double DefaultPriority = 0.5;
         private const double LowPriority = 0.1;
+        private readonly TimeSpan cacheDuration = TimeSpan.FromHours(6); // Set the cache duration
 
-        public SitemapGenerator(ILoggerFactory loggerFactory, IUrlHelper urlHelper, IWebHostEnvironment environment, SqlServerBenchmarkRepository benchmarkRepository)
+        public SitemapGenerator(ILoggerFactory loggerFactory, IUrlHelper urlHelper, IWebHostEnvironment environment, SqlServerBenchmarkRepository benchmarkRepository, [NotNull] IConfiguration mConfiguration)
         {
             this.m_logger = loggerFactory.CreateLogger<SitemapGenerator>();
             this.urlHelper = urlHelper;
             this.environment = environment;
             this.benchmarkRepository = benchmarkRepository;
+            this.m_configuration = mConfiguration;
         }
 
         public async Task<string> Generate()
         {
+            string sitemapPath = Path.Combine(environment.WebRootPath, "sitemap.xml");
+            if (File.Exists(sitemapPath))
+            {
+                DateTime lastWriteTime = File.GetLastWriteTime(sitemapPath);
+                if (DateTime.Now - lastWriteTime < cacheDuration)
+                {
+                    return await File.ReadAllTextAsync(sitemapPath);
+                }
+            }
             var list = new List<SitemapNode>();
             AppendMainRoutes(list);
             await AppendBenchmarksToSitemap(list).ConfigureAwait(false);
-            return GetSitemapDocument(list);
+            string sitemap = GetSitemapDocument(list);
+            
+            await File.WriteAllTextAsync(sitemapPath, sitemap);
+            
+            return sitemap;
         }
 
         public string GetSitemapDocument(IEnumerable<SitemapNode> sitemapNodes)
@@ -119,9 +143,10 @@ namespace MeasureThat.Logic.Web.Sitemap
 
         private async Task AppendBenchmarksToSitemap(List<SitemapNode> nodes)
         {
-            var benchmarks = await this.benchmarkRepository.ListAll(2000, 0).ConfigureAwait(false);
-            foreach(var benchmark in benchmarks)
+            var benchmarks = await this.benchmarkRepository.ListAllForSitemap(2000, 0).ConfigureAwait(false);
+            foreach (var benchmark in benchmarks)
             {
+                var whenModified = benchmark.WhenUpdated ?? benchmark.WhenCreated;
                 nodes.Add(new SitemapNode()
                 {
                     LastModified = benchmark.WhenCreated,

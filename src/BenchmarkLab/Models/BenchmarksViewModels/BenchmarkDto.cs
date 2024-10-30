@@ -38,6 +38,8 @@ namespace MeasureThat.Net.Models
 
         public DateTime WhenCreated { get; set; }
 
+        public DateTime? WhenUpdated { get; set; }
+
         public int Version { get; set; }
 
         public string RelatedIds

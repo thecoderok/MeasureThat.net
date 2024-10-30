@@ -90,13 +90,12 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public virtual async Task<IList<BenchmarkDto>> ListAll(int maxEntities, int page)
+        public virtual async Task<IList<BenchmarkDto>> ListAllForSitemap(int maxEntities, int page)
         {
             Preconditions.ToBePositive(maxEntities);
             Preconditions.ToBeNonNegative(page);
 
             var entities = await this.m_db.Benchmarks
-                .Include(t => t.BenchmarkTests)
                 .OrderByDescending(t => t.WhenCreated)
                 .Skip(maxEntities * page)
                 .Take(maxEntities)
@@ -199,6 +198,7 @@ namespace MeasureThat.Net.Data.Dao
                 ScriptPreparationCode = entity.ScriptPreparationCode,
                 TestCases = new List<TestCaseDto>(),
                 WhenCreated = entity.WhenCreated,
+                WhenUpdated = entity.WhenUpdated,
                 Version = entity.Version,
                 RelatedIds = entity.RelatedBenchmarks,
                 LLMSummaries = new List<BenchmarkLab.Data.Models.GenAidescription>()

@@ -17,11 +17,9 @@ namespace MeasureThat.Net.Logic.Web
         private NewsletterSubscriptionConfig newsletterConfig = null;
 
         public StaticSiteConfigProvider(
-            [NotNull] IConfiguration mConfiguration
-            /*[NotNull] ILogger mLogger*/)
+            [NotNull] IConfiguration mConfiguration)
         {
             m_configuration = mConfiguration;
-            //m_logger = mLogger;
         }
 
         public GoogleAnalyticsConfig GetGoogleAnalyticsConfig()
