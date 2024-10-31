@@ -13,6 +13,9 @@ function getElementByDataAttribute(attr: string): HTMLElement {
     return row[0] as HTMLElement;
 }
 
+function replaceAll(target, search, replacement): string {
+    return target.split(search).join(replacement);
+}
 function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
     const result = window.parent.document.querySelectorAll(attr);
     if (result.length === 0) {
@@ -177,7 +180,7 @@ class TestRunnerController {
         (window as any)._test_runner.recordMemoryInfo("test end");
         const completedTarget = targets.target as any;
         var testName: string = completedTarget.name;
-        testName = testName.replaceAll("'", "\\'");
+        testName = replaceAll(testName, "'", "\\'");
         const row = window.parent.document.querySelectorAll(`[data-row-for='${testName}']`);
         if (row.length !== 1) {
             throw "Unable to find where to report result";
