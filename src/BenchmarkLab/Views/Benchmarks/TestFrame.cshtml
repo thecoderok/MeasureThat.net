@@ -6,16 +6,9 @@
 }
 
 
-<environment names="Development">
-    <script src="~/lib/lodash/dist/lodash.js"></script>
-    <script src="~/lib/platform/platform.js"></script>
-    <script src="~/lib/benchmark/benchmark.js"></script>
-</environment>
-<environment names="Staging,Production">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.1/platform.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.0/benchmark.min.js"></script>
-</environment>
+<script src="~/lib/lodash/dist/lodash.js"></script>
+<script src="~/lib/platform/platform.js"></script>
+<script src="~/lib/benchmark/benchmark.js"></script>
 <script src="~/js/testrunner.js" asp-append-version="true"></script>
 
 @if (!string.IsNullOrWhiteSpace(Model.HtmlPreparationCode))
@@ -37,7 +30,7 @@
     var suite = new Benchmark.Suite;
     @foreach (var test in Model.TestCases)
     {
-        @: suite.add('@Html.Raw(test.TestCaseName)', function() {
+        @: suite.add('@Html.Raw(test.TestCaseName.Replace("'", "\\'"))', function() {
         @Html.Raw(test.BenchmarkCode);
         @:});
     }

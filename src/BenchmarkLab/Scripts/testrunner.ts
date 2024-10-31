@@ -176,7 +176,8 @@ class TestRunnerController {
     onCycleHandler(targets: Event): void {
         (window as any)._test_runner.recordMemoryInfo("test end");
         const completedTarget = targets.target as any;
-        const testName: string = completedTarget.name;
+        var testName: string = completedTarget.name;
+        testName = testName.replaceAll("'", "\\'");
         const row = window.parent.document.querySelectorAll(`[data-row-for='${testName}']`);
         if (row.length !== 1) {
             throw "Unable to find where to report result";
