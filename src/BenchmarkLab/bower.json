@@ -11,6 +11,6 @@
     "platform": "1.3.6",
     "codemirror": "5.16.0",
     "code-mirror-themes": "0.0.3",
-    "mustache": "4.2.0"
+    "mustache": "4.1.0"
   }
 }
