@@ -54,14 +54,14 @@ class TestRunnerController {
     }
 
     private autostartTest(): void {
-        var outerRunner: any = (parent.window as any)._validation_handler;
+        const outerRunner: any = (parent.window as any)._validation_handler;
         this.appendToLog('Loading iframe for testing...Done.');
         this.appendToLog('Attempting to run benchmark...');
-        var _myThis = this;
+        const _myThis = this;
         try {
-            var htmlPrep: string = (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
-            eval((parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value);
-
+            const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
+            // TODO:bug fixing here
+            $.globalEval(scriptPreparationCode);
             var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
             var suite:any = eval("new Benchmark.Suite");
             for (var i = 0; i < tc.length; i++) {
@@ -158,11 +158,11 @@ class TestRunnerController {
         window.parent.document.getElementById('chart_div').innerHTML = '';
         window.parent.document.getElementById('memory_chart_div').innerHTML = '';
 
-        var preparation = document.getElementById("jspreparation").innerHTML;
-        var content = document.getElementById("benchmark").innerHTML;
+        const preparation = document.getElementById("jspreparation").innerHTML;
+        const content = document.getElementById("benchmark").innerHTML;
+        const full_testcase = "{" + preparation + "\n" + content + "}";
         try {
-            eval(preparation);
-            eval(content);
+            eval(full_testcase);
         } catch (e) {
             alert("Error:" + e.message);
             const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
