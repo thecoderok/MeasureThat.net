@@ -13,7 +13,7 @@ function getElementByDataAttribute(attr: string): HTMLElement {
     return row[0] as HTMLElement;
 }
 
-function replaceAll(target, search, replacement): string {
+function replaceAll(target: string, search: string, replacement: string): string {
     return target.split(search).join(replacement);
 }
 function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
@@ -22,6 +22,14 @@ function getElementsByDataAttribute(attr: string): NodeListOf<Element> {
         throw "Unable to find any elements by attribute: " + attr;
     }
     return result;
+}
+
+// jQuery's globalEval function. Needed for script preparation code since
+// sometimes variables end up with block scope (e.g. consts). 
+function globalEval(code: string): void {
+    const script = document.createElement('script');
+    script.text = code;
+    document.head.appendChild(script).parentNode?.removeChild(script);
 }
 
 class TestRunnerController {
@@ -60,8 +68,7 @@ class TestRunnerController {
         const _myThis = this;
         try {
             const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
-            // TODO:bug fixing here
-            $.globalEval(scriptPreparationCode);
+            globalEval(scriptPreparationCode);
             var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
             var suite:any = eval("new Benchmark.Suite");
             for (var i = 0; i < tc.length; i++) {
@@ -70,7 +77,7 @@ class TestRunnerController {
 
                 eval("suite.add(testName, function () { " + testBody + " })");
             }
-            suite.on('cycle', function (event) {
+            suite.on('cycle', function (event: { target: any; }) {
                 console.log(String(event.target));
                 _myThis.appendToLog('Checked test: ' + String(event.target));
             })
@@ -82,11 +89,11 @@ class TestRunnerController {
                 outerRunner.validationSuccess();
                 
             })
-            .on('abort', function (evt) {
+            .on('abort', function (evt: any) {
                 console.log('abort: ' + JSON.stringify(evt));
                 _myThis.appendToLog('Benchmark abort');
             })
-            .on('error', function (evt) {
+            .on('error', function (evt: { target: { error: string; }; }) {
                 let message = "Some error occurred.";
                 if (evt && evt.target && evt.target.error) {
                     message = evt.target.error;
@@ -94,7 +101,7 @@ class TestRunnerController {
                 
                 outerRunner.validationFailed(message);
             })
-            .on('reset', function (evt) {
+            .on('reset', function (evt: any) {
                 _myThis.appendToLog('Benchmark reset.');
                 });
             _myThis.appendToLog('Starting benchmark...');
@@ -125,8 +132,6 @@ class TestRunnerController {
             // Where did this message come from?
             console.warn('Message from unknown origin: ' + event.origin);
         }
-
-
 
         if (event.data === 'start_test') {
             this.shouldRecordMemory = false;
@@ -160,9 +165,9 @@ class TestRunnerController {
 
         const preparation = document.getElementById("jspreparation").innerHTML;
         const content = document.getElementById("benchmark").innerHTML;
-        const full_testcase = "{" + preparation + "\n" + content + "}";
         try {
-            eval(full_testcase);
+            globalEval(preparation);
+            eval(content);
         } catch (e) {
             alert("Error:" + e.message);
             const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
@@ -202,7 +207,7 @@ class TestRunnerController {
         window.parent.document.getElementById('spinner').style.display = 'inline-block';
     }
 
-    onErrorHandler(evt): void {
+    onErrorHandler(evt: { target: { error: string; }; }): void {
         let message = "Some error occurred.";
         if (evt && evt.target && evt.target.error) {
             message = evt.target.error;
