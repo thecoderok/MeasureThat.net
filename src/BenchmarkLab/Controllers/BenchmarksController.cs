@@ -21,8 +21,6 @@ namespace MeasureThat.Net.Controllers
     using MeasureThat.Net.Logic.Validation;
     using BenchmarkLab.Models;
     using BenchmarkLab.Logic.Web;
-    using System.Net;
-    using static Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Microsoft.AspNetCore.Http;
     using MeasureThat.Net.Logic.Web.Security;

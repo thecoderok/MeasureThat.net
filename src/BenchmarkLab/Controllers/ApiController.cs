@@ -1,11 +1,8 @@
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MeasureThat.Logic.Web.Sitemap;
-using System;
 
 namespace BenchmarkLab.Controllers
 {

@@ -111,16 +111,21 @@ class TestRunnerController {
     }
 
     handleMessage(event: any): void {
-        if (event.origin !== "http://localhost:5000"
-            && event.origin !== "https://measurethat.net/"
-            && event.origin !== "https://measurethat.net"
-            && event.origin !== "https://www.measurethat.net"
-            && event.origin !== "http://measurethat.net"
-            && event.origin !== "http://www.measurethat.net"
-            && event.origin !== "https://benchmarklab.azurewebsites.net") {
-            // Where did this message came from?
-            console.warn('Message from uknown origin: '+ event.origin);
+        const allowedOrigins = new Set([
+            "http://localhost:5000",
+            "https://measurethat.net/",
+            "https://measurethat.net",
+            "https://www.measurethat.net",
+            "http://measurethat.net",
+            "http://www.measurethat.net",
+            "https://benchmarklab.azurewebsites.net"
+        ]);
+
+        if (!allowedOrigins.has(event.origin)) {
+            // Where did this message come from?
+            console.warn('Message from unknown origin: ' + event.origin);
         }
+
 
 
         if (event.data === 'start_test') {

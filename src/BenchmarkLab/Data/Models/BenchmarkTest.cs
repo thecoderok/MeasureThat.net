@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BenchmarkLab.Data.Models;
+﻿namespace BenchmarkLab.Data.Models;
 
 public partial class BenchmarkTest
 {
