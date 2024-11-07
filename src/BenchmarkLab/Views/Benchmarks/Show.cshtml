@@ -155,18 +155,21 @@
 
     <textarea id="markdown-input" style="display:none;">@randomSummary.Description</textarea>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-    document.getElementById('markdown-input').addEventListener('input', function() {
-        var markdownText = this.value;
-        var htmlContent = marked(markdownText);
-        document.getElementById('markdown-output').innerHTML = htmlContent;
-    });
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer onload="initializeMarkdown()"></script>
+    <script>
+        function initializeMarkdown() {
+            document.getElementById('markdown-input').addEventListener('input', function () {
+                var markdownText = this.value;
+                var htmlContent = marked(markdownText);
+                document.getElementById('markdown-output').innerHTML = htmlContent;
+            });
 
-    // Initial render
-    var initialMarkdown = document.getElementById('markdown-input').value;
-    document.getElementById('markdown-output').innerHTML = marked.parse(initialMarkdown);
-</script>
+            // Initial render
+            var initialMarkdown = document.getElementById('markdown-input').value;
+            document.getElementById('markdown-output').innerHTML = marked.parse(initialMarkdown);
+        }
+    </script>
+
 }
 
 
