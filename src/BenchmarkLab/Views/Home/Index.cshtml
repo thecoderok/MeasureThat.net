@@ -92,6 +92,10 @@
         }
     }
     <div class="col-md-6">
+        @await Html.PartialAsync("_SharedAds")
+    </div>
+    
+    <div class="col-md-6">
         <h2>Check out our free online tools:</h2>
         @await Html.PartialAsync("_OnlineToolsList")
     </div>
