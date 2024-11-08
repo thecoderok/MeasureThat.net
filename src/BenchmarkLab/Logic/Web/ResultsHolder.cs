@@ -5,19 +5,37 @@ namespace BenchmarkLab.Logic.Web
 {
     public class ResultsPaginationHolder<T>
     {
-        public const int MaxNumberOfPageButtons  = 8;
+        public const int MaxNumberOfPageButtons = 8;
 
-        public IList<T> Entities { get; private set; }
+        public IList<T> Entities
+        {
+            get; private set;
+        }
 
-        public int Page { get; private set; }
+        public int Page
+        {
+            get; private set;
+        }
 
-        public int TotalRecordsCount { get; private set; }
+        public int TotalRecordsCount
+        {
+            get; private set;
+        }
 
-        public int PageSize { get; private set; }
+        public int PageSize
+        {
+            get; private set;
+        }
 
-        public IList<int> AvailablePages { get; private set; }
+        public IList<int> AvailablePages
+        {
+            get; private set;
+        }
 
-        public int NumberOfPages {get; private set;}
+        public int NumberOfPages
+        {
+            get; private set;
+        }
 
         public bool ButtonPreviousActive
         {
@@ -39,7 +57,7 @@ namespace BenchmarkLab.Logic.Web
         {
             var result = new List<int>();
             result.Add(Page);
-            for (int i = 0, pageLeft = Page-1, pageRight = Page+1; i < MaxNumberOfPageButtons; i++)
+            for (int i = 0, pageLeft = Page - 1, pageRight = Page + 1; i < MaxNumberOfPageButtons; i++)
             {
                 if (IsValidPage(pageLeft))
                 {

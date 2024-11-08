@@ -1,16 +1,16 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
-using System.Xml.Linq;
-using System.Globalization;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Web;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MeasureThat.Logic.Web.Sitemap
 {
@@ -52,9 +52,9 @@ namespace MeasureThat.Logic.Web.Sitemap
             AppendMainRoutes(list);
             await AppendBenchmarksToSitemap(list).ConfigureAwait(false);
             string sitemap = GetSitemapDocument(list);
-            
+
             await File.WriteAllTextAsync(sitemapPath, sitemap);
-            
+
             return sitemap;
         }
 
@@ -155,11 +155,26 @@ namespace MeasureThat.Logic.Web.Sitemap
 
     public class SitemapNode
     {
-        public SitemapFrequency? Frequency { get; set; }
-        public DateTime? LastModified { get; set; }
-        public string LastModifiedRaw { get; set; }
-        public double? Priority { get; set; }
-        public string Url { get; set; }
+        public SitemapFrequency? Frequency
+        {
+            get; set;
+        }
+        public DateTime? LastModified
+        {
+            get; set;
+        }
+        public string LastModifiedRaw
+        {
+            get; set;
+        }
+        public double? Priority
+        {
+            get; set;
+        }
+        public string Url
+        {
+            get; set;
+        }
     }
 
     public enum SitemapFrequency

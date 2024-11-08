@@ -1,10 +1,7 @@
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Services
 {
@@ -18,7 +15,10 @@ namespace MeasureThat.Net.Services
             Options = optionsAccessor.Value;
         }
 
-        public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
+        public AuthMessageSenderOptions Options
+        {
+            get;
+        } //set only via Secret Manager
 
         // https://azure.microsoft.com/en-us/documentation/articles/sendgrid-dotnet-how-to-send-email/#create-a-sendgrid-account
         public Task SendEmailAsync(string email, string subject, string message)

@@ -92,10 +92,22 @@ namespace MeasureThat.Net.Logic.Web
 
     public class ReCaptchaResponse
     {
-        public bool success { get; set; }
-        public string challenge_ts { get; set; }
-        public string hostname { get; set; }
-        public string[] errorcodes { get; set; }
+        public bool success
+        {
+            get; set;
+        }
+        public string challenge_ts
+        {
+            get; set;
+        }
+        public string hostname
+        {
+            get; set;
+        }
+        public string[] errorcodes
+        {
+            get; set;
+        }
     }
 
 }

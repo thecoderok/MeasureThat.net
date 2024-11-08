@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
-using MeasureThat.Net.Logic.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace MeasureThat.Net.Controllers.ViewComponents
             {
                 return View("NoResults");
             }
-            
+
 
             return View(relatedBenchmarks);
         }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Whois.NET;
 
 namespace BenchmarkLab.Controllers
@@ -37,7 +37,7 @@ namespace BenchmarkLab.Controllers
         {
             return View();
         }
-        
+
         public IActionResult FormatSQL()
         {
             return View();
@@ -70,7 +70,8 @@ namespace BenchmarkLab.Controllers
             {
                 var result = await WhoisClient.QueryAsync(domain);
                 return View(result);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 ViewData["error"] = e.Message;
                 return View();
@@ -104,9 +105,9 @@ namespace BenchmarkLab.Controllers
             {
                 return View();
             }
-            
+
             try
-            { 
+            {
                 IPAddress[] addresses = await Dns.GetHostAddressesAsync(host);
                 return View(addresses);
             }

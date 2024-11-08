@@ -1,12 +1,12 @@
 namespace MeasureThat.Net.Data.Dao
 {
+    using Microsoft.Extensions.Caching.Memory;
     using System;
     using System.Threading.Tasks;
-    using Microsoft.Extensions.Caching.Memory;
 
     public class CacheAsideRequestHelper
     {
-        public static async Task<T> CacheAsideRequest<T>(Func<Task<T>> lookupWhenNotFound, 
+        public static async Task<T> CacheAsideRequest<T>(Func<Task<T>> lookupWhenNotFound,
             string key,
             IMemoryCache memoryCache,
             MemoryCacheEntryOptions cacheOptions = null)

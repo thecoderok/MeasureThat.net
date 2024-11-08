@@ -1,27 +1,25 @@
-using System;
+using MeasureThat.Net.Data;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Options;
+using MeasureThat.Net.Logic.Web;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MeasureThat.Net.Data;
-using MeasureThat.Net.Models;
-using MeasureThat.Net.Services;
-using MeasureThat.Net.Logic.Web;
-using MeasureThat.Net.Data.Dao;
-using MeasureThat.Net.Logic.Options;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace MeasureThat.Net
 {
     using MeasureThat.Logic.Web.Sitemap;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
 
     public class Startup
@@ -32,8 +30,11 @@ namespace MeasureThat.Net
         {
             Configuration = config;
         }
-         
-        public IConfiguration Configuration { get; }
+
+        public IConfiguration Configuration
+        {
+            get;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -42,9 +43,6 @@ namespace MeasureThat.Net
             services.AddMemoryCache();
 
             services.AddDetection();
-
-            // Add framework services.
-            //services.AddApplicationInsightsTelemetry(Configuration);
 
             AddDatabaseContext(services);
 
@@ -99,7 +97,8 @@ namespace MeasureThat.Net
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddScoped<IUrlHelper>(x => {
+            services.AddScoped<IUrlHelper>(x =>
+            {
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
@@ -139,12 +138,9 @@ namespace MeasureThat.Net
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            //loggerFactory.AddDebug();
             m_logger = loggerFactory.CreateLogger<Startup>();
 
             DefaultFilesOptions options = new DefaultFilesOptions();
-            //options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(options);
 

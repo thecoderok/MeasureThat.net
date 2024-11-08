@@ -4,7 +4,7 @@ namespace MeasureThat.Net.Exceptions
 
     public class UnableToFindBenchmarkException : Exception
     {
-        public UnableToFindBenchmarkException(string message): base(message)
+        public UnableToFindBenchmarkException(string message) : base(message)
         {
         }
     }

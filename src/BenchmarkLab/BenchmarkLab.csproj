@@ -19,8 +19,8 @@
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <TypeScriptToolsVersion>5.6.2</TypeScriptToolsVersion>
     <Version>1.5</Version>
-    <AssemblyVersion>1.5.2</AssemblyVersion>
-    <FileVersion>1.5.2</FileVersion>
+    <AssemblyVersion>1.5.3</AssemblyVersion>
+    <FileVersion>1.5.3</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -16,17 +16,35 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public virtual DbSet<Benchmark> Benchmarks { get; set; }
+    public virtual DbSet<Benchmark> Benchmarks
+    {
+        get; set;
+    }
 
-    public virtual DbSet<BenchmarkTest> BenchmarkTests { get; set; }
+    public virtual DbSet<BenchmarkTest> BenchmarkTests
+    {
+        get; set;
+    }
 
-    public virtual DbSet<GenAidescription> GenAidescriptions { get; set; }
+    public virtual DbSet<GenAidescription> GenAidescriptions
+    {
+        get; set;
+    }
 
-    public virtual DbSet<Result> Results { get; set; }
+    public virtual DbSet<Result> Results
+    {
+        get; set;
+    }
 
-    public virtual DbSet<ResultRow> ResultRows { get; set; }
+    public virtual DbSet<ResultRow> ResultRows
+    {
+        get; set;
+    }
 
-    public virtual DbSet<SaveThatBlob> SaveThatBlobs { get; set; }
+    public virtual DbSet<SaveThatBlob> SaveThatBlobs
+    {
+        get; set;
+    }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

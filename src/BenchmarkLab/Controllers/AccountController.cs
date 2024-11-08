@@ -1,14 +1,14 @@
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using MeasureThat.Net.Models;
+using MeasureThat.Net.Models.AccountViewModels;
+using MeasureThat.Net.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using MeasureThat.Net.Models;
-using MeasureThat.Net.Models.AccountViewModels;
-using MeasureThat.Net.Services;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers
 {
@@ -64,7 +64,7 @@ namespace MeasureThat.Net.Controllers
                 var user = await m_userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
-                    if (this.m_emailConfirmationOptions.Value.RequireEmailConfirmation 
+                    if (this.m_emailConfirmationOptions.Value.RequireEmailConfirmation
                         && !await m_userManager.IsEmailConfirmedAsync(user))
                     {
                         ModelState.AddModelError(string.Empty, "You must have a confirmed email to log in.");
@@ -133,7 +133,11 @@ namespace MeasureThat.Net.Controllers
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                         // Send an email with this link
                         var code = await m_userManager.GenerateEmailConfirmationTokenAsync(user);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code },
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new
+                        {
+                            userId = user.Id,
+                            code = code
+                        },
                             protocol: HttpContext.Request.Scheme);
                         await m_emailSender.SendEmailAsync(model.Email, "Confirm your account",
                             $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
@@ -142,7 +146,7 @@ namespace MeasureThat.Net.Controllers
                     {
                         await m_signInManager.SignInAsync(user, isPersistent: false);
                     }
-                    
+
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);

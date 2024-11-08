@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MeasureThat.Net.Models;
-using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using MeasureThat.Net.Exceptions;
-using System;
 using BenchmarkLab.Data.Models;
+using JetBrains.Annotations;
+using MeasureThat.Net.Exceptions;
+using MeasureThat.Net.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Data.Dao
 {
@@ -172,7 +172,7 @@ namespace MeasureThat.Net.Data.Dao
                 WhenCreated = entity.Created
             };
 
-            foreach(var row in entity.ResultRows)
+            foreach (var row in entity.ResultRows)
             {
                 var rowModel = new ResultsRowModel()
                 {

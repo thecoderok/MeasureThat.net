@@ -1,10 +1,10 @@
 namespace MeasureThat.Net.Logic
 {
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
     using JetBrains.Annotations;
     using Microsoft.AspNetCore.Http;
     using Models;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
 
     public class InputDataParser
     {

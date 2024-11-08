@@ -1,19 +1,18 @@
-using System.Collections.Generic;
-using MeasureThat.Net.Models;
 using JetBrains.Annotations;
+using MeasureThat.Net.Models;
+using System.Collections.Generic;
 
 namespace MeasureThat.Net.Data.Dao
 {
-    using System.Linq;
-    using System.Threading.Tasks;
+    using BenchmarkLab.Data.Models;
+    using BenchmarkLab.Models;
     using Exceptions;
     using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
-    using BenchmarkLab.Models;
-    using System;
     using Microsoft.Extensions.Caching.Memory;
-    using BenchmarkLab.Data.Models;
-    using NuGet.Protocol.Plugins;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class SqlServerBenchmarkRepository
     {
@@ -128,12 +127,12 @@ namespace MeasureThat.Net.Data.Dao
                 .OrderByDescending(t => t.WhenCreated)
                 .Skip(maxEntities * page)
                 .Take(maxEntities)
-                .Select(x => new { x.Id, x.Name, x.Description, x.WhenCreated, x.Version, x.OwnerId})
+                .Select(x => new { x.Id, x.Name, x.Description, x.WhenCreated, x.Version, x.OwnerId })
                 .ToListAsync()
                 .ConfigureAwait(false);
 
             var result = new List<BenchmarkDtoForIndex>();
-            foreach(var item in entities)
+            foreach (var item in entities)
             {
                 result.Add(new BenchmarkDtoForIndex
                 {
@@ -228,7 +227,7 @@ namespace MeasureThat.Net.Data.Dao
         public virtual async Task<IList<BenchmarkDtoForIndex>> ListByUser(string userId, int page, int numOfItems)
         {
             var entities = await this.m_db.Benchmarks
-                .Where(t=> t.OwnerId == userId)
+                .Where(t => t.OwnerId == userId)
                 .Include(b => b.BenchmarkTests)
                 .Skip(page * numOfItems)
                 .Take(numOfItems)
@@ -254,7 +253,7 @@ namespace MeasureThat.Net.Data.Dao
             return result;
         }
 
-        public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model, 
+        public async Task<BenchmarkDto> Update([NotNull] BenchmarkDto model,
             [NotNull] string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))

@@ -1,29 +1,29 @@
-using System.Linq;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
 using MeasureThat.Net.Logic.Web;
 using MeasureThat.Net.Models;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 using UAParser;
 
 namespace MeasureThat.Net.Controllers
 {
-    using System;
-    using System.Collections.Generic;
+    using BenchmarkLab.Logic.Web;
+    using BenchmarkLab.Models;
     using Exceptions;
     using Logic;
     using MeasureThat.Net.Logic.Validation;
-    using BenchmarkLab.Models;
-    using BenchmarkLab.Logic.Web;
-    using Microsoft.AspNetCore.Mvc.ModelBinding;
-    using Microsoft.AspNetCore.Http;
     using MeasureThat.Net.Logic.Web.Security;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using System;
+    using System.Collections.Generic;
     using Wangkanai.Detection.Services;
 
     [Authorize(Policy = "AllowGuests")]
@@ -82,7 +82,7 @@ namespace MeasureThat.Net.Controllers
             if (!dummyTest)
             {
                 model = new BenchmarkDto();
-            } 
+            }
             else
             {
                 model = new BenchmarkDto
@@ -104,7 +104,7 @@ namespace MeasureThat.Net.Controllers
                 }
                 };
             }
-            
+
             return this.View(model);
         }
 
@@ -126,7 +126,12 @@ namespace MeasureThat.Net.Controllers
             long id = await this.m_benchmarkRepository.Add(model);
 
             return this.RedirectToAction("Show",
-                new { Id = id, Version = 0, name = SeoFriendlyStringConverter.Convert(model.BenchmarkName) });
+                new
+                {
+                    Id = id,
+                    Version = 0,
+                    name = SeoFriendlyStringConverter.Convert(model.BenchmarkName)
+                });
         }
 
         private async Task ValidateBenchmarkForAdd(BenchmarkDto model)
@@ -384,7 +389,7 @@ namespace MeasureThat.Net.Controllers
             {
                 return await ValidateBenchmarkInternal(model);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new JsonResult(new { error = e.Message });
             }

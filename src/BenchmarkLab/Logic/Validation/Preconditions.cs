@@ -1,7 +1,7 @@
 namespace MeasureThat.Net.Logic.Validation
 {
-    using System;
     using Exceptions;
+    using System;
 
     public static class Preconditions
     {

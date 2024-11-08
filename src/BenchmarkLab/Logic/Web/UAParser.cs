@@ -39,10 +39,19 @@ namespace UAParser
             IsSpider = isSpider;
         }
 
-        public string Family { get; private set; }
-        public bool IsSpider { get; private set; }
+        public string Family
+        {
+            get; private set;
+        }
+        public bool IsSpider
+        {
+            get; private set;
+        }
 
-        public override string ToString() { return Family; }
+        public override string ToString()
+        {
+            return Family;
+        }
     }
 
     // ReSharper disable once InconsistentNaming
@@ -57,11 +66,26 @@ namespace UAParser
             PatchMinor = patchMinor;
         }
 
-        public string Family { get; private set; }
-        public string Major { get; private set; }
-        public string Minor { get; private set; }
-        public string Patch { get; private set; }
-        public string PatchMinor { get; private set; }
+        public string Family
+        {
+            get; private set;
+        }
+        public string Major
+        {
+            get; private set;
+        }
+        public string Minor
+        {
+            get; private set;
+        }
+        public string Patch
+        {
+            get; private set;
+        }
+        public string PatchMinor
+        {
+            get; private set;
+        }
 
         public override string ToString()
         {
@@ -80,10 +104,22 @@ namespace UAParser
             Patch = patch;
         }
 
-        public string Family { get; private set; }
-        public string Major { get; private set; }
-        public string Minor { get; private set; }
-        public string Patch { get; private set; }
+        public string Family
+        {
+            get; private set;
+        }
+        public string Major
+        {
+            get; private set;
+        }
+        public string Minor
+        {
+            get; private set;
+        }
+        public string Patch
+        {
+            get; private set;
+        }
 
         public override string ToString()
         {
@@ -103,9 +139,18 @@ namespace UAParser
     public class ClientInfo
     {
         // ReSharper disable once InconsistentNaming
-        public OS OS { get; private set; }
-        public Device Device { get; private set; }
-        public UserAgent UserAgent { get; private set; }
+        public OS OS
+        {
+            get; private set;
+        }
+        public Device Device
+        {
+            get; private set;
+        }
+        public UserAgent UserAgent
+        {
+            get; private set;
+        }
 
         public ClientInfo(OS os, Device device, UserAgent userAgent)
         {
@@ -141,8 +186,14 @@ namespace UAParser
             return from cm in entries select selector(cm.Find);
         }
 
-        public static Parser FromYaml(string yaml) { return new Parser(new MinimalYamlParser(yaml)); }
-        public static Parser FromYamlFile(string path) { return new Parser(new MinimalYamlParser(File.ReadAllText(path))); }
+        public static Parser FromYaml(string yaml)
+        {
+            return new Parser(new MinimalYamlParser(yaml));
+        }
+        public static Parser FromYamlFile(string path)
+        {
+            return new Parser(new MinimalYamlParser(File.ReadAllText(path)));
+        }
 
         public static Parser GetDefault()
         {
@@ -158,9 +209,18 @@ namespace UAParser
             return new ClientInfo(os, device, ua);
         }
 
-        public OS ParseOS(string uaString) { return _osParser(uaString); }
-        public Device ParseDevice(string uaString) { return _deviceParser(uaString); }
-        public UserAgent ParseUserAgent(string uaString) { return _userAgentParser(uaString); }
+        public OS ParseOS(string uaString)
+        {
+            return _osParser(uaString);
+        }
+        public Device ParseDevice(string uaString)
+        {
+            return _deviceParser(uaString);
+        }
+        public UserAgent ParseUserAgent(string uaString)
+        {
+            return _userAgentParser(uaString);
+        }
 
         static Func<string, T> CreateParser<T>(IEnumerable<Func<string, T>> parsers, T defaultValue) where T : class
         {
@@ -260,7 +320,10 @@ namespace UAParser
                      : Replace(replacement);
             }
 
-            static Func<Match, IEnumerator<int>, string> Select() { return Select(v => v); }
+            static Func<Match, IEnumerator<int>, string> Select()
+            {
+                return Select(v => v);
+            }
 
             static Func<Match, IEnumerator<int>, T> Select<T>(Func<string, T> selector)
             {
@@ -341,7 +404,10 @@ namespace UAParser
                 Sequences = new List<Dictionary<string, string>>();
             }
 
-            public List<Dictionary<string, string>> Sequences { get; private set; }
+            public List<Dictionary<string, string>> Sequences
+            {
+                get; private set;
+            }
 
             public void BeginSequence()
             {
@@ -362,7 +428,13 @@ namespace UAParser
             ReadIntoMappingModel(yamlString);
         }
 
-        internal IDictionary<string, Mapping> Mappings { get { return m_mappings; } }
+        internal IDictionary<string, Mapping> Mappings
+        {
+            get
+            {
+                return m_mappings;
+            }
+        }
 
         private void ReadIntoMappingModel(string yamlInputString)
         {
