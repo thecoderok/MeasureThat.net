@@ -261,7 +261,9 @@ namespace MeasureThat.Net.Controllers
         {
             BenchmarkDto benchmark = await this.ValidateOwner(id);
 
-            await this.m_benchmarkRepository.DeleteById(id);
+            ApplicationUser user = await this.GetCurrentUserAsync();
+
+            await this.m_benchmarkRepository.DeleteById(id, user);
 
             return RedirectToAction("My");
         }

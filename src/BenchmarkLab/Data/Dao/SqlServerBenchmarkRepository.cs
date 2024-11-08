@@ -13,6 +13,7 @@ namespace MeasureThat.Net.Data.Dao
     using System;
     using Microsoft.Extensions.Caching.Memory;
     using BenchmarkLab.Data.Models;
+    using NuGet.Protocol.Plugins;
 
     public class SqlServerBenchmarkRepository
     {
@@ -59,15 +60,14 @@ namespace MeasureThat.Net.Data.Dao
             return newEntity.Id;
         }
 
-        public virtual async Task<long> DeleteById(long id)
+        public virtual async Task<long> DeleteById(long id, ApplicationUser user)
         {
             var entity = await this.m_db.Benchmarks
                 .SingleOrDefaultAsync(m => m.Id == id)
                 .ConfigureAwait(false);
             if (entity != null)
             {
-                this.m_db.Benchmarks.Remove(entity);
-                await this.m_db.SaveChangesAsync().ConfigureAwait(false);
+                this.m_db.Benchmarks.Where(a => a.Id == id && a.OwnerId == user.Id).ExecuteDelete();
             }
 
             return id;
