@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://measurethat.net/lib/lodash/dist/lodash.js"></script>
+    <script src="https://measurethat.net/lib/benchmark/benchmark.js"></script>
+    <script src="https://measurethat.net/lib/platform/platform.js"></script>
+</head>
+<body>
+    <script>
+        var suite = new Benchmark.Suite();
+        function wait(ms) {
+            return new Promise(res => setTimeout(() => { res(ms); }, ms));
+        }
+        suite
+            .add('async test 100', {
+                'fn': async function (deferred) {
+                    setTimeout(function () { deferred.resolve() }, 100);
+                },
+                'defer': true
+            })
+            .add('async test 50', {
+                'fn': async function (deferred) {
+                    setTimeout(function () { deferred.resolve() }, 50);
+                },
+                'defer': true
+            })
+            .add('async test 500', {
+                'fn': async function (deferred) {
+                    await wait(500);
+                    deferred.resolve();
+                },
+                'defer': true
+            })
+            .on('cycle', function (event) {
+                console.log("On Cycle: " + String(event.target));
+            })
+            .on('complete', function () {
+                console.log('Fastest is ' + this.filter('fastest').map('name'));
+            });
+            // run async
+        suite.run();
+        console.log("Started");
+
+    </script>
+
+</body>
+</html>
