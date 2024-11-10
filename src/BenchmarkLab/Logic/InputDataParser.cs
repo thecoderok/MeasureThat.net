@@ -42,7 +42,7 @@ namespace MeasureThat.Net.Logic
 
             foreach (var idx in indexes)
             {
-                string nameKey = $"TestCases[{idx}].TestCaseDtoName";
+                string nameKey = $"TestCases[{idx}].TestCaseName";
                 string codeKey = $"TestCases[{idx}].BenchmarkCode";
                 string deferredKey = $"TestCases[{idx}].Deferred";
 

@@ -334,6 +334,7 @@ namespace MeasureThat.Net.Controllers
             }
 
             // Manually parse input
+            // TODO: do I really need to do this?
             var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
 
             // Check if benchmark code was actually entered

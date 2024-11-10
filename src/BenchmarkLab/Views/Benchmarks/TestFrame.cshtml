@@ -30,9 +30,19 @@
     var suite = new Benchmark.Suite;
     @foreach (var test in Model.TestCases)
     {
-        @: suite.add('@Html.Raw(test.TestCaseName.Replace("'", "\\'"))', function() {
-        @Html.Raw(test.BenchmarkCode);
-        @:});
+    @:var testName = '@Html.Raw(test.TestCaseName.Replace("'", "\\'"))';
+    if (test.Deferred)
+    {
+    @:var deferred = true;
+    @:var fn = async function(deferred) {@Html.Raw(test.BenchmarkCode);}
+    }
+    else
+    {
+    @:var deferred = false;
+    @:var fn = function() {@Html.Raw(test.BenchmarkCode);}
+    }
+    @:var testCase = {'fn': fn, 'defer': deferred};
+    @:suite.add(testName, testCase);
     }
     suite.on('start', pageController.onStartHandler);
     suite.on('cycle', pageController.onCycleHandler);
