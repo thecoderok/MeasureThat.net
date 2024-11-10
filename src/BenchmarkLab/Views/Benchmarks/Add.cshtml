@@ -224,6 +224,8 @@
                 <input type="text" class="form-control" placeholder="Name of the test case" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseDtoName" value="{{testCaseName}}" data-role="testCaseName">
 
                 <label for="TestCases.BenchmarkCode">Benchmark code</label>
+                <input type="checkbox" class="form-check-input" id="Deferred" name="TestCases[{{testCaseId}}].Deferred" data-role="Deferred" style="margin-left:20px;">
+                <label class="form-check-label" for="Deferred">Deferred</label>
                 <textarea class="form-control" data-val="true" placeholder="Benchmark code" data-val-required="The Benchmark code is required." name="TestCases[{{testCaseId}}].BenchmarkCode" data-role="testCaseCode">{{textCaseContent}}</textarea>
                 <span class="field-validation-valid text-danger" data-valmsg-for="TestCases.BenchmarkCode" data-valmsg-replace="true"></span>
             </div>

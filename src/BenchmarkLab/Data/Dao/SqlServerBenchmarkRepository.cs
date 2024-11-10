@@ -208,7 +208,8 @@ namespace MeasureThat.Net.Data.Dao
                 var testCase = new TestCaseDto()
                 {
                     TestCaseName = test.TestName,
-                    BenchmarkCode = test.BenchmarkText
+                    BenchmarkCode = test.BenchmarkText,
+                    Deferred = test.Deferred
                 };
                 result.TestCases.Add(testCase);
             }

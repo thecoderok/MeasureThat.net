@@ -24,9 +24,6 @@
             showEditButton = true;
         }
     }
-    bool relatedBenchmarksEnabled = false;
-    bool.TryParse(configuration["RelatedBenchmarksEnabled"], out relatedBenchmarksEnabled);
-
     bool genAISummaryEnabled = false;
     bool.TryParse(configuration["LLMDescriptionsEnabled"], out genAISummaryEnabled);
     // Picking a random item from Model.LLMSummaries
@@ -210,13 +207,6 @@
 <input name="id" type="hidden" value="@Model.Id" />
 }
 
-<div class="hidden" id="delete-form">
-    <form action="/Benchmarks/Delete" method="post">
-        <input type="hidden" name="id">
-        @Html.AntiForgeryToken()
-    </form>
-</div>
-
 @section Scripts {
     <script src="~/js/benchmarklab.js" asp-append-version="true"></script>
 
@@ -231,37 +221,17 @@
     @{await Html.RenderPartialAsync("_CodeMirrorScripts");}
 }
 
-@if (relatedBenchmarksEnabled)
-{
-    @await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
-}
+@await Component.InvokeAsync("RelatedBenchmarks", new { relatedIds = Model.RelatedIds })
 
 <hr />
 
-<div class="text-center">
-    <button class="show-comments btn btn-default"><i class="fa fa-comments" aria-hidden="true"></i>&nbsp;Comments</button>
-</div>
+@{
+    await Html.RenderPartialAsync("_SharedCommentsMarkup");
+}
 
-<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Confirm delete:</h4>
-            </div>
-            <div class="modal-body" style="text-align: center">
-                Do you really want to delete benchmark?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="perform-delete">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
+@{await Html.RenderPartialAsync("_SharedDelete");}
 
-<!-- The empty element required for Disqus to loads comments into -->
-<div id="disqus_thread"></div>
+
 @section headAdditions{
     <link rel="canonical" href="@Url.Action("Show", "Benchmarks", new { id = Model.Id, version = Model.Version, name = SeoFriendlyStringConverter.Convert(Model.BenchmarkName)}, Url.ActionContext.HttpContext.Request.Scheme)" />
 }

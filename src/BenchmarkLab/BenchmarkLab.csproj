@@ -70,4 +70,11 @@
     <TypeScriptCompile Include="Scripts\testrunner.ts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Shared\_SharedDeleteBenchmark.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
