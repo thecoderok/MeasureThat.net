@@ -45,6 +45,7 @@ namespace MeasureThat.Net.Data.Dao
                 {
                     TestName = test.TestCaseName,
                     BenchmarkText = test.BenchmarkCode,
+                    Deferred = test.Deferred,
                 };
                 newEntity.BenchmarkTests.Add(newTest);
             }
@@ -309,6 +310,7 @@ namespace MeasureThat.Net.Data.Dao
             {
                 benchmarkTest.BenchmarkText = model.TestCases[index].BenchmarkCode;
                 benchmarkTest.TestName = model.TestCases[index].TestCaseName;
+                benchmarkTest.Deferred = model.TestCases[index].Deferred;
                 index++;
             }
 

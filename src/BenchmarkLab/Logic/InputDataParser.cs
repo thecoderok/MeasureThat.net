@@ -44,15 +44,18 @@ namespace MeasureThat.Net.Logic
             {
                 string nameKey = $"TestCases[{idx}].TestCaseDtoName";
                 string codeKey = $"TestCases[{idx}].BenchmarkCode";
+                string deferredKey = $"TestCases[{idx}].Deferred";
 
                 if (form.ContainsKey(nameKey) && form.ContainsKey(codeKey))
                 {
                     var name = form[nameKey];
                     var code = form[codeKey];
+                    var deferred = form.ContainsKey(deferredKey);
                     var testCase = new TestCaseDto()
                     {
                         BenchmarkCode = code,
-                        TestCaseName = name
+                        TestCaseName = name,
+                        Deferred = deferred
                     };
                     testCases.Add(testCase);
                 }
