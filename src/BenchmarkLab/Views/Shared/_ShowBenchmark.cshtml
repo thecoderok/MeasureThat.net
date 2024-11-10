@@ -36,7 +36,14 @@
         @foreach (var test in Model.TestCases)
         {
             <li class="list-group-item">
-                <h4>@test.TestCaseName</h4>
+                <h4>
+                    @test.TestCaseName
+                    @if(test.Deferred)
+                    {
+                        <span class="label label-info">[Async/Deferred]</span>
+                    }
+                </h4>
+                
                 <textarea class="form-control" readonly data-code="javascript">@test.BenchmarkCode</textarea>
             </li>
         }

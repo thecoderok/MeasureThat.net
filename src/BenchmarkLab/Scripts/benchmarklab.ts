@@ -19,7 +19,7 @@ class AddNewTestPageController {
     }
 
     // Creates new test case input panel
-    private makeNewTestCase(strTestCaseContent: string, strTestCaseName: string): void {
+    private makeNewTestCase(strTestCaseContent: string, strTestCaseName: string, strDeferredTest: string): void {
         if (!strTestCaseContent) {
             strTestCaseContent = "";
         }
@@ -28,13 +28,16 @@ class AddNewTestPageController {
             strTestCaseName = "";
         }
 
+        const deferredTest = strDeferredTest.toLowerCase() === "true" ? "checked" : null;
+
         var template = $('#testCase').html();
         Mustache.parse(template);   // optional, speeds up future uses
         var rendered = Mustache.render(template,
         {
             textCaseContent: strTestCaseContent,
             testCaseName: strTestCaseName,
-            testCaseId: this.testCaseCounter++
+            testCaseId: this.testCaseCounter++,
+            DeferredValue: deferredTest
         });
 
         var newTestCase = $(rendered);
@@ -73,11 +76,11 @@ class AddNewTestPageController {
             
         });
 
-        $("[data-action='new-test']").on("click", () => this.makeNewTestCase("", ""));
+        $("[data-action='new-test']").on("click", () => this.makeNewTestCase("", "", ""));
 
         // Preserve tests previously entered by user
         $("[data-content='existing-test']").each((idx, el) => {
-            this.makeNewTestCase(el.textContent, $(el).attr("data-test-name"));
+            this.makeNewTestCase(el.textContent, $(el).attr("data-test-name"), $(el).attr("data-deferred-test"));
         });
         $("#format_html").on("click", () => { });
     }
@@ -408,9 +411,10 @@ class InputFormatHandler {
 }
 
 class ClientValidationHandler {
-
-    constructor() {
-        $('#BenchmarkName').change(this.validate);
+    private benchmark_id: number;
+    constructor(benchmark_id: number) {
+        this.benchmark_id = benchmark_id;
+        $('#BenchmarkName').change(() => this.validate());
         $('#dup-title').hide();
         this.validate();
         $('[data-role="test-benchmark"]').on('click', () => this.handleValidateButton());
@@ -504,7 +508,7 @@ class ClientValidationHandler {
             return;
         }
 
-        var uri = '/api/CheckBenchmarkTitle?title=';
+        var uri = `/api/CheckBenchmarkTitle?benchmarkId=${this.benchmark_id}&title=`;
         $.getJSON(uri + encodeURIComponent(value))
             .done(function (data) {
                 if (data === true) {

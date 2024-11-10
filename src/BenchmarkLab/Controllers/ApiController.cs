@@ -19,8 +19,8 @@ namespace BenchmarkLab.Controllers
             this.m_benchmarkRepository = benchmarkRepository;
         }
 
-        // GET: api/Api
-        public async Task<bool> CheckBenchmarkTitle(string title)
+        // GET: api/Api. Returns true if such title exists for the different benchmarklidation
+        public async Task<bool> CheckBenchmarkTitle(long benchmarkId, string title)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -28,7 +28,15 @@ namespace BenchmarkLab.Controllers
                 return false;
             }
             Dictionary<string, long> titles = await m_benchmarkRepository.GetTitles();
-            return titles.ContainsKey(title.ToLower());
+            if (titles.TryGetValue(title.ToLower(), out long existing_id))
+            {
+                if (existing_id != benchmarkId)
+                {
+                    // Contains the same title that belongs to the different benchmark
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

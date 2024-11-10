@@ -26,4 +26,9 @@ public partial class BenchmarkTest
     {
         get; set;
     }
+
+    public bool Deferred
+    {
+        get; set;
+    }
 }

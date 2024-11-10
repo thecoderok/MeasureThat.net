@@ -64,7 +64,6 @@
                 </div>
             </div>
         </div>
-        @await Html.PartialAsync("_SharedAds")
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingTwo">
                 <h4 class="panel-title">
@@ -184,7 +183,7 @@
         foreach (var testCase in Model.TestCases)
         {
             // So tests that user already added not get lost
-            <textarea data-content="existing-test" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
+            <textarea data-content="existing-test" data-deferred-test="@testCase.Deferred" data-test-name="@testCase.TestCaseName">@testCase.BenchmarkCode</textarea>
         }
     }
 </div>
@@ -220,10 +219,11 @@
     <script id="testCase" type="x-tmpl-mustache">
         <li class="list-group-item" data-role="testCaseComponent">
             <div class="form-group">
-                <label for="TestCases.TestCaseDtoName">Name your test:</label>
-                <input type="text" class="form-control" placeholder="Name of the test case" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseDtoName" value="{{testCaseName}}" data-role="testCaseName">
+                <input type="text" class="form-control" placeholder="Name of the test case" data-val="true" data-val-regex="The field Test Case must match the regular expression '[a-zA-Z0-9.`~!@@#$%^&amp;*()]'." data-val-regex-pattern="[a-zA-Z0-9.`~!@@#$%^&amp;*()]" data-val-required="The Test Case field is required." name="TestCases[{{testCaseId}}].TestCaseName" value="{{testCaseName}}" data-role="testCaseName">
 
                 <label for="TestCases.BenchmarkCode">Benchmark code</label>
+                <input type="checkbox" class="form-check-input" name="TestCases[{{testCaseId}}].Deferred" data-role="Deferred" style="margin-left:20px;" {{DeferredValue}} value="true"/>
+                <label class="form-check-label" for="Deferred">Deferred</label>
                 <textarea class="form-control" data-val="true" placeholder="Benchmark code" data-val-required="The Benchmark code is required." name="TestCases[{{testCaseId}}].BenchmarkCode" data-role="testCaseCode">{{textCaseContent}}</textarea>
                 <span class="field-validation-valid text-danger" data-valmsg-for="TestCases.BenchmarkCode" data-valmsg-replace="true"></span>
             </div>
@@ -236,7 +236,7 @@
     <script type="text/javascript">
         var addPageController = new AddNewTestPageController();
         new AppendSnippetHandler();
-        new ClientValidationHandler();
+        new ClientValidationHandler(@Model.Id);
         new InputFormatHandler();
     </script>
 }

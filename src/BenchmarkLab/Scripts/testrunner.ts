@@ -67,6 +67,7 @@ class TestRunnerController {
         this.appendToLog('Attempting to run benchmark...');
         const _myThis = this;
         try {
+            // TODO: why do we need 2 ways of building a test suite?
             const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
             globalEval(scriptPreparationCode);
             var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
@@ -74,8 +75,15 @@ class TestRunnerController {
             for (var i = 0; i < tc.length; i++) {
                 var testName = (tc[i].querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
                 var testBody = (tc[i].querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
-
-                eval("suite.add(testName, function () { " + testBody + " })");
+                var deferred = (tc[i].querySelectorAll('[data-role="Deferred"]')[0] as HTMLInputElement).checked;
+                var fn: Function;
+                if (deferred) {
+                    eval("fn = async function (deferred) {" + testBody + "; }");
+                } else {
+                    eval("fn = function () {" + testBody + "; }");
+                }
+                var options = {'fn': fn, 'defer': deferred};
+                suite.add(testName, options);
             }
             suite.on('cycle', function (event: { target: any; }) {
                 console.log(String(event.target));

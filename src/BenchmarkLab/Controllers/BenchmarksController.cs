@@ -141,9 +141,13 @@ namespace MeasureThat.Net.Controllers
             if (model != null && !string.IsNullOrWhiteSpace(model.BenchmarkName))
             {
                 var titles = await m_benchmarkRepository.GetTitles();
-                if (titles.ContainsKey(model.BenchmarkName.ToLower()))
+                // Check if the title is unique, but account for edits to avoid showing error on the same benchmark
+                if (titles.TryGetValue(model.BenchmarkName.ToLower(), out long existing_id))
                 {
-                    this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                    if (existing_id != model.Id)
+                    {
+                        this.ModelState.AddModelError("BenchmarkName", "Benchmark with such name already exists.");
+                    }
                 }
             }
         }
@@ -330,6 +334,7 @@ namespace MeasureThat.Net.Controllers
             }
 
             // Manually parse input
+            // TODO: do I really need to do this?
             var testCases = InputDataParser.ReadTestCases(this.HttpContext.Request);
 
             // Check if benchmark code was actually entered
@@ -356,6 +361,11 @@ namespace MeasureThat.Net.Controllers
                 if (string.IsNullOrWhiteSpace(testCase.TestCaseName))
                 {
                     this.ModelState.AddModelError("TestCases", "Test name must not be empty");
+                    continue;
+                }
+                if (testCase.TestCaseName.Contains('\''))
+                {
+                    this.ModelState.AddModelError("TestCases", "Test name can't contain ' character (apostrophe)");
                     continue;
                 }
                 if (!set.Add(testCase.TestCaseName.ToLowerInvariant().Trim()))
