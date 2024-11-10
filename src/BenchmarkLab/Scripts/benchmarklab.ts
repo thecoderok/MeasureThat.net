@@ -28,7 +28,7 @@ class AddNewTestPageController {
             strTestCaseName = "";
         }
 
-        const deferredTest = strDeferredTest === "true" ? "checked" : null;
+        const deferredTest = strDeferredTest.toLowerCase() === "true" ? "checked" : null;
 
         var template = $('#testCase').html();
         Mustache.parse(template);   // optional, speeds up future uses
