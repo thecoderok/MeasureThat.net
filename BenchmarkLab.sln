@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		AsyncBenchmarkTest.html = AsyncBenchmarkTest.html
 		bump-version.ps1 = bump-version.ps1
 		Commands.txt = Commands.txt
+		pyodide_test.html = pyodide_test.html
 		README.md = README.md
 		test_embed.html = test_embed.html
 		test_embed_prod.html = test_embed_prod.html
@@ -20,9 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkLab", "src\Benchma
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MeasureThat.Net.DB", "BenchmarkLab.DB\MeasureThat.Net.DB.sqlproj", "{CD2D633F-D144-4C5F-AE62-D74AE0B7E1B1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{05976C14-F524-4AEE-ABBA-3BFA657FD4FD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureThat.Net.Tests", "tests\MeasureThat.Net.Tests\MeasureThat.Net.Tests.csproj", "{5486508C-726C-45BA-AFEE-7C914CCAB443}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2ETests", "E2ETests\E2ETests.csproj", "{B3380A16-18F9-436B-834B-D0147FD25AC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +39,10 @@ Global
 		{CD2D633F-D144-4C5F-AE62-D74AE0B7E1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD2D633F-D144-4C5F-AE62-D74AE0B7E1B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD2D633F-D144-4C5F-AE62-D74AE0B7E1B1}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{5486508C-726C-45BA-AFEE-7C914CCAB443}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5486508C-726C-45BA-AFEE-7C914CCAB443}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5486508C-726C-45BA-AFEE-7C914CCAB443}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5486508C-726C-45BA-AFEE-7C914CCAB443}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3380A16-18F9-436B-834B-D0147FD25AC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3380A16-18F9-436B-834B-D0147FD25AC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3380A16-18F9-436B-834B-D0147FD25AC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3380A16-18F9-436B-834B-D0147FD25AC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,7 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CA0487A6-328F-4714-BEAF-C59EF242F375} = {21C67F90-3267-4495-A249-2620714E1EF6}
 		{CD2D633F-D144-4C5F-AE62-D74AE0B7E1B1} = {21C67F90-3267-4495-A249-2620714E1EF6}
-		{5486508C-726C-45BA-AFEE-7C914CCAB443} = {05976C14-F524-4AEE-ABBA-3BFA657FD4FD}
+		{B3380A16-18F9-436B-834B-D0147FD25AC3} = {21C67F90-3267-4495-A249-2620714E1EF6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC68B148-AE78-4279-8A1E-73F3CC23E08A}

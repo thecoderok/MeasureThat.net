@@ -1,0 +1,26 @@
+﻿<RunSettings>
+	<!-- MSTest adapter -->
+	<MSTest>
+		<Parallelize>
+			<Workers>4</Workers>
+			<Scope>ClassLevel</Scope>
+		</Parallelize>
+	</MSTest>
+	<!-- General run configuration -->
+	<RunConfiguration>
+		<EnvironmentVariables>
+			<!-- For debugging selectors, it's recommend to set the following environment variable -->
+			<DEBUG>pw:api</DEBUG>
+		</EnvironmentVariables>
+	</RunConfiguration>
+	<!-- Playwright -->
+	<Playwright>
+		<BrowserName>chromium</BrowserName>
+		<ExpectTimeout>5000</ExpectTimeout>
+		<LaunchOptions>
+			<Headless>false</Headless>
+			<Channel>msedge</Channel>
+			<IgnoreHttpsErrors>true</IgnoreHttpsErrors>
+		</LaunchOptions>
+	</Playwright>
+</RunSettings>

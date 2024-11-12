@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js"></script>
+</head>
+<body>
+    <script>
+        async function main() {
+            let pyodide = await loadPyodide();
+            await pyodide.loadPackage('numpy');
+            await pyodide.runPython(`
+                import numpy as np
+                print(np.array([1, 2, 3]))
+            `);
+
+            console.log(pyodide.runPython('import sys; sys.version'));
+        }
+        main();
+    </script>
+</body>
+</html>
