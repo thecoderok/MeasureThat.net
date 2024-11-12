@@ -1,4 +1,7 @@
-﻿namespace E2ETests
+﻿using Microsoft.Playwright;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace E2ETests
 {
     [TestClass]
     public class CreateEditForkDeleteBenchmarkTest : BenchmarkLabBaseTest
@@ -93,6 +96,48 @@
 
             // Click Create new test
             var createBenchmarkLink = Page.Locator("div.jumbotron a.btn.btn-primary[href='/Benchmarks/Add']");
+            await createBenchmarkLink.ClickAsync();
+
+
+            const string existing_name = "Deferred & Regular & Async hybrid test";
+            await Page.FillAsync("#BenchmarkName", existing_name);
+            await Page.FillAsync("#Description", "This is a benchmark that was created by the automated e2e test. To be deleted later after the test. #e2e");
+
+            var alertText = "";
+            bool alertShown = false;
+            Page.Dialog += async (_, dialog) =>
+            {
+                // Check if the dialog is an alert
+                if (dialog.Type == DialogType.Alert)
+                {
+                    alertShown = true;
+                    alertText = dialog.Message;
+                    await dialog.AcceptAsync();
+                }
+            };
+
+
+            var validateBenchmarkButton = Page.Locator("a.btn.btn-default[data-role='test-benchmark']");
+            await validateBenchmarkButton.ClickAsync();
+            Assert.IsTrue(alertShown, "The alert was not shown as expected.");
+            
+            var expectedSubstrings = new[]
+            {
+                "Benchmark failed during validation",
+                "Benchmark is not valid",
+                "At least two test cases are required",
+                "Benchmark with such name already exists"
+            };
+
+            foreach (var substring in expectedSubstrings)
+            {
+                StringAssert.Contains(alertText, substring, $"The alert text does not contain the expected substring: {substring}.");
+            }
+            alertShown = false;
+            alertText = "";
+
+            var benchmarkName = $"e2e tests {Guid.NewGuid()}";
+
         }
 
         private async Task LoginAsync(Credentials credentials)
