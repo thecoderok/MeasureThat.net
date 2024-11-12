@@ -124,7 +124,7 @@
             </div>
         </div>
     </div>
-    if (bool.Parse(configuration["ReCaptchaEnabled"]))
+    if (bool.Parse(configuration["ReCaptchaEnabled"]) && action == "Add")
     {
         <div class="form-group">
             <div class="g-recaptcha" data-sitekey="@(configuration["ReCaptcha:SiteKey"])"></div>

@@ -279,7 +279,6 @@ namespace MeasureThat.Net.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ServiceFilter(typeof(ValidateReCaptchaAttribute))]
         public async Task<IActionResult> Edit(BenchmarkDto model)
         {
             BenchmarkDto benchmark = await this.ValidateOwner(model.Id);
