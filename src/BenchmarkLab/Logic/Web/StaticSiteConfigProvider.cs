@@ -29,8 +29,7 @@ namespace MeasureThat.Net.Logic.Web
                 if (googleAnalyticsConfig == null)
                 {
                     bool enabled = Boolean.Parse(this.m_configuration["GoogleAnalytics:Enabled"]);
-                    string identifier = this.m_configuration["GoogleAnalytics:Identifier"];
-                    this.googleAnalyticsConfig = new GoogleAnalyticsConfig(identifier, enabled);
+                    this.googleAnalyticsConfig = new GoogleAnalyticsConfig(enabled);
                 }
             }
             catch (Exception)

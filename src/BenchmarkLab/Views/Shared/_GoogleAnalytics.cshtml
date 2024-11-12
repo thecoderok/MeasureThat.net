@@ -1,9 +1,21 @@
-﻿<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K23JQ1HQ6R"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+﻿@using MeasureThat.Net.Logic.Web
+@using MeasureThat.Net.Models
+@inject StaticSiteConfigProvider staticConfig
 
-    gtag('config', 'G-K23JQ1HQ6R');
-</script>
+<environment names="Staging,Production">
+    @{
+        GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
+        if (gaconfig != null && gaconfig.Enabled)
+        {
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-K23JQ1HQ6R"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+
+                gtag('config', 'G-K23JQ1HQ6R');
+            </script>
+        }
+    }
+</environment>
+

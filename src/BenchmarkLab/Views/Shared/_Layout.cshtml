@@ -1,6 +1,5 @@
 ﻿@using MeasureThat.Net.Logic.Web
 @using MeasureThat.Net.Models
-@inject StaticSiteConfigProvider staticConfig
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,15 +74,7 @@
 
     @await Html.PartialAsync("_SharedDialogs")
 
-<environment names="Staging,Production">
-    @{
-        GoogleAnalyticsConfig gaconfig = staticConfig.GetGoogleAnalyticsConfig();
-        if (gaconfig != null && gaconfig.Enabled)
-        {
-            @await Html.PartialAsync("_GoogleAnalytics", gaconfig);
-        }
-    }                           
-</environment>
+    @await Html.PartialAsync("_GoogleAnalytics");
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 </body>
 </html>

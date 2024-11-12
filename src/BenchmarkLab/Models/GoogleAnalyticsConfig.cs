@@ -2,12 +2,10 @@
 {
     public class GoogleAnalyticsConfig
     {
-        public readonly string Identifier;
         public readonly bool Enabled;
 
-        public GoogleAnalyticsConfig(string identifier, bool enabled)
+        public GoogleAnalyticsConfig(bool enabled)
         {
-            Identifier = identifier;
             Enabled = enabled;
         }
     }
