@@ -3,10 +3,10 @@ using Microsoft.Playwright;
 namespace E2ETests
 {
     [TestClass]
-    public class ExampleTest : PageTest
+    public class SmokeTest : BenchmarkLabBaseTest
     {
         [TestMethod]
-        public async Task TestBasicNavigation()
+        public async Task TestHomepage()
         {
             await Page.GotoAsync("/");
             await Expect(Page).ToHaveTitleAsync(new Regex("Home Page - MeasureThat.net"));
@@ -17,47 +17,45 @@ namespace E2ETests
         }
 
         [TestMethod]
-        public async Task TestLatestBenchmarks()
+        public async Task TestPublicTools()
         {
-            await Page.GotoAsync("/Benchmarks");
-            await Expect(Page).ToHaveTitleAsync(new Regex("Latest benchmarks - MeasureThat.net"));
+            await Page.GotoAsync("/Tools");
+            await Expect(Page).ToHaveTitleAsync(new Regex("Free online tools - MeasureThat.net"));
 
-            // Validate that the page contains <ul class="pager"> element
-            var pagerElement = Page.Locator("ul.pager");
-            await Expect(pagerElement).ToBeVisibleAsync();
+            var headerElement = Page.Locator("div.page-header > h1", new PageLocatorOptions { HasTextString = "Free online tools" });
+            await Expect(headerElement).ToBeVisibleAsync();
 
-            // Validate that the page contains <table> with data-test-id="latest-benchmarks"
-            var tableElement = Page.Locator("table[data-test-id='latest-benchmarks']");
-            await Expect(tableElement).ToBeVisibleAsync();
+            var toolsLinks = new[]
+            {
+                "/Tools/JSONBeautify",
+                "/Tools/JSONMinify",
+                "/Tools/JavaScriptBeautify",
+                "/Tools/HTMLBeautify",
+                "/Tools/CSSBeautify",
+                "/Tools/FormatSQL",
+                "/Tools/WhoisLookup",
+                "/Tools/GetIPAddressesByHostName",
+                "/Tools/GetHostsByIPAddress",
+                "/Tools/URLEncode",
+                "/Tools/URLDecode",
+                "/Tools/Base64Encode",
+                "/Tools/Base64Decode"
+            };
 
-            var addBenchmarkLink = Page.Locator("a[href='/Benchmarks/Add']");
-            await Expect(addBenchmarkLink).ToHaveCountAsync(2);
-
-            // Validate that go back pagination link is disabled since we're on the first page
-            var addBenchmarkLinkInDisabledLi = Page.Locator("li.disabled > a", new PageLocatorOptions { HasTextString = "«" });
-            await Expect(addBenchmarkLinkInDisabledLi).ToBeVisibleAsync();
-
-            // Click on the link with text "Next"
-            var nextLink = Page.Locator("a", new PageLocatorOptions { HasTextString = "Next" });
-            await nextLink.ClickAsync();
-
-            // Validate that the URL is now "/Benchmarks?page=1"
-            await Expect(Page).ToHaveURLAsync(new Regex("/Benchmarks\\?page=1"));
+            foreach (var link in toolsLinks)
+            {
+                var locator = Page.Locator($"a[href='{link}']");
+                await Expect(locator).ToBeVisibleAsync();
+            }
         }
 
-        public override BrowserNewContextOptions ContextOptions()
+        [TestMethod]
+        public async Task MainNavigationLinks()
         {
-            return new BrowserNewContextOptions()
-            {
-                ColorScheme = ColorScheme.Light,
-                ViewportSize = new()
-                {
-                    Width = 1920,
-                    Height = 1080
-                },
-                BaseURL = TestConfig.Site,
-                IgnoreHTTPSErrors = true,
-            };
+            await Page.GotoAsync("/");
+            await Expect(Page).ToHaveTitleAsync(new Regex("Home Page - MeasureThat.net"));
+
+            // TODO: Test all navbar links
         }
     }
 }
