@@ -118,6 +118,34 @@ namespace E2ETests
             await Expect(headerElement).ToBeVisibleAsync();
         }
 
+        [TestMethod]
+        public async Task TestJSONBeautify()
+        {
+            // Navigate to the JSON Beautify tool
+            await Page.GotoAsync("/Tools/JSONBeautify");
+
+            // Paste unformatted JSON into the raw input textarea
+            string unformattedJson = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
+            await Page.FillAsync("#raw_input", unformattedJson);
+
+            // Click the format button
+            await Page.ClickAsync("#btn_format");
+
+            // Validate that the JSON was formatted in the formatted output textarea
+            string formattedJson = await Page.InputValueAsync("#formatted_output_text");
+            string expectedFormattedJson = "{\n    \"name\": \"John\",\n    \"age\": 30,\n    \"city\": \"New York\"\n}";
+            Assert.AreEqual(expectedFormattedJson, formattedJson);
+
+            // Click the clear all button
+            await Page.ClickAsync("#btn_clear_all");
+
+            // Check that both text areas are free of text
+            string rawInputValue = await Page.InputValueAsync("#raw_input");
+            string formattedOutputValue = await Page.InputValueAsync("#formatted_output_text");
+            Assert.AreEqual(string.Empty, rawInputValue);
+            Assert.AreEqual(string.Empty, formattedOutputValue);
+        }
+
         private async Task NavigateToMainViaNavbar()
         {
             var navbarBrandLink = Page.Locator("a.navbar-brand");
