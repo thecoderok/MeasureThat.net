@@ -5,11 +5,56 @@ namespace E2ETests
     [TestClass]
     public class RunBenchmarkTest : BenchmarkLabBaseTest
     {
+        const int TEST_SUITE_RUN_TIMEOUT = 60000;
+        const string ASYNC_TEST_URL = "/Benchmarks/Show/32502/2/async-test";
+        const string DEFERRED_TEST_URL = "/Benchmarks/Show/32503";
+        const string CLASSNAMES_VS_CLXS_VS_CX_URL = "/Benchmarks/Show/32422/0/classnames-vs-clsx-vs-cx";
+        const string TYPE_COERCION_BENCHMARK_URL = "/Benchmarks/Show/32429/0/type-coercion-benchmark-2";
+        // need globalEval here, there was a bug for it
+        const string CLASS_VS_PROTOTYPE_PERFORMANCE_URL = "/Benchmarks/Show/14473/0/class-vs-prototype-performance";
+        // need globalEval here, there was a bug for it
+        const string IFELSE_VS_SMALL_SWITCH_URL = "/Benchmarks/Show/32454/1/ifelse-vs-small-switch";
+
+
         [TestMethod]
         public async Task TestAsyncBenchmark()
         {
-            await Page.GotoAsync("/Benchmarks/Show/32502/2/async-test");
-            
+            await ValidateBenchmarkCanRun(ASYNC_TEST_URL);
+        }
+
+        [TestMethod]
+        public async Task TestDeferredBenchmark()
+        {
+            await ValidateBenchmarkCanRun(DEFERRED_TEST_URL);
+        }
+
+        [TestMethod]
+        public async Task TestClassnamesVsClxsVsCxBenchmark()
+        {
+            await ValidateBenchmarkCanRun(CLASSNAMES_VS_CLXS_VS_CX_URL);
+        }
+
+        [TestMethod]
+        public async Task TestTypeCoercionBenchmark()
+        {
+            await ValidateBenchmarkCanRun(TYPE_COERCION_BENCHMARK_URL);
+        }
+
+        [TestMethod]
+        public async Task TestClassVsPrototypePerformanceBenchmark()
+        {
+            await ValidateBenchmarkCanRun(CLASS_VS_PROTOTYPE_PERFORMANCE_URL);
+        }
+
+        [TestMethod]
+        public async Task TestIfElseVsSmallSwitchBenchmark()
+        {
+            await ValidateBenchmarkCanRun(IFELSE_VS_SMALL_SWITCH_URL);
+        }
+
+        private async Task ValidateBenchmarkCanRun(string benchmarkUrl)
+        {
+            await Page.GotoAsync(benchmarkUrl);
             var suiteStatusLabel = Page.Locator("span.label.label-primary[data-role='suite-status']");
             await Expect(suiteStatusLabel).ToBeVisibleAsync();
 
@@ -27,11 +72,11 @@ namespace E2ETests
 
             var runningStatusLabel = Page.Locator("span.label.label-info[data-role='suite-status']");
             await Expect(runningStatusLabel).ToBeVisibleAsync();
-            await Expect(runningStatusLabels).ToHaveTextAsync("Running");
+            await Expect(runningStatusLabel).ToHaveTextAsync("Running");
 
             var completedStatusLabel = Page.Locator("span.label.label-success[data-role='suite-status']");
-            await Expect(completedStatusLabel).ToBeVisibleAsync();
-            await Expect(completedStatusLabel).ToHaveTextAsync("Completed");
+            await Expect(completedStatusLabel).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = TEST_SUITE_RUN_TIMEOUT });
+            await Expect(completedStatusLabel).ToHaveTextAsync("Completed", new LocatorAssertionsToHaveTextOptions { Timeout = TEST_SUITE_RUN_TIMEOUT });
 
             // Validate that the text of the fastest label is not empty
             var fastestLabel = Page.Locator("span[data-role='fastest-label']");
