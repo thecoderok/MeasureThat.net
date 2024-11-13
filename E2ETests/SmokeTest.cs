@@ -162,6 +162,25 @@ namespace E2ETests
             Assert.IsTrue(xmlContent.Contains("<urlset"), "The sitemap.xml content does not contain the expected <urlset> element.");
         }
 
+        [TestMethod]
+        public async Task TestPreviousResultsPage()
+        {
+            await Page.GotoAsync("/Benchmarks/Show/32502");
+            await Page.ClickAsync("text=Previous results");
+            var resultsTable = Page.Locator("table[data-test-id='results-list']");
+            await Expect(resultsTable).ToBeVisibleAsync();
+
+            // Verify that the table has more than 0 rows
+            var rowCount = await resultsTable.Locator("tbody tr").CountAsync();
+            Assert.IsTrue(rowCount > 0, "The results list table has no rows.");
+
+            // Click on a link from any random row
+            var randomRow = resultsTable.Locator("tbody tr").Nth(new Random().Next(rowCount));
+            var link = randomRow.Locator("a");
+            await link.ClickAsync();
+            await Expect(Page.Locator("small", new PageLocatorOptions { HasTextString = "Run results for:" })).ToBeVisibleAsync();
+        }
+
 
         private async Task NavigateToMainViaNavbar()
         {
