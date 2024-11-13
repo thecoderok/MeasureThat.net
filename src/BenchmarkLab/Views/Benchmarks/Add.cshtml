@@ -37,7 +37,7 @@
 
     @Html.AntiForgeryToken()
 
-    @Html.HiddenFor(m => m.Id)
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
@@ -73,7 +73,7 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                 <div class="panel-body">
-                    <div class="form-group">
+                    <div class="form-group" data-test-id="HtmlPreparationCodeFormGroup">
                         @Html.LabelFor(m => m.HtmlPreparationCode)
                         @Html.TextAreaFor(m => m.HtmlPreparationCode, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.HtmlPreparationCode, "", new { @class = "text-danger" })
@@ -81,7 +81,7 @@
                         @await Html.PartialAsync("_HTMLPreparationHelperButtons")
                     </div>
                     <hr>
-                    <div class="form-group">
+                    <div class="form-group" data-test-id="ScriptPreparationCodeFormGroup">
                         @Html.LabelFor(m => m.ScriptPreparationCode)
                         @Html.TextAreaFor(m => m.ScriptPreparationCode, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.ScriptPreparationCode, "", new { @class = "text-danger" })

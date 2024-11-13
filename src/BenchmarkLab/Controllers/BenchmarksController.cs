@@ -413,7 +413,7 @@ namespace MeasureThat.Net.Controllers
             }
             else
             {
-                var errors = new List<string>();
+                var errors = new HashSet<string>();
                 foreach (ModelStateEntry modelState in ViewData.ModelState.Values)
                 {
                     foreach (ModelError error in modelState.Errors)
