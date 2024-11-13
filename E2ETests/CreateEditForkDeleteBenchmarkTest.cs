@@ -1,4 +1,6 @@
 ﻿using Microsoft.Playwright;
+using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace E2ETests
 {
@@ -268,6 +270,7 @@ function factorializeRecursive(num) {
             var elements = await Page.Locator("span:has-text('[Async/Deferred]')").CountAsync();
             Assert.AreEqual(4, elements, "The number of elements with the specified text is not equal to 4.");
 
+            // Edit benchmark, unchecked the deferred checkbox for the 5th test case
             await Page.Locator("a:has-text('Edit')").ClickAsync();
 
             testCaseList = Page.Locator("ul#test-case-list");
@@ -284,6 +287,7 @@ function factorializeRecursive(num) {
             await Expect(Page).ToHaveTitleAsync(new Regex($"Benchmark: e2e tests {guid} - MeasureThat.net"));
             await ValidateBenchmarkCanRun(Page.Url, false, false);
 
+            // Test fork the benchmark.
             await Page.ClickAsync("button#fork-btn.btn.btn-default");
             await validateBenchmarkButton.ClickAsync();
             await browserAlertIntegration.WaitForAlertAsync();
@@ -292,8 +296,7 @@ function factorializeRecursive(num) {
             {
                 "Benchmark failed during validation",
                 "Benchmark is not valid",
-                "Benchmark code must not be empty",
-                "Test name must not be empty",
+                "Benchmark with such name already exists.",
             };
 
             foreach (var substring in expectedSubstrings)
@@ -301,6 +304,36 @@ function factorializeRecursive(num) {
                 StringAssert.Contains(browserAlertIntegration.alertText, substring, $"The alert text does not contain the expected substring: {substring}.");
             }
             browserAlertIntegration.ResetState();
+            await Page.Locator("#BenchmarkName").ClickAsync();
+            await Page.Keyboard.TypeAsync(" - Forked");
+
+            await validateBenchmarkButton.ClickAsync();
+            await Page.WaitForSelectorAsync("#validation_log li");
+
+            successMessage = await Page.Locator("#validation_log li:has-text('Success! Validation completed.')").InnerTextAsync(new LocatorInnerTextOptions { Timeout = 120000 });
+            Assert.IsTrue(successMessage.Contains("Success! Validation completed."));
+
+            await Page.Locator("#benchmark_submit").ClickAsync();
+
+            await Expect(Page).ToHaveTitleAsync(new Regex($"Benchmark: e2e tests {guid} - Forked - MeasureThat.net"));
+            await ValidateBenchmarkCanRun(Page.Url, false, false);
+
+            await Page.GotoAsync("/Benchmarks/My");
+
+            var deleteButtons = Page.Locator("a.btn.btn-default[data-role='delete-benchmark']");
+            var buttonCount = await deleteButtons.CountAsync();
+            Assert.IsTrue(buttonCount >= 2, "There are less than 2 delete buttons on the page.");
+
+            // Click each delete button until none are left
+            while (await deleteButtons.CountAsync() > 0)
+            {
+                await deleteButtons.First.ClickAsync();
+                await Page.ClickAsync("#perform-delete");
+            }
+
+            // Verify that no delete buttons are left
+            buttonCount = await deleteButtons.CountAsync();
+            Assert.AreEqual(0, buttonCount, "There are still delete buttons left on the page.");
         }
 
         private async Task ValidateAddRemoveTestCase(BrowserAlertIntegration browserAlertIntegration)

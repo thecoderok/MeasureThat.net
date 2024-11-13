@@ -146,6 +146,23 @@ namespace E2ETests
             Assert.AreEqual(string.Empty, formattedOutputValue);
         }
 
+        [TestMethod]
+        public async Task TestSitemapXML()
+        {
+            var response = await Page.GotoAsync("/sitemap.xml");
+
+            Assert.AreEqual(200, response.Status, "The sitemap.xml page did not return a 200 status code.");
+
+            // Verify that the response content type is XML
+            var contentType = response.Headers["content-type"];
+            Assert.IsTrue(contentType.Contains("application/xml") || contentType.Contains("text/xml"), "The sitemap.xml page did not return an XML content type.");
+
+            // Optionally, you can further verify the content of the XML
+            var xmlContent = await response.TextAsync();
+            Assert.IsTrue(xmlContent.Contains("<urlset"), "The sitemap.xml content does not contain the expected <urlset> element.");
+        }
+
+
         private async Task NavigateToMainViaNavbar()
         {
             var navbarBrandLink = Page.Locator("a.navbar-brand");
