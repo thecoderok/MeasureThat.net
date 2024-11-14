@@ -37,6 +37,7 @@ namespace MeasureThat.Net.Data.Dao
                 ScriptPreparationCode = entity.ScriptPreparationCode,
                 BenchmarkTests = new List<BenchmarkTest>(),
                 WhenCreated = DateTime.UtcNow,
+                IsPython = entity.IsPython
             };
 
             foreach (var test in entity.TestCases)
@@ -201,7 +202,8 @@ namespace MeasureThat.Net.Data.Dao
                 WhenUpdated = entity.WhenUpdated,
                 Version = entity.Version,
                 RelatedIds = entity.RelatedBenchmarks,
-                LLMSummaries = new List<BenchmarkLab.Data.Models.GenAidescription>()
+                LLMSummaries = new List<BenchmarkLab.Data.Models.GenAidescription>(),
+                IsPython = entity.IsPython ?? false
             };
 
             foreach (var test in entity.BenchmarkTests)

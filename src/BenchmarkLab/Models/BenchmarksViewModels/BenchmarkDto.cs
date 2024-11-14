@@ -33,7 +33,6 @@ namespace MeasureThat.Net.Models
             get; set;
         }
 
-        //[Required]
         [Display(Name = "JavaScript preparation code")]
         public string ScriptPreparationCode
         {
@@ -78,6 +77,11 @@ namespace MeasureThat.Net.Models
         }
 
         public List<GenAidescription> LLMSummaries
+        {
+            get; set;
+        }
+
+        public bool IsPython
         {
             get; set;
         }

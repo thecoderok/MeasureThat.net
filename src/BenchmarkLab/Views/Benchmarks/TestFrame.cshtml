@@ -27,30 +27,33 @@
 </script>
 
 <script type="text/template" id="benchmark">
-    var suite = new Benchmark.Suite;
-    @foreach (var test in Model.TestCases)
-    {
-    @:var testName = '@Html.Raw(test.TestCaseName.Replace("'", "\\'"))';
-    if (test.Deferred)
-    {
-    @:var deferred = true;
-    @:var fn = async function(deferred) {@Html.Raw(test.BenchmarkCode);}
+    function buildAndRunBenchmark() {
+        var suite = new Benchmark.Suite;
+        @foreach (var test in Model.TestCases)
+        {
+            @:var testName = '@Html.Raw(test.TestCaseName.Replace("'", "\\'"))';
+            if (test.Deferred)
+            {
+                @:var deferred = true;
+                @:var fn = async function(deferred) {@Html.Raw(test.BenchmarkCode);}
+            }
+            else
+            {
+                @:var deferred = false;
+                @:var fn = function() {@Html.Raw(test.BenchmarkCode);}
+            }
+            @:var testCase = {'fn': fn, 'defer': deferred};
+            @:suite.add(testName, testCase);
+        }
+        suite.on('start', pageController.onStartHandler);
+        suite.on('cycle', pageController.onCycleHandler);
+        suite.on('abort', pageController.onAbortHandler);
+        suite.on('error', pageController.onErrorHandler);
+        suite.on('reset', pageController.onResetHandler);
+        suite.on('complete', pageController.onCompleteHandler);
+        suite.run({ 'async': true });
     }
-    else
-    {
-    @:var deferred = false;
-    @:var fn = function() {@Html.Raw(test.BenchmarkCode);}
-    }
-    @:var testCase = {'fn': fn, 'defer': deferred};
-    @:suite.add(testName, testCase);
-    }
-    suite.on('start', pageController.onStartHandler);
-    suite.on('cycle', pageController.onCycleHandler);
-    suite.on('abort', pageController.onAbortHandler);
-    suite.on('error', pageController.onErrorHandler);
-    suite.on('reset', pageController.onResetHandler);
-    suite.on('complete', pageController.onCompleteHandler);
-    suite.run({ 'async': true });
+    buildAndRunBenchmark();
 </script>
 
 <form style="display:none;" id="autoreload_form" action="/Benchmarks/TestFrameForValidationWithHtmlPrepCode?autostart=1" method="post">

@@ -5,6 +5,12 @@
 /// <reference path="../typings/globals/benchmark/index.d.ts" />
 /// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
+
+declare namespace Benchmark {
+    class Suite {
+
+    }
+}
 function getElementByDataAttribute(attr: string): HTMLElement {
     const row = window.parent.document.querySelectorAll(attr);
     if (row.length !== 1) {
@@ -30,6 +36,22 @@ function globalEval(code: string): void {
     const script = document.createElement('script');
     script.text = code;
     document.head.appendChild(script).parentNode?.removeChild(script);
+}
+
+class TestCase {
+    constructor(
+        public Name: string,
+        public Code: string,
+        public IsDeferred: boolean
+    ) {}
+}
+
+class MeasureThatBenchmark {
+    constructor(
+        public ScriptPreparationCode: string,
+        public IsPython: boolean,
+        public TestCases: TestCase[]
+    ) {}
 }
 
 class TestRunnerController {
@@ -61,6 +83,18 @@ class TestRunnerController {
         (document.getElementById('autoreload_form') as HTMLFormElement).submit();
     }
 
+    private parseBenchmark(): MeasureThatBenchmark {
+        const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
+        const isPython = (parent.document.getElementById('IsPython') as HTMLInputElement).checked;
+        const testCases = Array.from(parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]')).map((tc) => {
+            const name = (tc.querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
+            const code = (tc.querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
+            const isDeferred = (tc.querySelectorAll('[data-role="Deferred"]')[0] as HTMLInputElement).checked;
+            return new TestCase(name, code, isDeferred);
+        });
+        return new MeasureThatBenchmark(scriptPreparationCode, isPython, testCases);
+    }
+
     private autostartTest(): void {
         const outerRunner: any = (parent.window as any)._validation_handler;
         this.appendToLog('Loading iframe for testing...Done.');
@@ -68,14 +102,12 @@ class TestRunnerController {
         const _myThis = this;
         try {
             // TODO: why do we need 2 ways of building a test suite?
-            const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
-            globalEval(scriptPreparationCode);
-            var tc = window.parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]');
-            var suite:any = eval("new Benchmark.Suite");
-            for (var i = 0; i < tc.length; i++) {
-                var testName = (tc[i].querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
-                var testBody = (tc[i].querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
-                var deferred = (tc[i].querySelectorAll('[data-role="Deferred"]')[0] as HTMLInputElement).checked;
+            const benchmark = this.parseBenchmark();
+            globalEval(benchmark.ScriptPreparationCode);
+            var suite: any = new Benchmark.Suite();
+            for (var i = 0; i < benchmark.TestCases.length; i++) {
+                var testBody = benchmark.TestCases[i].Code;
+                var deferred = benchmark.TestCases[i].IsDeferred;
                 var fn: Function;
                 if (deferred) {
                     eval("fn = async function (deferred) {" + testBody + "; }");
@@ -83,7 +115,7 @@ class TestRunnerController {
                     eval("fn = function () {" + testBody + "; }");
                 }
                 var options = {'fn': fn, 'defer': deferred};
-                suite.add(testName, options);
+                suite.add(benchmark.TestCases[i].Name, options);
             }
             suite.on('cycle', function (event: { target: any; }) {
                 console.log(String(event.target));

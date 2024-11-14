@@ -55,6 +55,11 @@ public partial class Benchmark
         get; set;
     }
 
+    public bool? IsPython
+    {
+        get; set;
+    }
+
     public virtual ICollection<BenchmarkTest> BenchmarkTests { get; set; } = new List<BenchmarkTest>();
 
     public virtual ICollection<GenAidescription> GenAidescriptions { get; set; } = new List<GenAidescription>();

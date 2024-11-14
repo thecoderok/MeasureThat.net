@@ -38,7 +38,8 @@
     @Html.AntiForgeryToken()
 
     <input type="hidden" id="Id" name="Id" value="@Model.Id" />
-
+    <input type="hidden" id="IsPython" name="IsPython" value="false" />
+    
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
