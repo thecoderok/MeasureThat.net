@@ -11,6 +11,60 @@ declare namespace Benchmark {
 
     }
 }
+
+interface BenchmarkSuiteEventHandler {
+    onStartHandler(): void;
+    onCycleHandler(event: Event): void;
+    onAbortHandler(evt: any): void;
+    onErrorHandler(event: { target: { error: string; } }): void;
+    onResetHandler(evt: any): void;
+    onCompleteHandler(event: Event): void;
+}
+
+class BenchmarkSuiteEventHandlerImpl implements BenchmarkSuiteEventHandler {
+    private outerRunner: any;
+    private testRunner: TestRunnerController;
+
+    constructor(outerRunner: any, testRunner: TestRunnerController) {
+        this.outerRunner = outerRunner;
+        this.testRunner = testRunner;
+    }
+
+    onStartHandler(): void {
+        this.testRunner.appendToLog('Started benchmark...');
+    }
+
+    onCycleHandler(event: { target: any }): void {
+        console.log(String(event.target));
+        this.testRunner.appendToLog('Checked test: ' + String(event.target));
+    }
+
+    onAbortHandler(evt: any): void {
+        this.testRunner.appendToLog('Benchmark aborted');
+    }
+
+    onErrorHandler(evt: { target: { error: string; } }): void {
+        let message = "Some error occurred.";
+        if (evt && evt.target && evt.target.error) {
+            message = evt.target.error;
+        }
+        this.outerRunner.validationFailed(message);
+    }
+
+    onResetHandler(evt: any): void {
+        this.testRunner.appendToLog('Benchmark reset.');
+    }
+
+    onCompleteHandler(suites: Event): void {
+        var benchmark = suites.currentTarget as any;
+        if ((suites.target as any).aborted === true) {
+            return;
+        }
+        this.outerRunner.validationSuccess();
+    }
+}
+
+
 function getElementByDataAttribute(attr: string): HTMLElement {
     const row = window.parent.document.querySelectorAll(attr);
     if (row.length !== 1) {
@@ -127,11 +181,9 @@ class TestRunnerController {
                     return;
                 }
                 outerRunner.validationSuccess();
-                
             })
             .on('abort', function (evt: any) {
-                console.log('abort: ' + JSON.stringify(evt));
-                _myThis.appendToLog('Benchmark abort');
+                _myThis.appendToLog('Benchmark aborted');
             })
             .on('error', function (evt: { target: { error: string; }; }) {
                 let message = "Some error occurred.";
@@ -151,7 +203,7 @@ class TestRunnerController {
         }
     }
 
-    private appendToLog(message: string): void {
+    public appendToLog(message: string): void {
         var el = document.createElement('li');
         el.textContent = message;
         window.parent.document.getElementById('validation_log').appendChild(el);
