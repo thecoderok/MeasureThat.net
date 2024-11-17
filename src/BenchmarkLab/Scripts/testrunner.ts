@@ -176,22 +176,22 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
     private invervalId: number = -1;
     
     constructor() {
-        document.addEventListener("DOMContentLoaded", () => this.initialize());
+        document.addEventListener("DOMContentLoaded",async () => await this.initialize());
         (window as any)._test_runner = this;
     }
 
-    private initialize(): void {
-        window.addEventListener("message", (e) => this.handleMessage(e));
+    private async initialize(): Promise<void> {
+        window.addEventListener("message", async (e) => await this.handleMessage(e));
         var url = window.location.href;
         if (url.indexOf('?autostart=1') != -1) {
-            this.autostartTest();
+            await this.autostartTest();
         }
         if (url.indexOf('?autorefresh=1') != -1) {
-            this.autorefreshPage();
+            await this.autorefreshPage();
         }
     }
 
-    private autorefreshPage(): void {
+    private async autorefreshPage(): Promise<void> {
         // To properly test the HTML Preparation code we need to reload the iframe again.
         this.appendToLog('Taking care of HTML Preparation code...');
         var htmlPrep: string = (parent.window.document.getElementById('HtmlPreparationCode') as HTMLTextAreaElement).value;
@@ -216,13 +216,12 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
         return JSON.parse(jsonString) as MeasureThatBenchmark;
     }
 
-    private autostartTest(): void {
+    private async autostartTest(): Promise<void> {
         const outerRunner: ClientValidationHandler = (parent.window as any)._validation_handler;
         this.appendToLog('Loading iframe for testing...Done.');
         this.appendToLog('Attempting to run benchmark...');
         const _myThis = this;
         try {
-            // TODO: why do we need 2 ways of building a test suite?
             const benchmark = this.parseBenchmark();
             const benchmarkSuiteBuilder = new TestSuiteBuilder(benchmark, new BenchmarkSuiteEventHandlerImpl(outerRunner, _myThis));
             const suite = benchmarkSuiteBuilder.buildSuite();
@@ -239,7 +238,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
         window.parent.document.getElementById('validation_log').appendChild(el);
     }
 
-    handleMessage(event: any): void {
+    async handleMessage(event: any): Promise<void> {
         const allowedOrigins = new Set([
             "http://localhost:5000",
             "https://measurethat.net/",
@@ -257,17 +256,17 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
 
         if (event.data === 'start_test') {
             this.shouldRecordMemory = false;
-            this.runTests();
+            await this.runTests();
         }
 
         if (event.data === 'start_test_with_memory_recordings') {
             this.shouldRecordMemory = true;
-            this.runTests();
+            await this.runTests();
             this.invervalId = setInterval(() => this.recordMemoryInfo(""), 900);
         }
     }
 
-    runTests(): void {
+    async runTests(): Promise<void> {
         // TODO: Group these in funciton to enable-disable elements
         window.parent.document.getElementById('runTest').setAttribute('disabled', 'true');
         window.parent.document.getElementById('runTestWithMemory').setAttribute('disabled', 'true');
