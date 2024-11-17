@@ -484,6 +484,10 @@ class ClientValidationHandler {
         });
     }
 
+    /*
+    * This function is called after the benchmark passes basic  validation (mandatory data, no duplicated titles)
+    * and starts the actual benchmark validation via running the benchmark in the iframe
+    */
     private continueBenchmarkValidation(): TimerHandler {
         return () => {
             // Cleanup previous validation frames

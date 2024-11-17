@@ -14,6 +14,7 @@ using UAParser;
 
 namespace MeasureThat.Net.Controllers
 {
+    using BenchmarkLab.Data.Models;
     using BenchmarkLab.Logic.Web;
     using BenchmarkLab.Models;
     using Exceptions;
@@ -24,6 +25,7 @@ namespace MeasureThat.Net.Controllers
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using System;
     using System.Collections.Generic;
+    using System.Text.Json;
     using Wangkanai.Detection.Services;
 
     [Authorize(Policy = "AllowGuests")]
@@ -386,7 +388,6 @@ namespace MeasureThat.Net.Controllers
             {
                 return this.NotFound();
             }
-
             return this.View(benchmarkToRun);
         }
 

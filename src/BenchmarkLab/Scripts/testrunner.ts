@@ -7,12 +7,35 @@
 
 
 declare namespace Benchmark {
+    export interface Options {
+        async?: boolean | undefined;
+        defer?: boolean | undefined;
+        delay?: number | undefined;
+        id?: string | undefined;
+        initCount?: number | undefined;
+        maxTime?: number | undefined;
+        minSamples?: number | undefined;
+        minTime?: number | undefined;
+        name?: string | undefined;
+        onAbort?: Function | undefined;
+        onComplete?: Function | undefined;
+        onCycle?: Function | undefined;
+        onError?: Function | undefined;
+        onReset?: Function | undefined;
+        onStart?: Function | undefined;
+        setup?: Function | string | undefined;
+        teardown?: Function | string | undefined;
+        fn?: Function | string | undefined;
+        queued?: boolean | undefined;
+    }
     class Suite {
-
+        add(name: string, options?: Options): Suite;
+        run(options?: Benchmark.Options);
+        on(type?: string, callback?: Function): Suite;
     }
 }
 
-interface BenchmarkSuiteEventHandler {
+interface IBenchmarkSuiteEventHandler {
     onStartHandler(): void;
     onCycleHandler(event: Event): void;
     onAbortHandler(evt: any): void;
@@ -21,8 +44,8 @@ interface BenchmarkSuiteEventHandler {
     onCompleteHandler(event: Event): void;
 }
 
-class BenchmarkSuiteEventHandlerImpl implements BenchmarkSuiteEventHandler {
-    private outerRunner: any;
+class BenchmarkSuiteEventHandlerImpl implements IBenchmarkSuiteEventHandler {
+    private outerRunner: ClientValidationHandler;
     private testRunner: TestRunnerController;
 
     constructor(outerRunner: any, testRunner: TestRunnerController) {
@@ -108,7 +131,39 @@ class MeasureThatBenchmark {
     ) {}
 }
 
-class TestRunnerController {
+class TestSuiteBuilder {
+    constructor(
+        private benchmark: MeasureThatBenchmark,
+        private eventsHandler: IBenchmarkSuiteEventHandler) {
+    }
+
+    public buildSuite(): Benchmark.Suite {
+        globalEval(this.benchmark.ScriptPreparationCode);
+        var suite: Benchmark.Suite = new Benchmark.Suite();
+        for (var i = 0; i < this.benchmark.TestCases.length; i++) {
+            var testBody = this.benchmark.TestCases[i].Code;
+            var deferred = this.benchmark.TestCases[i].IsDeferred;
+            var fn: Function;
+            if (deferred) {
+                eval("fn = async function (deferred) {" + testBody + "; }");
+            } else {
+                eval("fn = function () {" + testBody + "; }");
+            }
+            var options = { 'fn': fn, 'defer': deferred };
+            suite.add(this.benchmark.TestCases[i].Name, options);
+        }
+        suite
+            .on('cycle', this.eventsHandler.onCycleHandler)
+            .on('complete', this.eventsHandler.onCompleteHandler)
+            .on('abort', this.eventsHandler.onAbortHandler)
+            .on('error', this.eventsHandler.onErrorHandler)
+            .on('reset', this.eventsHandler.onResetHandler)
+            .on('start', this.eventsHandler.onStartHandler);
+        return suite;
+    }
+}
+
+class TestRunnerController  implements IBenchmarkSuiteEventHandler {
     private memInfo = Array();
     private shouldRecordMemory = false;
     private invervalId: number = -1;
@@ -149,53 +204,21 @@ class TestRunnerController {
         return new MeasureThatBenchmark(scriptPreparationCode, isPython, testCases);
     }
 
+    private parseBenchmarkFromJSON(): MeasureThatBenchmark {
+        const jsonString = (document.getElementById("benchmark_definition_json") as HTMLTextAreaElement).value;
+        return JSON.parse(jsonString) as MeasureThatBenchmark;
+    }
+
     private autostartTest(): void {
-        const outerRunner: any = (parent.window as any)._validation_handler;
+        const outerRunner: ClientValidationHandler = (parent.window as any)._validation_handler;
         this.appendToLog('Loading iframe for testing...Done.');
         this.appendToLog('Attempting to run benchmark...');
         const _myThis = this;
         try {
             // TODO: why do we need 2 ways of building a test suite?
             const benchmark = this.parseBenchmark();
-            globalEval(benchmark.ScriptPreparationCode);
-            var suite: any = new Benchmark.Suite();
-            for (var i = 0; i < benchmark.TestCases.length; i++) {
-                var testBody = benchmark.TestCases[i].Code;
-                var deferred = benchmark.TestCases[i].IsDeferred;
-                var fn: Function;
-                if (deferred) {
-                    eval("fn = async function (deferred) {" + testBody + "; }");
-                } else {
-                    eval("fn = function () {" + testBody + "; }");
-                }
-                var options = {'fn': fn, 'defer': deferred};
-                suite.add(benchmark.TestCases[i].Name, options);
-            }
-            suite.on('cycle', function (event: { target: any; }) {
-                console.log(String(event.target));
-                _myThis.appendToLog('Checked test: ' + String(event.target));
-            })
-            .on('complete', function (suites: Event) {
-                var benchmark = suites.currentTarget as any;
-                if ((suites.target as any).aborted === true) {
-                    return;
-                }
-                outerRunner.validationSuccess();
-            })
-            .on('abort', function (evt: any) {
-                _myThis.appendToLog('Benchmark aborted');
-            })
-            .on('error', function (evt: { target: { error: string; }; }) {
-                let message = "Some error occurred.";
-                if (evt && evt.target && evt.target.error) {
-                    message = evt.target.error;
-                }
-                
-                outerRunner.validationFailed(message);
-            })
-            .on('reset', function (evt: any) {
-                _myThis.appendToLog('Benchmark reset.');
-                });
+            const benchmarkSuiteBuilder = new TestSuiteBuilder(benchmark, new BenchmarkSuiteEventHandlerImpl(outerRunner, _myThis));
+            const suite = benchmarkSuiteBuilder.buildSuite();
             _myThis.appendToLog('Starting benchmark...');
             suite.run({ 'async': true });
         } catch (e) {
@@ -255,11 +278,12 @@ class TestRunnerController {
         window.parent.document.getElementById('chart_div').innerHTML = '';
         window.parent.document.getElementById('memory_chart_div').innerHTML = '';
 
-        const preparation = document.getElementById("jspreparation").innerHTML;
-        const content = document.getElementById("benchmark").innerHTML;
+        const benchmarkDefinition: MeasureThatBenchmark = this.parseBenchmarkFromJSON();
+        const benchmarkSuiteBuilder = new TestSuiteBuilder(benchmarkDefinition, this);
+        
         try {
-            globalEval(preparation);
-            eval(content);
+            const suite = benchmarkSuiteBuilder.buildSuite();
+            suite.run({ 'async': true });
         } catch (e) {
             alert("Error:" + e.message);
             const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
