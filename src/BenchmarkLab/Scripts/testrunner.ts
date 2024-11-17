@@ -48,6 +48,7 @@ interface IBenchmarkSuiteEventHandler {
     onErrorHandler(event: { target: { error: string; } }): void;
     onResetHandler(evt: any): void;
     onCompleteHandler(event: Event): void;
+    onPrepareEnvironmentHandler(): void;
 }
 
 class BenchmarkSuiteEventHandlerImpl implements IBenchmarkSuiteEventHandler {
@@ -57,6 +58,9 @@ class BenchmarkSuiteEventHandlerImpl implements IBenchmarkSuiteEventHandler {
     constructor(outerRunner: any, testRunner: TestRunnerController) {
         this.outerRunner = outerRunner;
         this.testRunner = testRunner;
+    }
+    onPrepareEnvironmentHandler(): void {
+        this.testRunner.appendToLog('Preparing the environment...');
     }
 
     onStartHandler(): void {
@@ -145,6 +149,7 @@ class TestSuiteBuilder {
 
     public async buildSuite(): Promise<Benchmark.Suite> {
         if (this.benchmark.IsPython) {
+            this.eventsHandler.onPrepareEnvironmentHandler();
             window.globalPyodide = await loadPyodide();
             console.log("Pyodide was loaded");
         }
@@ -186,6 +191,9 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
     constructor() {
         document.addEventListener("DOMContentLoaded",async () => await this.initialize());
         (window as any)._test_runner = this;
+    }
+    onPrepareEnvironmentHandler(): void {
+        this.updateSuiteStatus('Preparing the environment', 'label-info');
     }
 
     private async initialize(): Promise<void> {
@@ -300,9 +308,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
             suite.run({ 'async': true });
         } catch (e) {
             alert("Error:" + e.message);
-            const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
-            suiteStatusLabels.textContent = 'Error';
-            suiteStatusLabels.setAttribute("class", "label label-warning");
+            this.updateSuiteStatus('Error', 'label-warning');
             window.parent.document.getElementById('runTest').removeAttribute('disabled');
             window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
             window.parent.document.getElementById('spinner').style.display = 'none';
@@ -311,9 +317,13 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
 
     onStartHandler(): void {
         (window as any)._test_runner.recordMemoryInfo("start");
+        this.updateSuiteStatus('Running', 'label-info');
+    }
+
+    private updateSuiteStatus(status: string, label: string): void {
         const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
-        suiteStatusLabels.textContent = 'Running';
-        suiteStatusLabels.setAttribute("class", "label label-info");
+        suiteStatusLabels.textContent = status;
+        suiteStatusLabels.setAttribute("class", `label ${label}`);
     }
 
     onCycleHandler(targets: Event): void {
@@ -329,9 +339,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
     }
 
     onAbortHandler(): void {
-        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
-        suiteStatusLabels.textContent = 'Aborted';
-        suiteStatusLabels.setAttribute("class", "label label-warning");
+        this.updateSuiteStatus('Aborted', 'label-warning');
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
         window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'inline-block';
@@ -343,18 +351,14 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
             message = evt.target.error;
         }
         alert(message);
-        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
-        suiteStatusLabels.textContent = 'Error';
-        suiteStatusLabels.setAttribute("class", "label label-danger");
+        this.updateSuiteStatus('Error', 'label-danger');
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
         window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
     }
 
     onResetHandler(): void {
-        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
-        suiteStatusLabels.textContent = 'Reset';
-        suiteStatusLabels.setAttribute("class", "label label-warning");
+        this.updateSuiteStatus('Reset', 'label-warning');
         window.parent.document.getElementById('runTest').removeAttribute('disabled');
         window.parent.document.getElementById('runTestWithMemory').removeAttribute('disabled');
         window.parent.document.getElementById('spinner').style.display = 'none';
@@ -365,14 +369,11 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
         (window as any)._test_runner.recordMemoryInfo("complete");
         // typings for benchmark.js are bad  and not complete
         var benchmark = suites.currentTarget as any;
-        const suiteStatusLabels = getElementByDataAttribute("[data-role='suite-status']");
         if ((suites.target as any).aborted === true) {
-            suiteStatusLabels.textContent = 'Aborted';
-            suiteStatusLabels.setAttribute("class", "label label-warning");
+            this.updateSuiteStatus('Aborted', 'label-warning');
             return;
         }
-        suiteStatusLabels.textContent = 'Completed';
-        suiteStatusLabels.setAttribute("class", "label label-success");
+        this.updateSuiteStatus('Completed', 'label-success');
         getElementByDataAttribute("[data-role='fastest-label']").textContent = benchmark.filter("fastest").map("name");
         getElementByDataAttribute("[data-role='slowest-label']").textContent = benchmark.filter("slowest").map("name");
 

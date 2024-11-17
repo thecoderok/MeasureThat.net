@@ -13,6 +13,7 @@ namespace E2ETests
         const string CLASS_VS_PROTOTYPE_PERFORMANCE_URL = "/Benchmarks/Show/14473/0/class-vs-prototype-performance";
         // need globalEval here, there was a bug for it
         const string IFELSE_VS_SMALL_SWITCH_URL = "/Benchmarks/Show/32454/1/ifelse-vs-small-switch";
+        const string PYTHON_PYODIDE_TEST_URL = "/Benchmarks/Show/32635";
 
 
         [TestMethod]
@@ -49,6 +50,12 @@ namespace E2ETests
         public async Task TestIfElseVsSmallSwitchBenchmark()
         {
             await ValidateBenchmarkCanRun(IFELSE_VS_SMALL_SWITCH_URL);
+        }
+
+        [TestMethod]
+        public async Task TestPythonBenchmark()
+        {
+            await ValidateBenchmarkCanRun(PYTHON_PYODIDE_TEST_URL, false, false);
         }
     }
 }
