@@ -138,13 +138,20 @@ class TestSuiteBuilder {
     }
 
     public buildSuite(): Benchmark.Suite {
+        if (this.benchmark.IsPython) {
+            debugger;
+            globalEval('async function create_pyodide() { console.log("inside of the global eval"); window.pyodide = await loadPyodide(); console.log("post await"); debugger;} create_pyodide();');
+        }
         globalEval(this.benchmark.ScriptPreparationCode);
         var suite: Benchmark.Suite = new Benchmark.Suite();
+        debugger;
         for (var i = 0; i < this.benchmark.TestCases.length; i++) {
             var testBody = this.benchmark.TestCases[i].Code;
             var deferred = this.benchmark.TestCases[i].IsDeferred;
             var fn: Function;
-            if (deferred) {
+            if (this.benchmark.IsPython) {
+                eval("fn = async function (deferred) { await window.pyodide.runPython('" + replaceAll(testBody, "'", "\\'") + "'); deferred.resolve(); }");
+            } else if (deferred) {
                 eval("fn = async function (deferred) {" + testBody + "; }");
             } else {
                 eval("fn = function () {" + testBody + "; }");

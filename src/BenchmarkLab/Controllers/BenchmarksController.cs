@@ -78,12 +78,12 @@ namespace MeasureThat.Net.Controllers
             return this.View(new ResultsPaginationHolder<BenchmarkDtoForIndex>(list, page, count, numOfItemsPerPage));
         }
 
-        public IActionResult Add(bool dummyTest)
+        public IActionResult Add(bool dummyTest, bool isPython=false)
         {
             BenchmarkDto model = null;
             if (!dummyTest)
             {
-                model = new BenchmarkDto();
+                model = new BenchmarkDto() { IsPython = isPython};
             }
             else
             {
@@ -432,7 +432,7 @@ namespace MeasureThat.Net.Controllers
             return this.View("TestFrame", new BenchmarkDto());
         }
 
-        public IActionResult TestFrameForValidationWithHtmlPrepCode(string htmlPrepCode, bool autostart)
+        public IActionResult TestFrameForValidationWithHtmlPrepCode(string htmlPrepCode, bool isPython = false)
         {
             if (this.HttpContext.Response.Headers.ContainsKey(XssProtectionConstants.Header))
             {
@@ -440,7 +440,7 @@ namespace MeasureThat.Net.Controllers
                 this.HttpContext.Response.Headers.Remove(XssProtectionConstants.Header);
                 this.HttpContext.Response.Headers.Append(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
             }
-            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode });
+            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode, IsPython = isPython });
         }
     }
 }
