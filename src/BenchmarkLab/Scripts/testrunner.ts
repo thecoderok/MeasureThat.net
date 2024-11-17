@@ -217,7 +217,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
 
     private parseBenchmark(): MeasureThatBenchmark {
         const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
-        const isPython = (parent.document.getElementById('IsPython') as HTMLInputElement).checked;
+        const isPython = (parent.document.getElementById('IsPython') as HTMLInputElement).value === "True";
         const testCases = Array.from(parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]')).map((tc) => {
             const name = (tc.querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
             const code = (tc.querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
