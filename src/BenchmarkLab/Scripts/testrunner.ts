@@ -153,12 +153,12 @@ class TestSuiteBuilder {
             suite.add(this.benchmark.TestCases[i].Name, options);
         }
         suite
-            .on('cycle', this.eventsHandler.onCycleHandler)
-            .on('complete', this.eventsHandler.onCompleteHandler)
-            .on('abort', this.eventsHandler.onAbortHandler)
-            .on('error', this.eventsHandler.onErrorHandler)
-            .on('reset', this.eventsHandler.onResetHandler)
-            .on('start', this.eventsHandler.onStartHandler);
+            .on('cycle', (event: Event) => this.eventsHandler.onCycleHandler(event))
+            .on('complete', (event: Event) => this.eventsHandler.onCompleteHandler(event))
+            .on('abort', (evt: any) => this.eventsHandler.onAbortHandler(evt))
+            .on('error', (event: { target: { error: string; } }) => this.eventsHandler.onErrorHandler(event))
+            .on('reset', (evt: any) => this.eventsHandler.onResetHandler(evt))
+            .on('start', () => this.eventsHandler.onStartHandler());
         return suite;
     }
 }
