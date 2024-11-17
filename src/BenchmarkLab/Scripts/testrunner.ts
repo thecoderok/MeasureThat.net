@@ -5,6 +5,9 @@
 /// <reference path="../typings/globals/benchmark/index.d.ts" />
 /// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
+interface Window {
+    globalPyodide: any;
+}
 
 declare namespace Benchmark {
     export interface Options {
@@ -34,6 +37,9 @@ declare namespace Benchmark {
         on(type?: string, callback?: Function): Suite;
     }
 }
+
+declare function loadPyodide(): Promise<any>;
+declare function globalMeasureThatScriptPrepareFunction(): Promise<void>;
 
 interface IBenchmarkSuiteEventHandler {
     onStartHandler(): void;
@@ -137,20 +143,22 @@ class TestSuiteBuilder {
         private eventsHandler: IBenchmarkSuiteEventHandler) {
     }
 
-    public buildSuite(): Benchmark.Suite {
+    public async buildSuite(): Promise<Benchmark.Suite> {
         if (this.benchmark.IsPython) {
-            debugger;
-            globalEval('async function create_pyodide() { console.log("inside of the global eval"); window.pyodide = await loadPyodide(); console.log("post await"); debugger;} create_pyodide();');
+            window.globalPyodide = await loadPyodide();
+            console.log("Pyodide was loaded");
         }
-        globalEval(this.benchmark.ScriptPreparationCode);
+        const globalPrepareFunction = `async function globalMeasureThatScriptPrepareFunction() { ${this.benchmark.ScriptPreparationCode} ;}`
+        globalEval(globalPrepareFunction);
+        await globalMeasureThatScriptPrepareFunction();
+        
         var suite: Benchmark.Suite = new Benchmark.Suite();
-        debugger;
         for (var i = 0; i < this.benchmark.TestCases.length; i++) {
             var testBody = this.benchmark.TestCases[i].Code;
-            var deferred = this.benchmark.TestCases[i].IsDeferred;
+            var deferred = this.benchmark.TestCases[i].IsDeferred || this.benchmark.IsPython;
             var fn: Function;
             if (this.benchmark.IsPython) {
-                eval("fn = async function (deferred) { await window.pyodide.runPython('" + replaceAll(testBody, "'", "\\'") + "'); deferred.resolve(); }");
+                eval("fn = async function (deferred) { await window.globalPyodide.runPython('" + replaceAll(testBody, "'", "\\'") + "'); deferred.resolve(); }");
             } else if (deferred) {
                 eval("fn = async function (deferred) {" + testBody + "; }");
             } else {
@@ -224,7 +232,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
         try {
             const benchmark = this.parseBenchmark();
             const benchmarkSuiteBuilder = new TestSuiteBuilder(benchmark, new BenchmarkSuiteEventHandlerImpl(outerRunner, _myThis));
-            const suite = benchmarkSuiteBuilder.buildSuite();
+            const suite = await benchmarkSuiteBuilder.buildSuite();
             _myThis.appendToLog('Starting benchmark...');
             suite.run({ 'async': true });
         } catch (e) {
@@ -288,7 +296,7 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
         const benchmarkSuiteBuilder = new TestSuiteBuilder(benchmarkDefinition, this);
         
         try {
-            const suite = benchmarkSuiteBuilder.buildSuite();
+            const suite = await benchmarkSuiteBuilder.buildSuite();
             suite.run({ 'async': true });
         } catch (e) {
             alert("Error:" + e.message);
