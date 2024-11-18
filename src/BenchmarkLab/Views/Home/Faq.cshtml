@@ -5,3 +5,106 @@
 <div class="page-header">
     <h1>Frequently Asked Questions</h1>
 </div>
+
+<div class="panel-group" id="faqAccordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="faqHeadingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseOne" aria-expanded="true" aria-controls="faqCollapseOne">
+                    How do I create a new benchmark?
+                </a>
+            </h4>
+        </div>
+        <div id="faqCollapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="faqHeadingOne">
+            <div class="panel-body">
+                To create a new benchmark, follow these steps:
+                <ol>
+                    <li>Navigate to the "Add Benchmark" page.</li>
+                    <li>Fill in the benchmark details.</li>
+                    <li>Click the "Submit" button.</li>
+                </ol>
+                Here is a sample code snippet to create a benchmark in C#:
+                <pre><code class="language-csharp">
+public class Benchmark
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public void Run()
+    {
+        // Benchmark logic here
+    }
+}
+                </code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="faqHeadingTwo">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseTwo" aria-expanded="false" aria-controls="faqCollapseTwo">
+                    How do I edit an existing benchmark?
+                </a>
+            </h4>
+        </div>
+        <div id="faqCollapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="faqHeadingTwo">
+            <div class="panel-body">
+                To edit an existing benchmark, follow these steps:
+                <ol>
+                    <li>Navigate to the "My Benchmarks" page.</li>
+                    <li>Select the benchmark you want to edit.</li>
+                    <li>Make the necessary changes and click the "Save" button.</li>
+                </ol>
+                Here is a sample code snippet to edit a benchmark in C#:
+                <pre><code class="language-csharp">
+public void EditBenchmark(Benchmark benchmark)
+{
+    benchmark.Name = "New Name";
+    benchmark.Description = "Updated Description";
+    // Save changes
+}
+                </code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="faqHeadingThree">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
+                    How do I delete a benchmark?
+                </a>
+            </h4>
+        </div>
+        <div id="faqCollapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="faqHeadingThree">
+            <div class="panel-body">
+                To delete a benchmark, follow these steps:
+                <ol>
+                    <li>Navigate to the "My Benchmarks" page.</li>
+                    <li>Select the benchmark you want to delete.</li>
+                    <li>Click the "Delete" button and confirm the deletion.</li>
+                </ol>
+                Here is a sample code snippet to delete a benchmark in C#:
+                <pre><code class="language-csharp">
+public void DeleteBenchmark(int benchmarkId)
+{
+    // Find the benchmark by ID
+    var benchmark = FindBenchmarkById(benchmarkId);
+    if (benchmark != null)
+    {
+        // Delete the benchmark
+        Delete(benchmark);
+    }
+}
+                </code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+}
