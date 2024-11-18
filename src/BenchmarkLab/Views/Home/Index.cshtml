@@ -38,7 +38,19 @@
 <div class="row">
     <div class="col-md-6">
         <h2>Version history:</h2>
-        <h2>1.6.x:</h2>
+        <h3>1.7.x:</h3>
+        <ul>
+            <li>
+                MeasureThat.net can now benchmark Python code using <a asp-controller="Home" asp-action="Pyodide" target="_blank">Pyodide</a>. <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32635" target="_blank">See example</a>.
+            </li>
+            <li>
+                Added <a asp-controller="Home" asp-action="Faq" target="_blank">FAQ</a>
+            </li>
+            <li>
+                Async/Await is now supported in script preparation code (wrapped as <i>globalMeasureThatScriptPrepareFunction</i> function). See <a asp-controller="Home" asp-action="Faq" target="_blank">FAQ</a> or <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32635" target="_blank">example</a>.
+            </li>
+        </ul>
+        <h3>1.6.x:</h3>
         <ul>
             <li>
                 MeasureThat.net now supports Async/Deferred tests
@@ -53,7 +65,7 @@
                 Removed reCaptcha from editing flow
             </li>
         </ul>
-        <h2>1.5.x:</h2>
+        <h3>1.5.x:</h3>
         <ul>
             <li>
                 Upgraded to .NET8 from ancient .NET Core 2.

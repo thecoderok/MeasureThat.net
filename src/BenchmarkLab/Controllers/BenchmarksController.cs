@@ -432,7 +432,7 @@ namespace MeasureThat.Net.Controllers
             return this.View("TestFrame", new BenchmarkDto());
         }
 
-        public IActionResult TestFrameForValidationWithHtmlPrepCode(string htmlPrepCode, bool isPython = false)
+        public IActionResult TestFrameForValidationWithHtmlPrepCode(string htmlPrepCode)
         {
             if (this.HttpContext.Response.Headers.ContainsKey(XssProtectionConstants.Header))
             {
@@ -440,7 +440,7 @@ namespace MeasureThat.Net.Controllers
                 this.HttpContext.Response.Headers.Remove(XssProtectionConstants.Header);
                 this.HttpContext.Response.Headers.Append(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
             }
-            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode, IsPython = isPython });
+            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode});
         }
     }
 }

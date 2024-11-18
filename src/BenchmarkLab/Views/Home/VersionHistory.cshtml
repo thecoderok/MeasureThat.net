@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Version History";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="page-header">
+            <h1>Version History</h1>
+        </div>
+        <h3>1.7.x (November 2024):</h3>
+        <ul class="version-entry">
+            <li>
+                MeasureThat.net can now benchmark Python code using <a asp-controller="Home" asp-action="Pyodide" target="_blank">Pyodide</a>. <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32635" target="_blank">See example</a>.
+            </li>
+            <li>
+                Added <a asp-controller="Home" asp-action="Faq" target="_blank">FAQ</a>
+            </li>
+            <li>
+                Async/Await is now supported in script preparation code (wrapped as <i>globalMeasureThatScriptPrepareFunction</i> function). See <a asp-controller="Home" asp-action="Faq" target="_blank">FAQ</a> or <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32635" target="_blank">example</a>.
+            </li>
+        </ul>
+        <h3>1.6.x:</h3>
+        <ul class="version-entry">
+            <li>
+                MeasureThat.net now supports Async/Deferred tests
+            </li>
+            <li>
+                Bug fixes (duplicated titles validation, lost test case names, etc)
+            </li>
+            <li>
+                UI Cleanup (login flow, creation, etc)
+            </li>
+            <li>
+                Removed reCaptcha from the editing flow
+            </li>
+        </ul>
+        <h3>1.5.x:</h3>
+        <ul class="version-entry">
+            <li>
+                Upgraded to .NET8 from the ancient .NET Core 2.
+            </li>
+            <li>
+                Upgraded the npm dependencies, TypeScript version, gulp.
+            </li>
+            <li>
+                Bug fixes
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+
+

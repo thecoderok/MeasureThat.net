@@ -181,6 +181,48 @@ namespace E2ETests
             await Expect(Page.Locator("small", new PageLocatorOptions { HasTextString = "Run results for:" })).ToBeVisibleAsync();
         }
 
+        [TestMethod]
+        public async Task TestFaqPage()
+        {
+            await Page.GotoAsync("/Faq");
+            await Expect(Page).ToHaveTitleAsync(new Regex("FAQ - MeasureThat.net"));
+
+            // Validate that the page has a header with text "Frequently Asked Questions"
+            var headerElement = Page.Locator("h1", new PageLocatorOptions { HasTextString = "Frequently Asked Questions" });
+            await Expect(headerElement).ToBeVisibleAsync();
+        }
+
+        [TestMethod]
+        public async Task TestVersionHistoryPage()
+        {
+            await Page.GotoAsync("/VersionHistory");
+            await Expect(Page).ToHaveTitleAsync(new Regex("Version History - MeasureThat.net"));
+
+            // Validate that the page has a header with text "Version History"
+            var headerElement = Page.Locator("h1", new PageLocatorOptions { HasTextString = "Version History" });
+            await Expect(headerElement).ToBeVisibleAsync();
+
+            // Validate that the page contains version history entries
+            var versionEntries = Page.Locator(".version-entry");
+            var entryCount = await versionEntries.CountAsync();
+            Assert.IsTrue(entryCount > 0, "The version history page has no entries.");
+        }
+
+        [TestMethod]
+        public async Task TestPyodidePage()
+        {
+            await Page.GotoAsync("/Pyodide");
+            await Expect(Page).ToHaveTitleAsync(new Regex("Pyodide benchmarks support - MeasureThat.net"));
+
+            // Validate that the page has a header with text "Pyodide"
+            var headerElement = Page.Locator("h1", new PageLocatorOptions { HasTextString = "Pyodide" });
+            await Expect(headerElement).ToBeVisibleAsync();
+
+            // Validate that the page contains a description or content related to Pyodide
+            var contentElement = Page.Locator(".pyodide-content");
+            await Expect(contentElement).ToBeVisibleAsync();
+        }
+
 
         private async Task NavigateToMainViaNavbar()
         {

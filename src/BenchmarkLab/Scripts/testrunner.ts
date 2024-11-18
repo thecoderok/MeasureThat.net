@@ -153,9 +153,13 @@ class TestSuiteBuilder {
             window.globalPyodide = await loadPyodide();
             console.log("Pyodide was loaded");
         }
-        const globalPrepareFunction = `async function globalMeasureThatScriptPrepareFunction() { ${this.benchmark.ScriptPreparationCode} ;}`
-        globalEval(globalPrepareFunction);
-        await globalMeasureThatScriptPrepareFunction();
+
+        globalEval(this.benchmark.ScriptPreparationCode);
+
+        if (typeof globalMeasureThatScriptPrepareFunction === 'function') {
+            console.log("Found globalMeasureThatScriptPrepareFunction, executing it");
+            await globalMeasureThatScriptPrepareFunction();
+        }        
         
         var suite: Benchmark.Suite = new Benchmark.Suite();
         for (var i = 0; i < this.benchmark.TestCases.length; i++) {

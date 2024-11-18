@@ -37,5 +37,23 @@ namespace MeasureThat.Net.Controllers
             var sitemap = await this.sitemapGenerator.Generate();
             return this.Content(sitemap, "application/xml", Encoding.UTF8);
         }
+
+        [Route("Faq")]
+        public IActionResult Faq()
+        {
+            return View();
+        }
+
+        [Route("Pyodide")]
+        public IActionResult Pyodide()
+        {
+            return View();
+        }
+
+        [Route("VersionHistory")]
+        public IActionResult VersionHistory()
+        {
+            return View();
+        }
     }
 }

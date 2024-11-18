@@ -13,10 +13,8 @@
 <script src="~/lib/lodash/dist/lodash.js"></script>
 <script src="~/lib/platform/platform.js"></script>
 <script src="~/lib/benchmark/benchmark.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js"></script>
 <script src="~/js/testrunner.js" asp-append-version="true"></script>
-@if(Model.IsPython) {
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js"></script>
-}
 
 @if (!string.IsNullOrWhiteSpace(Model.HtmlPreparationCode))
 {
