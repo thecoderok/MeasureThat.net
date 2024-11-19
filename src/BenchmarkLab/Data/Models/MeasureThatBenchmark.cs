@@ -32,12 +32,6 @@ namespace BenchmarkLab.Models
             get; set;
         }
 
-        [JsonPropertyName("IsPython")]
-        public bool IsPython
-        {
-            get; set;
-        }
-
         [JsonPropertyName("TestCases")]
         public List<TestCase> TestCases
         {

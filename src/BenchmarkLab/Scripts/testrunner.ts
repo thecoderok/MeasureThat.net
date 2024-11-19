@@ -5,10 +5,6 @@
 /// <reference path="../typings/globals/benchmark/index.d.ts" />
 /// <reference path="../typings/globals/bootstrap/index.d.ts" />
 
-interface Window {
-    globalPyodide: any;
-}
-
 declare namespace Benchmark {
     export interface Options {
         async?: boolean | undefined;
@@ -136,7 +132,6 @@ class TestCase {
 class MeasureThatBenchmark {
     constructor(
         public ScriptPreparationCode: string,
-        public IsPython: boolean,
         public TestCases: TestCase[]
     ) {}
 }
@@ -148,12 +143,7 @@ class TestSuiteBuilder {
     }
 
     public async buildSuite(): Promise<Benchmark.Suite> {
-        if (this.benchmark.IsPython) {
-            this.eventsHandler.onPrepareEnvironmentHandler();
-            window.globalPyodide = await loadPyodide();
-            console.log("Pyodide was loaded");
-        }
-
+        this.eventsHandler.onPrepareEnvironmentHandler();
         globalEval(this.benchmark.ScriptPreparationCode);
 
         if (typeof globalMeasureThatScriptPrepareFunction === 'function') {
@@ -164,11 +154,9 @@ class TestSuiteBuilder {
         var suite: Benchmark.Suite = new Benchmark.Suite();
         for (var i = 0; i < this.benchmark.TestCases.length; i++) {
             var testBody = this.benchmark.TestCases[i].Code;
-            var deferred = this.benchmark.TestCases[i].IsDeferred || this.benchmark.IsPython;
+            var deferred = this.benchmark.TestCases[i].IsDeferred;
             var fn: Function;
-            if (this.benchmark.IsPython) {
-                eval("fn = async function (deferred) { await window.globalPyodide.runPython('" + replaceAll(testBody, "'", "\\'") + "'); deferred.resolve(); }");
-            } else if (deferred) {
+            if (deferred) {
                 eval("fn = async function (deferred) {" + testBody + "; }");
             } else {
                 eval("fn = function () {" + testBody + "; }");
@@ -221,14 +209,13 @@ class TestRunnerController  implements IBenchmarkSuiteEventHandler {
 
     private parseBenchmark(): MeasureThatBenchmark {
         const scriptPreparationCode = (parent.document.getElementById('ScriptPreparationCode') as HTMLTextAreaElement).value;
-        const isPython = (parent.document.getElementById('IsPython') as HTMLInputElement).value === "True";
         const testCases = Array.from(parent.document.getElementById('test-case-list').querySelectorAll('[data-role="testCaseComponent"]')).map((tc) => {
             const name = (tc.querySelectorAll('[data-role="testCaseName"]')[0] as HTMLInputElement).value;
             const code = (tc.querySelectorAll('[data-role="testCaseCode"]')[0] as HTMLTextAreaElement).value;
             const isDeferred = (tc.querySelectorAll('[data-role="Deferred"]')[0] as HTMLInputElement).checked;
             return new TestCase(name, code, isDeferred);
         });
-        return new MeasureThatBenchmark(scriptPreparationCode, isPython, testCases);
+        return new MeasureThatBenchmark(scriptPreparationCode, testCases);
     }
 
     private parseBenchmarkFromJSON(): MeasureThatBenchmark {

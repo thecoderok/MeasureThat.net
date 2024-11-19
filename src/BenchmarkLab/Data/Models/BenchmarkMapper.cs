@@ -27,7 +27,6 @@ public static class BenchmarkMapper
         var measureThatBenchmark = new MeasureThatBenchmark
         {
             ScriptPreparationCode = benchmarkDto.ScriptPreparationCode,
-            IsPython = benchmarkDto.IsPython,
             TestCases = testCases
         };
 

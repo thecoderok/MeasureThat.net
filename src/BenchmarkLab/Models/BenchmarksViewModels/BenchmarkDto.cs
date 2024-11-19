@@ -80,10 +80,5 @@ namespace MeasureThat.Net.Models
         {
             get; set;
         }
-
-        public bool IsPython
-        {
-            get; set;
-        }
     }
 }

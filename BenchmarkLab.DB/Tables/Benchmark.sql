@@ -10,6 +10,5 @@ CREATE TABLE [dbo].[Benchmark]
     [Version] INT NOT NULL DEFAULT 1, 
     [RelatedBenchmarks] NVARCHAR(500) NULL, 
     [WhenUpdated] DATETIME2 NULL, 
-    [IsPython] BIT NULL DEFAULT 0, 
     CONSTRAINT [FK_Benchmark_ToUsers] FOREIGN KEY (OwnerId) REFERENCES [AspNetUsers]([Id])
 )

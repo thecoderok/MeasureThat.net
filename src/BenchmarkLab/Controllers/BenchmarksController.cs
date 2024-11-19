@@ -78,12 +78,12 @@ namespace MeasureThat.Net.Controllers
             return this.View(new ResultsPaginationHolder<BenchmarkDtoForIndex>(list, page, count, numOfItemsPerPage));
         }
 
-        public IActionResult Add(bool dummyTest, bool isPython=false)
+        public IActionResult Add(bool dummyTest)
         {
             BenchmarkDto model = null;
             if (!dummyTest)
             {
-                model = new BenchmarkDto() { IsPython = isPython};
+                model = new BenchmarkDto();
             }
             else
             {
