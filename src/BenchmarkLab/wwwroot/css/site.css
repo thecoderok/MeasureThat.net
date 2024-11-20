@@ -125,3 +125,7 @@ body {
       height: auto;
   }
 }
+.resizable {
+    resize: vertical;
+    overflow: auto;
+}
