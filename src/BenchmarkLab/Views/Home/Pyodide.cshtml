@@ -7,6 +7,73 @@
         <div class="page-header">
             <h1>Pyodide benchmarks support</h1>
         </div>
-        <div class="pyodide-content">pyodide-content</div>
+        <div class="pyodide-content">
+            <p>MeasureThat.net now supports Python in-browser benchmarks via Pyodide. This new feature allows users to write and execute Python code directly within their web browser, enabling seamless performance testing and benchmarking of Python scripts.</p>
+
+            <h2>What is Pyodide?</h2>
+            <p>Pyodide is an open-source project that brings the Python runtime to the web browser by compiling the Python interpreter to WebAssembly. This allows Python code to run in the browser with near-native performance. Pyodide includes a comprehensive set of Python packages, such as NumPy, Pandas, and Matplotlib, making it a powerful tool for scientific computing and data analysis in the browser.</p>
+
+            <h2>How Pyodide Works</h2>
+            <p>Pyodide works by loading the Python interpreter and its packages into the browser's memory. Here’s a high-level overview of how it operates:</p>
+            <ol>
+                <li><strong>Loading Pyodide</strong>: The Pyodide JavaScript library is loaded into the browser, which initializes the WebAssembly-compiled Python interpreter.</li>
+                <li><strong>Loading Packages</strong>: Pyodide can dynamically load additional Python packages as needed. These packages are also compiled to WebAssembly and can be imported and used just like in a regular Python environment.</li>
+                <li><strong>Running Python Code</strong>: Users can write Python code in the browser, which Pyodide executes. The results of the execution can be displayed directly in the web page or used for further processing.</li>
+            </ol>
+
+            <h3>Example</h3>
+            <p>Here is a example of how to setup Pyodide benchmark (based on <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32635" target="_blank">this benchmark.</a>):</p>
+            <pre><code class="language-html">// HTML Preparation code
+&lt;script src='https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.js'&gt;&lt;/script&gt;
+
+// Script preparation code - load Pyodide and initialize it
+async function globalMeasureThatScriptPrepareFunction() {
+      window.globalPyodide = await loadPyodide();
+      console.log(globalPyodide.runPython('import sys; sys.version'));
+    await globalPyodide.loadPackage('numpy');
+    await globalPyodide.runPython(`
+        import numpy as np
+        import random
+
+        def bubble_sort(arr):
+            n = len(arr)
+            for i in range(n):
+                for j in range(0, n-i-1):
+                    if arr[j] > arr[j+1]:
+                        arr[j], arr[j+1] = arr[j+1], arr[j]
+            return arr
+
+        def efficient_sort(arr):
+            return sorted(arr)
+
+        def generate_random_array(size, lower_bound, upper_bound):
+            return [random.randint(lower_bound, upper_bound) for _ in range(size)]
+
+        # Generate a random array
+        random_array = generate_random_array(250, 1, 500000)
+        print("Original array:", random_array)
+    `);    
+}
+
+// Test case #1:
+window.globalPyodide.runPython(`
+    bubble_sort(random_array.copy())
+`);
+
+// Test case #2:
+window.globalPyodide.runPython(`
+    efficient_sort(random_array.copy())
+`);
+            </code></pre>
+        </div>
     </div>
 </div>
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+}
