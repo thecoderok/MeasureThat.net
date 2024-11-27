@@ -14,7 +14,6 @@ using UAParser;
 
 namespace MeasureThat.Net.Controllers
 {
-    using BenchmarkLab.Data.Models;
     using BenchmarkLab.Logic.Web;
     using BenchmarkLab.Models;
     using Exceptions;
@@ -25,7 +24,6 @@ namespace MeasureThat.Net.Controllers
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using System;
     using System.Collections.Generic;
-    using System.Text.Json;
     using Wangkanai.Detection.Services;
 
     [Authorize(Policy = "AllowGuests")]
@@ -39,6 +37,12 @@ namespace MeasureThat.Net.Controllers
         private readonly IDetectionService detection;
         private const string ErrorActionName = "Error";
         private const int numOfItemsPerPage = 25;
+        public const string ScriptPreparationCodeWithInlineDocumentation = @"/*your preparation JavaScript code goes here
+To execute async code during the script preparation, wrap it as function globalMeasureThatScriptPrepareFunction, example:*/
+async function globalMeasureThatScriptPrepareFunction() {
+    // This function is optional, feel free to remove it.
+    // await someThing();
+}";
 
         public BenchmarksController(
             [NotNull] SqlServerBenchmarkRepository benchmarkRepository,
@@ -83,7 +87,24 @@ namespace MeasureThat.Net.Controllers
             BenchmarkDto model = null;
             if (!dummyTest)
             {
-                model = new BenchmarkDto();
+                model = new BenchmarkDto
+                {
+                    HtmlPreparationCode = "<!--your preparation HTML code goes here-->",
+                    ScriptPreparationCode = ScriptPreparationCodeWithInlineDocumentation,
+                    TestCases = new List<TestCaseDto>()
+                    {
+                        new()
+                        {
+                            TestCaseName = "",
+                            BenchmarkCode = "/*When writing async/deferred tests, use `deferred.resolve()` to mark test as done*/",
+                        },
+                        new()
+                        {
+                            TestCaseName = "",
+                            BenchmarkCode = "",
+                        },
+                    }
+                };
             }
             else
             {
@@ -92,18 +113,18 @@ namespace MeasureThat.Net.Controllers
                     BenchmarkName = "Test name for add",
                     HtmlPreparationCode = "<div id='myid'>yoyo</div><script src = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script> ",
                     TestCases = new List<TestCaseDto>()
-                {
-                    new()
                     {
-                        TestCaseName = "Test case name 1",
-                        BenchmarkCode = "var t = document.getElementById('myid');",
-                    },
-                    new ()
-                    {
-                        TestCaseName = "Test case name 2",
-                        BenchmarkCode = "var z = $('myid');",
-                    },
-                }
+                        new()
+                        {
+                            TestCaseName = "Test case name 1",
+                            BenchmarkCode = "var t = document.getElementById('myid');",
+                        },
+                        new()
+                        {
+                            TestCaseName = "Test case name 2",
+                            BenchmarkCode = "var z = $('myid');",
+                        },
+                    }
                 };
             }
 
