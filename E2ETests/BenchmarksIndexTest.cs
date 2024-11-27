@@ -77,7 +77,7 @@ namespace E2ETests
 
             // Validate that the navigation to the Add Benchmark page was successful
             await Expect(Page).ToHaveURLAsync("/Benchmarks/Add");
-            await Expect(Page).ToHaveTitleAsync("Create benchmark - MeasureThat.net");
+            await Expect(Page).ToHaveTitleAsync("Create a benchmark - MeasureThat.net");
         }
     }
 }
