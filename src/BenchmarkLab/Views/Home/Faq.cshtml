@@ -6,99 +6,148 @@
     <h1>Frequently Asked Questions</h1>
 </div>
 
-<div class="panel-group" id="faqAccordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="faqHeadingOne">
             <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseOne" aria-expanded="true" aria-controls="faqCollapseOne">
-                    How do I create a new benchmark?
-                </a>
+                How do I create a new benchmark?
             </h4>
         </div>
-        <div id="faqCollapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="faqHeadingOne">
+        <div>
             <div class="panel-body">
                 To create a new benchmark, follow these steps:
                 <ol>
-                    <li>Navigate to the "Add Benchmark" page.</li>
+                    <li>Navigate to the <a asp-controller="Benchmarks" asp-action="Add" target="_blank">Create a benchmark</a> page.</li>
                     <li>Fill in the benchmark details.</li>
                     <li>Click the "Submit" button.</li>
                 </ol>
-                Here is a sample code snippet to create a benchmark in C#:
-                <pre><code class="language-csharp">
-public class Benchmark
-{
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public void Run()
-    {
-        // Benchmark logic here
-    }
-}
-                </code></pre>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="faqHeadingTwo">
-            <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseTwo" aria-expanded="false" aria-controls="faqCollapseTwo">
-                    How do I edit an existing benchmark?
-                </a>
-            </h4>
+        <div class="panel-heading">
+            <h4 class="panel-title">How do I edit an existing benchmark?</h4>
         </div>
-        <div id="faqCollapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="faqHeadingTwo">
+        <div>
             <div class="panel-body">
                 To edit an existing benchmark, follow these steps:
                 <ol>
-                    <li>Navigate to the "My Benchmarks" page.</li>
+                    <li>Navigate to the <a asp-controller="Benchmarks" asp-action="My" target="_blank">Your benchmarks</a> page.</li>
                     <li>Select the benchmark you want to edit.</li>
                     <li>Make the necessary changes and click the "Save" button.</li>
                 </ol>
-                Here is a sample code snippet to edit a benchmark in C#:
-                <pre><code class="language-csharp">
-public void EditBenchmark(Benchmark benchmark)
-{
-    benchmark.Name = "New Name";
-    benchmark.Description = "Updated Description";
-    // Save changes
-}
-                </code></pre>
             </div>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="faqHeadingThree">
+        <div class="panel-heading">
             <h4 class="panel-title">
-                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#faqAccordion" href="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
-                    How do I delete a benchmark?
-                </a>
+                How do I delete a benchmark?
             </h4>
         </div>
-        <div id="faqCollapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="faqHeadingThree">
+        <div>
             <div class="panel-body">
                 To delete a benchmark, follow these steps:
                 <ol>
-                    <li>Navigate to the "My Benchmarks" page.</li>
+                    <li>Navigate to the <a asp-controller="Benchmarks" asp-action="My" target="_blank">Your benchmarks</a> page.</li>
                     <li>Select the benchmark you want to delete.</li>
                     <li>Click the "Delete" button and confirm the deletion.</li>
                 </ol>
-                Here is a sample code snippet to delete a benchmark in C#:
-                <pre><code class="language-csharp">
-public void DeleteBenchmark(int benchmarkId)
-{
-    // Find the benchmark by ID
-    var benchmark = FindBenchmarkById(benchmarkId);
-    if (benchmark != null)
-    {
-        // Delete the benchmark
-        Delete(benchmark);
-    }
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                How do I create a benchmark with async/deferred tests?
+            </h4>
+        </div>
+        <div id="faqCollapseFour">
+            <div class="panel-body">
+                To create a benchmark with async or deferred tests, follow these steps:
+                <ol>
+                    <li>Navigate to the <a asp-controller="Benchmarks" asp-action="Add" target="_blank">Create a benchmark</a> page.</li>
+                    <li>Check "deferred" checkbox.</li>
+                    <li>You can use `await` in the test body now. Make sure to call `deferred.resolve()` at the end to mark test as done</li>
+                </ol>
+                Here are couple of example benchmarks:
+                <ol>
+                    <li>
+                        <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32502" target="_blank">Async Tests</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Benchmarks" asp-action="Show" asp-route-id="32503" target="_blank">Deferred Tests</a>
+                    </li>
+                </ol>
+                For example:
+                <pre><code class="language-js">// Script preparation code: 
+function wait(ms) {
+    return new Promise(res => setTimeout(() => { res(ms); }, ms));
 }
+
+// Test case #1:
+await wait(50);
+deferred.resolve();
+
+// Test case #2:
+setTimeout(function () { deferred.resolve() }, 500);
+                </code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" id="globalMeasureThatScriptPrepareFunction">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                How do I execute async code in the Script Preparation Block?
+            </h4>
+        </div>
+        <div id="faqCollapseFour">
+            <div class="panel-body">
+                By default, if you try to use the <i>await</i> in Script preparation block it will fail with error <i>
+                    await is only valid in async functions and at the top level of modules</i>.
+                <br>It is now possible to execute async code in the Script Preparation block. To do so you'll need to define <i>globalMeasureThatScriptPrepareFunction</i> function and put the async code in there.
+
+                Here is a sample script preparation code:
+                <pre><code class="language-js">
+    /* you can put the code here. this code will execute first*/
+    console.log("In the script preparation block");
+    async function globalMeasureThatScriptPrepareFunction() {
+        /* this code will be executed third */
+        window.globalPyodide = await loadPyodide();
+        console.log(globalPyodide.runPython('import sys; sys.version'));
+        await globalPyodide.loadPackage('numpy');
+        await globalPyodide.runPython(`
+            import numpy as np
+            import random
+
+            def bubble_sort(arr):
+                n = len(arr)
+                for i in range(n):
+                    for j in range(0, n-i-1):
+                        if arr[j] > arr[j+1]:
+                            arr[j], arr[j+1] = arr[j+1], arr[j]
+                return arr
+
+            def efficient_sort(arr):
+                return sorted(arr)
+
+            def generate_random_array(size, lower_bound, upper_bound):
+                return [random.randint(lower_bound, upper_bound) for _ in range(size)]
+
+            # Generate a random array
+            random_array = generate_random_array(250, 1, 500000)
+            print("Original array:", random_array)
+        `);    
+    }
+    /*you can put the code here, exact order in which globalMeasureThatScriptPrepareFunction() is defined does not matter.*/
+    /* this code will be executed second */
                 </code></pre>
             </div>
         </div>
     </div>
 </div>
+
+
 
 @section Styles {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css" rel="stylesheet">
