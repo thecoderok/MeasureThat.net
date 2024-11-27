@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
+using System;
 
 namespace E2ETests
 {
@@ -124,12 +125,37 @@ function factorializeRecursive(num) {
 
             var browserAlertIntegration = new BrowserAlertIntegration();
             browserAlertIntegration.InstallEvent(Page);
-
             var validateBenchmarkButton = Page.Locator("a.btn.btn-default[data-role='test-benchmark']");
+
+            await ValidateTestCaseCount(2);
             await validateBenchmarkButton.ClickAsync();
             await browserAlertIntegration.WaitForAlertAsync();
 
             var expectedSubstrings = new[]
+            {
+                "Benchmark failed during validation",
+                "Benchmark is not valid",
+                "Benchmark code must not be empty.",
+                "Test name must not be empty",
+                "Benchmark with such name already exists."
+            };
+
+            foreach (var substring in expectedSubstrings)
+            {
+                StringAssert.Contains(browserAlertIntegration.alertText, substring, $"The alert text does not contain the expected substring: {substring}.");
+            }
+            browserAlertIntegration.ResetState();
+
+            var deleteButtons = Page.Locator("button[data-action='delete-test']");
+            await deleteButtons.Nth(1).ClickAsync();
+            await ValidateTestCaseCount(1);
+            await deleteButtons.Nth(0).ClickAsync();
+            await ValidateTestCaseCount(0);
+
+            await validateBenchmarkButton.ClickAsync();
+            await browserAlertIntegration.WaitForAlertAsync();
+
+            expectedSubstrings = new[]
             {
                 "Benchmark failed during validation",
                 "Benchmark is not valid",
@@ -155,6 +181,8 @@ function factorializeRecursive(num) {
             codeMirrorDiv = await Page.QuerySelectorAsync("div[data-test-id='ScriptPreparationCodeFormGroup']");
             codeMirrorLine = await codeMirrorDiv.QuerySelectorAsync(CODE_MIRROR_EDITOR_SELECTOR);
             await codeMirrorLine.ClickAsync();
+            await Page.Keyboard.PressAsync("Control+A"); // Select all text
+            await Page.Keyboard.PressAsync("Delete"); // Delete the selected text
             await Page.Keyboard.TypeAsync(SCRIPT_PREP);
 
             await validateBenchmarkButton.ClickAsync();
@@ -319,20 +347,21 @@ function factorializeRecursive(num) {
             await ValidateBenchmarkCanRun(Page.Url, false, false);
 
             await Page.GotoAsync("/Benchmarks/My");
+            await Expect(Page).ToHaveTitleAsync(new Regex($"Your benchmarks - MeasureThat.net"));
 
-            var deleteButtons = Page.Locator("a.btn.btn-default[data-role='delete-benchmark']");
-            var buttonCount = await deleteButtons.CountAsync();
+            var deleteBenchmarkButtons = Page.Locator("a.btn.btn-default[data-role='delete-benchmark']");
+            var buttonCount = await deleteBenchmarkButtons.CountAsync();
             Assert.IsTrue(buttonCount >= 2, "There are less than 2 delete buttons on the page.");
 
             // Click each delete button until none are left
-            while (await deleteButtons.CountAsync() > 0)
+            while (await deleteBenchmarkButtons.CountAsync() > 0)
             {
-                await deleteButtons.First.ClickAsync();
+                await deleteBenchmarkButtons.First.ClickAsync();
                 await Page.ClickAsync("#perform-delete");
             }
 
             // Verify that no delete buttons are left
-            buttonCount = await deleteButtons.CountAsync();
+            buttonCount = await deleteBenchmarkButtons.CountAsync();
             Assert.AreEqual(0, buttonCount, "There are still delete buttons left on the page.");
         }
 
@@ -388,7 +417,10 @@ function factorializeRecursive(num) {
 
         private async Task ValidateTestCaseCount(int expectedCount)
         {
-            var testCaseList = Page.Locator("ul#test-case-list");
+            await Expect(Page).ToHaveTitleAsync(new Regex($".* a benchmark - MeasureThat.net"));
+
+            var testCaseList = Page.Locator("ul#test-case-list");            
+
             var count = await testCaseList.Locator(TEST_CASE_NAME_SELECTOR).CountAsync();
             Assert.AreEqual(expectedCount, count, $"There should be exactly {expectedCount} input element with data-role='testCaseName'.");
 

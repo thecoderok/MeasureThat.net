@@ -12,12 +12,12 @@
 }
 
 @{
-    ViewData["Title"] = verb + " benchmark";
+    ViewData["Title"] = verb + " a benchmark";
     ViewData["ReturnUrl"] = Url.Action("Add");
 }
 
 <div class="page-header">
-    <h1>@verb benchmark</h1>
+    <h1>@ViewData["Title"]</h1>
 </div>
 
 @if (!SignInManager.IsSignedIn(User))
