@@ -130,10 +130,16 @@
             @Html.ValidationMessage(ValidateReCaptchaAttribute.ReCaptchaModelErrorKey, "", new { @class = "text-danger" })
         </div>
     }
-
-    <div class="alert alert-warning" role="alert">
-        You must <strong>Validate the benchmark</strong> before publishing the benchmark.
-    </div>
+    @if (shouldDisableSubmit) {
+        <div class="alert alert-warning" role="alert">
+            Logged out users (guests) must validate their benchmarks before publishing. Click <strong>Validate the benchmark</strong>.
+        </div>
+    } else {
+        <div class="alert alert-info" role="alert">
+            To avoid adding broken tests, please use <strong>Validate benchmark</strong> button to check for errors in benchmark definition.
+        </div>
+    }
+    
 
     <div style="display:none" id="validation_log_holder">
         <h5>Validation log:</h5>
