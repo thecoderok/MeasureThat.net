@@ -9,6 +9,7 @@
 @{
     string action = Model.Id == 0 ? "Add" : "Edit";
     string verb = Model.Id == 0 ? "Create" : "Edit";
+    bool shouldDisableSubmit = Model.Id == 0 && !SignInManager.IsSignedIn(User);
 }
 
 @{
@@ -131,7 +132,7 @@
     }
 
     <div class="alert alert-warning" role="alert">
-        To avoid adding broken tests, please use <strong>Validate benchmark</strong> button to check for errors in benchmark definition.
+        You must <strong>Validate the benchmark</strong> before publishing the benchmark.
     </div>
 
     <div style="display:none" id="validation_log_holder">
@@ -143,7 +144,7 @@
         Validate benchmark<span>&nbsp;</span>
         <i id='validate-spinner' class="fa fa-refresh fa-spin" style="font-size:20px;display:none;"></i>
     </a>
-    <input id="benchmark_submit" type="submit" class="btn btn-primary" value="Submit" />
+    <input id="benchmark_submit" type="submit" class="btn btn-primary" value="Submit" @(shouldDisableSubmit ? "disabled" : "") title="Validate the benchmark before publishing" />
     <a href="@Url.Action("Index")" class="btn btn-link">Cancel</a>
 }
 

@@ -223,6 +223,67 @@ namespace E2ETests
             await Expect(contentElement).ToBeVisibleAsync();
         }
 
+        [TestMethod]
+        public async Task TestSubmitButtonDisbledOnAdd()
+        {
+            await Page.GotoAsync("/");
+
+            // Click on "Create a benchmark" link
+            var createBenchmarkLink = Page.Locator("ul.nav.navbar-nav > li > a[href='/Benchmarks/Add']");
+            await createBenchmarkLink.ClickAsync();
+            await Expect(Page.Locator("#benchmark_submit")).ToBeDisabledAsync();
+
+            await Page.Locator("#BenchmarkName").ClickAsync();
+
+            var guid = Guid.NewGuid();
+            await Page.Keyboard.TypeAsync($"Test e2e benchmark {guid}");
+            await Page.Keyboard.PressAsync("Tab");
+
+            var testCasesListSection = await Page.QuerySelectorAsync("ul#test-case-list");
+            var testCaseList = Page.Locator("ul#test-case-list");
+
+            await testCaseList.Locator(CreateEditForkDeleteBenchmarkTest.TEST_CASE_NAME_SELECTOR).Nth(0).FillAsync("Test case #1");
+            var codeEditors = await testCasesListSection.QuerySelectorAllAsync(CreateEditForkDeleteBenchmarkTest.CODE_MIRROR_EDITOR_SELECTOR);
+            await codeEditors[0].ClickAsync();
+            await Page.Keyboard.TypeAsync("let a = 12345;");
+
+           
+            await testCaseList.Locator(CreateEditForkDeleteBenchmarkTest.TEST_CASE_NAME_SELECTOR).Nth(1).FillAsync("Test case #2");
+            await codeEditors[1].ClickAsync();
+            await Page.Keyboard.TypeAsync("/*THIS IS A TEST*/");
+
+            var validateBenchmarkButton = Page.Locator("a.btn.btn-default[data-role='test-benchmark']");
+            await validateBenchmarkButton.ClickAsync();
+
+            var successMessage = await Page.Locator("#validation_log li:has-text('Success! Validation completed.')").InnerTextAsync(new LocatorInnerTextOptions { Timeout = 120000 });
+            Assert.IsTrue(successMessage.Contains("Success! Validation completed."));
+
+            await Expect(Page.Locator("#benchmark_submit")).ToBeEnabledAsync();
+        }
+
+        [TestMethod]
+        public async Task TestSubmitButtonDisbledOnFork()
+        {
+            await Page.GotoAsync("/Benchmarks/Show/32635");
+
+            await Page.Locator("i.fa.fa-code-fork").ClickAsync();
+            await Expect(Page.Locator("#benchmark_submit")).ToBeDisabledAsync();
+
+            await Page.Locator("#BenchmarkName").ClickAsync();
+
+            var guid = Guid.NewGuid();
+            await Page.Keyboard.TypeAsync($" - Forked {guid}");
+            await Page.Keyboard.PressAsync("Tab");
+
+            var validateBenchmarkButton = Page.Locator("a.btn.btn-default[data-role='test-benchmark']");
+            await validateBenchmarkButton.ClickAsync();
+
+            var successMessage = await Page.Locator("#validation_log li:has-text('Success! Validation completed.')").InnerTextAsync(new LocatorInnerTextOptions { Timeout = 120000 });
+            Assert.IsTrue(successMessage.Contains("Success! Validation completed."));
+
+            await Expect(Page.Locator("#benchmark_submit")).ToBeEnabledAsync();
+        }
+
 
         private async Task NavigateToMainViaNavbar()
         {

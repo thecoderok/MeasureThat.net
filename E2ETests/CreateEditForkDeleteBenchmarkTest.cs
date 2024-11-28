@@ -1,7 +1,4 @@
 ﻿using Microsoft.Playwright;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
-using System;
 
 namespace E2ETests
 {
@@ -9,11 +6,11 @@ namespace E2ETests
     public class CreateEditForkDeleteBenchmarkTest : BenchmarkLabBaseTest
     {
         // TODO: how to avoid relative path here? 
-        const string TEST_CONFIG_FILE = "../../../TestConfig.ini";
-        const string TEST_CASE_NAME_SELECTOR = "input[type='text'][data-role='testCaseName']";
-        const string DEFEFFED_SELECTOR = "input[type='checkbox'][data-role='Deferred']";
-        const string CODE_MIRROR_EDITOR_SELECTOR = "div.CodeMirror-code pre.CodeMirror-line";
-        const string SCRIPT_PREP = @"
+        public const string TEST_CONFIG_FILE = "../../../TestConfig.ini";
+        public const string TEST_CASE_NAME_SELECTOR = "input[type='text'][data-role='testCaseName']";
+        public const string DEFEFFED_SELECTOR = "input[type='checkbox'][data-role='Deferred']";
+        public const string CODE_MIRROR_EDITOR_SELECTOR = "div.CodeMirror-code pre.CodeMirror-line";
+        public const string SCRIPT_PREP = @"
 function wait(ms) {
     return new Promise(res => setTimeout(() => { res(ms); }, ms));
 }
@@ -117,6 +114,7 @@ function factorializeRecursive(num) {
             var createBenchmarkLink = Page.Locator("div.jumbotron a.btn.btn-primary[href='/Benchmarks/Add']");
             await createBenchmarkLink.ClickAsync();
 
+            await Expect(Page.Locator("#benchmark_submit")).ToBeEnabledAsync();
 
             const string existing_name = "Deferred & Regular & Async hybrid test";
             await Page.FillAsync("#BenchmarkName", existing_name);
@@ -258,6 +256,8 @@ function factorializeRecursive(num) {
 
             await Page.Locator("a:has-text('Edit')").ClickAsync();
 
+            await Expect(Page.Locator("#benchmark_submit")).ToBeEnabledAsync();
+
             testCasesListSection = await Page.QuerySelectorAsync("ul#test-case-list");
             codeEditors = await testCasesListSection.QuerySelectorAllAsync(CODE_MIRROR_EDITOR_SELECTOR);
             await codeEditors[4].ClickAsync();
@@ -300,6 +300,7 @@ function factorializeRecursive(num) {
 
             // Edit benchmark, unchecked the deferred checkbox for the 5th test case
             await Page.Locator("a:has-text('Edit')").ClickAsync();
+            await Expect(Page.Locator("#benchmark_submit")).ToBeEnabledAsync();
 
             testCaseList = Page.Locator("ul#test-case-list");
             await testCaseList.Locator(DEFEFFED_SELECTOR).Nth(4).UncheckAsync();

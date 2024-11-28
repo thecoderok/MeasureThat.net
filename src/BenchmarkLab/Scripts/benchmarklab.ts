@@ -436,6 +436,7 @@ class ClientValidationHandler {
         $("#benchmark_submit").removeClass('btn-primary');
         $("#benchmark_submit").removeClass('btn-danger');
         $("#benchmark_submit").addClass('btn-success');
+        $("#benchmark_submit").removeAttr("disabled");
     }
 
     private setValidateBtnState(enabled: boolean): void {
