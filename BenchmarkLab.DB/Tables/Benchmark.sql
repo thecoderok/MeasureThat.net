@@ -12,3 +12,7 @@ CREATE TABLE [dbo].[Benchmark]
     [WhenUpdated] DATETIME2 NULL, 
     CONSTRAINT [FK_Benchmark_ToUsers] FOREIGN KEY (OwnerId) REFERENCES [AspNetUsers]([Id])
 )
+
+GO
+
+CREATE INDEX [IX_Benchmark_WhenCreated] ON [dbo].[Benchmark] (WhenCreated)
