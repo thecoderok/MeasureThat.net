@@ -10,6 +10,42 @@ using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Data.Dao
 {
+    public class RankedTest
+    {
+        public long ResultId
+        {
+            get; set;
+        }
+        public string TestName
+        {
+            get; set;
+        }
+        public string Browser
+        {
+            get; set;
+        }
+        public int Rank
+        {
+            get; set;
+        }
+    }
+
+    public class FastestCountResult
+    {
+        public string Browser
+        {
+            get; set;
+        }
+        public string TestName
+        {
+            get; set;
+        }
+        public int FastestCount
+        {
+            get; set;
+        }
+    }
+
     public class SqlServerResultsRepository
     {
         private readonly ApplicationDbContext m_db;
@@ -142,6 +178,36 @@ namespace MeasureThat.Net.Data.Dao
                 .ConfigureAwait(false);
 
             return ProcessQueryResult(list);
+        }
+
+        public List<FastestCountResult> GetFastestCountsPerBrowser(long benchmarkId)
+        {
+            var rankedTests = m_db.ResultRows
+                .Where(rr => rr.Result.BenchmarkId == benchmarkId)
+                .GroupBy(rr => new { rr.ResultId, rr.TestName, rr.Result.Browser })
+                .Select(g => new RankedTest
+                {
+                    ResultId = g.Key.ResultId,
+                    TestName = g.Key.TestName,
+                    Browser = g.Key.Browser,
+                    Rank = g.OrderByDescending(rr => rr.ExecutionsPerSecond)
+                            .Select((rr, index) => new { rr, index })
+                            .FirstOrDefault().index + 1
+                });
+
+            var fastestCounts = rankedTests
+                .GroupBy(rt => new { rt.Browser, rt.TestName })
+                .Select(g => new FastestCountResult
+                {
+                    Browser = g.Key.Browser,
+                    TestName = g.Key.TestName,
+                    FastestCount = g.Count(rt => rt.Rank == 1)
+                })
+                .OrderBy(fc => fc.Browser)
+                .ThenByDescending(fc => fc.TestName)
+                .ToList();
+
+            return fastestCounts;
         }
 
 
