@@ -211,6 +211,36 @@ namespace MeasureThat.Net.Data.Dao
         }
 
 
+        public List<FastestCountResult> GetFastestCountsByTestName(long benchmarkId)
+        {
+            var rankedTests = m_db.ResultRows
+                .Where(rr => rr.Result.BenchmarkId == benchmarkId)
+                .GroupBy(rr => new { rr.ResultId, rr.TestName })
+                .SelectMany(g => g
+                    .OrderByDescending(rr => rr.ExecutionsPerSecond)
+                    .Select((rr, index) => new
+                    {
+                        rr.ResultId,
+                        rr.TestName,
+                        Rank = index + 1
+                    })
+                );
+
+            var result = rankedTests
+                .Where(rt => rt.Rank == 1)
+                .GroupBy(rt => rt.TestName)
+                .Select(g => new FastestCountResult
+                {
+                    TestName = g.Key,
+                    FastestCount = g.Count()
+                })
+                .OrderByDescending(fc => fc.FastestCount)
+                .ToList();
+
+            return result;
+        }
+
+
         private IList<BenchmarkResultDto> ProcessQueryResult(IEnumerable<Result> entities)
         {
             var result = new List<BenchmarkResultDto>();
