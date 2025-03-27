@@ -19,3 +19,6 @@ npx playwright install
 npx playwright install
 npx playwright --version
 bin/Debug/netX/playwright.ps1 install
+
+
+PS C:\Users\<user>\Source\Repos\BenchmarkLab> .\bump-version.ps1

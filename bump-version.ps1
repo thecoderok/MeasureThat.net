@@ -1,5 +1,9 @@
+# Get the script directory and project paths
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectPath = Join-Path $scriptDir "src\BenchmarkLab\BenchmarkLab.csproj"
+
 # Load the .csproj file
-[xml]$csproj = Get-Content "src/BenchmarkLab/BenchmarkLab.csproj"
+[xml]$csproj = Get-Content $projectPath
 
 # Function to increment version
 function Increment-Version($version) {
@@ -44,8 +48,9 @@ if (-not $fileVersionFound) {
 }
 
 # Save the updated .csproj file
-$csproj.Save("src/BenchmarkLab/BenchmarkLab.csproj")
+$csproj.Save($projectPath)
 
+Write-Output "Project file path: $projectPath"
 Write-Output "Version updated to $($propertyGroup.Version)"
 Write-Output "AssemblyVersion updated to $($propertyGroup.AssemblyVersion)"
 Write-Output "FileVersion updated to $($propertyGroup.FileVersion)"

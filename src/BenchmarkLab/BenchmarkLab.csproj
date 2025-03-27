@@ -15,9 +15,9 @@
     <UserSecretsId>aspnet-BenchmarkLab-4a7d58a6-9727-4b4b-be95-3d02d8440297</UserSecretsId>
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <TypeScriptToolsVersion>5.6.2</TypeScriptToolsVersion>
-    <Version>1.7.1</Version>
-    <AssemblyVersion>1.7.1</AssemblyVersion>
-    <FileVersion>1.7.1</FileVersion>
+    <Version>1.7.2</Version>
+    <AssemblyVersion>1.7.2</AssemblyVersion>
+    <FileVersion>1.7.2</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Scripts\testrunner.ts" />
