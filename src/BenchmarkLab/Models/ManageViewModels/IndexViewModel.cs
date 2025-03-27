@@ -29,5 +29,10 @@ namespace MeasureThat.Net.Models.ManageViewModels
         {
             get; set;
         }
+
+        public string Email
+        {
+            get; set;
+        }
     }
 }

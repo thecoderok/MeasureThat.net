@@ -12,6 +12,10 @@
     <h4>Change your account settings</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>Email:</dt>
+        <dd>
+            @Model.Email
+        </dd>
         <dt>Password:</dt>
         <dd>
             @if (Model.HasPassword)
@@ -24,4 +28,5 @@
             }
         </dd>
     </dl>
+    <a asp-controller="Benchmarks" asp-action="My" class="btn btn-default btn-lg">Your benchmarks</a>
 </div>
