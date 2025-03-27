@@ -23,19 +23,6 @@ namespace MeasureThat.Net.Services
         // https://azure.microsoft.com/en-us/documentation/articles/sendgrid-dotnet-how-to-send-email/#create-a-sendgrid-account
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            // Plug in your email service here to send an email.
-            /*var myMessage = new SendGrid.SendGridMessage();
-            myMessage.AddTo(email);
-            myMessage.From = new System.Net.Mail.MailAddress(Options.SenderEmail, Options.SenderName);
-            myMessage.Subject = subject;
-            myMessage.Text = message;
-            myMessage.Html = message;
-            var credentials = new System.Net.NetworkCredential(
-                Options.SendGridUser,
-                Options.SendGridKey);
-            // Create a Web transport for sending email.
-            var transportWeb = new SendGrid.Web(credentials);
-            return transportWeb.DeliverAsync(myMessage);*/
             var client = new SendGridClient(Options.SendGridApiKey);
 
             // Send a Single Email using the Mail Helper
