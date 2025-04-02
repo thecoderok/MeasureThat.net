@@ -44,7 +44,8 @@ namespace MeasureThat.Net
 
             services.AddDetection();
 
-            AddDatabaseContext(services);
+            services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(o =>
                 {
@@ -104,35 +105,6 @@ namespace MeasureThat.Net
                 return factory.GetUrlHelper(actionContext);
             });
             services.AddScoped<SitemapGenerator>();
-        }
-
-        private void AddDatabaseContext(IServiceCollection services)
-        {
-            string dbTypeString = Configuration["DatabaseType"];
-            SupportedDatabase db;
-            if (!Enum.TryParse(dbTypeString, out db))
-            {
-                throw new Exception("Such database type is not supported: " + dbTypeString);
-            }
-
-            switch (db)
-            {
-                case SupportedDatabase.SqlServer:
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-                    break;
-                case SupportedDatabase.MySql:
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
-                    break;
-                case SupportedDatabase.PostgreSQL:
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-                    break;
-                default:
-                    throw new Exception("There is no initialization section for DB: " + dbTypeString);
-            }
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

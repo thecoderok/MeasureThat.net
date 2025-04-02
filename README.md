@@ -4,8 +4,6 @@ MeasureThat.net is the website to create and run JavaScript benchmarks. It uses 
 
 Running at: https://www.measurethat.net/
 
-# How to run MeasureThat on Linux using PostgreSQL:
-This blog post explains how to build and run the app on Linux using PostgreSQL: http://the-coderok.azurewebsites.net/2016/10/11/Run-MeasureThat-net-application-on-Linux-building-and-running-the-application/
 
 
 get started.
@@ -58,7 +56,6 @@ Open appsettings.json file in the text editor and:
 (Please let me know in the commens if you want to be able to use External authentication, I can explain how it can be done )
 * Set `RequireEmailConfirmation` to false
 * Disable reCaptcha: set `ReCaptchaEnabled` to `false`. 
-* Set database type to PostgreSQL.
 
 Result should look like this:
 
@@ -90,7 +87,6 @@ Result should look like this:
   "AllowGuestUsersToCreateBenchmarks": true,
   "SenderEmail": "MeasureThat@outlook.com",
   "SenderName": "MeasureThat Admin",
-  "DatabaseType": "PostgreSQL",
   "RequireEmailConfirmation": false,
   "ReCaptchaEnabled": false 
 }
