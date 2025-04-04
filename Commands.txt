@@ -1,9 +1,11 @@
+winget install OpenJS.NodeJS.LTS
 npm install typings --global
 typings search codemirror
 typings install dt~jquery --global
 npm install -g bower
 
 
+npm install --global gulp-cli
 gulp --version
 npm install --global gulp-cli
 npm install --save-dev gulp
