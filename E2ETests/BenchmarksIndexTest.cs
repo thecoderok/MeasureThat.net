@@ -33,7 +33,7 @@ namespace E2ETests
             await Expect(firstPageLink).ToBeVisibleAsync();
 
             // Click on the link with text "Next"
-            var nextLink = Page.Locator("a", new PageLocatorOptions { HasTextString = "Next" });
+            var nextLink = Page.Locator("[data-test-purpose='pagination']", new PageLocatorOptions { HasTextString = "Next" });
             await nextLink.ClickAsync();
 
             // Validate that the URL is now "/Benchmarks?page=1"

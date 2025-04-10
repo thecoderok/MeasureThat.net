@@ -68,7 +68,10 @@ namespace BenchmarkLab.Controllers
 
             try
             {
-                var result = await WhoisClient.QueryAsync(domain);
+                var options = new WhoisQueryOptions
+                {
+                };
+                var result = await WhoisClient.QueryAsync(domain, options);
                 return View(result);
             }
             catch (Exception e)

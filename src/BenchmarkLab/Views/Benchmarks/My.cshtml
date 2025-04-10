@@ -26,12 +26,12 @@
                 @if (Model.ButtonPreviousActive)
                 {
                     <li><a asp-action="Index" asp-route-page="0">&laquo;</a></li>
-                    <li><a asp-action="Index" asp-route-page="@(Model.Page-1)">Previous</a></li>
+                    <li><a asp-action="Index" asp-route-page="@(Model.Page-1)" data-test-purpose="pagination">Previous</a></li>
                 }
                 else
                 {
                     <li class="disabled"><a href="#">&laquo;</a></li>
-                    <li class="disabled"><a href="#">Previous</a></li>
+                    <li class="disabled"><a href="#" data-test-purpose="pagination">Previous</a></li>
                 }
                 @foreach (var page in Model.AvailablePages)
                 {
@@ -47,12 +47,12 @@
 
                 @if (Model.ButtonNextActive)
                 {
-                    <li><a asp-action="Index" asp-route-page="@(Model.Page+1)">Next</a></li>
+                    <li><a asp-action="Index" asp-route-page="@(Model.Page+1)" data-test-purpose="pagination">Next</a></li>
                     <li><a asp-action="Index" asp-route-page="@(Model.NumberOfPages)">&raquo;</a></li>
                 }
                 else
                 {
-                    <li class="disabled"><a href="#">Next</a></li>
+                    <li class="disabled"><a href="#" data-test-purpose="pagination">Next</a></li>
                     <li class="disabled"><a href="#">&raquo;</a></li>
                 }
             </ul>

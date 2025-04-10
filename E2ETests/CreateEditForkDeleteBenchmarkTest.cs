@@ -126,6 +126,7 @@ function factorializeRecursive(num) {
             await Page.FillAsync("#BenchmarkName", benchmarkName);
 
             var codeMirrorDiv = await Page.QuerySelectorAsync("div[data-test-id='HtmlPreparationCodeFormGroup']");
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var codeMirrorLine = await codeMirrorDiv.QuerySelectorAsync(CODE_MIRROR_EDITOR_SELECTOR);
             await codeMirrorLine.ClickAsync();
             await Page.Keyboard.TypeAsync("<div>html test prep code</div>");
@@ -394,5 +395,6 @@ function factorializeRecursive(num) {
             await Page.ClickAsync("button[type='submit'].btn.btn-default");
             await Expect(Page).ToHaveTitleAsync(new Regex("Home Page - MeasureThat.net"));
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }

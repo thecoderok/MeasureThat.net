@@ -151,6 +151,7 @@ namespace E2ETests
         {
             var response = await Page.GotoAsync("/sitemap.xml");
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.AreEqual(200, response.Status, "The sitemap.xml page did not return a 200 status code.");
 
             // Verify that the response content type is XML
@@ -293,5 +294,6 @@ namespace E2ETests
             // Validate that the homepage is loaded
             await Expect(Page).ToHaveURLAsync("/");
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }
