@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MeasureThat.Net
 {
+    using BenchmarkLab.Services;
     using MeasureThat.Logic.Web.Sitemap;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -63,8 +64,8 @@ namespace MeasureThat.Net
             });
 
             // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IEmailSender, MailjetEmailService>();
+            services.AddTransient<ISmsSender, MailjetEmailService>();
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfiguration>(Configuration);

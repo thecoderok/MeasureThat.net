@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Services
 {
-    // This class is used by the application to send Email and SMS
-    // when you turn on two-factor authentication in ASP.NET Identity.
-    // For more details see this link http://go.microsoft.com/fwlink/?LinkID=532713
-    public class AuthMessageSender : IEmailSender, ISmsSender
+    public class SendGridAuthMessageSender : IEmailSender, ISmsSender
     {
-        public AuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+        public SendGridAuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
         {
             Options = optionsAccessor.Value;
         }
@@ -19,7 +16,7 @@ namespace MeasureThat.Net.Services
         public AuthMessageSenderOptions Options
         {
             get;
-        } //set only via Secret Manager
+        } 
 
         // https://github.com/sendgrid/sendgrid-csharp
         public async Task SendEmailAsync(string email, string subject, string message)

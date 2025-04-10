@@ -21,5 +21,20 @@ namespace MeasureThat.Net.Services
         {
             get; set;
         }
+
+        public string MailjetPublicKey
+        {
+            get; set;
+        }
+
+        public string MailjetPrivateKey
+        {
+            get; set;
+        }
+
+        public string MailjetSenderEmail
+        {
+            get; set;
+        }
     }
 }

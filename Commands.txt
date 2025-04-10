@@ -23,4 +23,10 @@ npx playwright --version
 bin/Debug/netX/playwright.ps1 install
 
 
+dotnet user-secrets set "MailjetPrivateKey" "Value"
+dotnet user-secrets set "MailjetPublicKey" "Value"
+
+
+Secrets are stored in a secrets.json file located in %APPDATA%\Microsoft\UserSecrets\<UserSecretsId> on Windows.
+
 PS C:\Users\<user>\Source\Repos\BenchmarkLab> .\bump-version.ps1
