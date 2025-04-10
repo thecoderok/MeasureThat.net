@@ -5,8 +5,6 @@ namespace E2ETests
     [TestClass]
     public class CreateEditForkDeleteBenchmarkTest : BenchmarkLabBaseTest
     {
-        // TODO: how to avoid relative path here? 
-        public const string TEST_CONFIG_FILE = "../../../TestConfig.ini";
         public const string TEST_CASE_NAME_SELECTOR = "input[type='text'][data-role='testCaseName']";
         public const string DEFEFFED_SELECTOR = "input[type='checkbox'][data-role='Deferred']";
         public const string CODE_MIRROR_EDITOR_SELECTOR = "div.CodeMirror-code pre.CodeMirror-line";
@@ -25,54 +23,10 @@ function factorializeRecursive(num) {
 }";
 
 
-        private struct Credentials
-        {
-            public string Username
-            {
-                get; set;
-            }
-            public string Password
-            {
-                get; set;
-            }
-        }
-
-        private Dictionary<string, string> ReadCredentials(string filePath)
-        {
-            var credentials = new Dictionary<string, string>();
-            foreach (var line in File.ReadAllLines(filePath))
-            {
-                if (line.StartsWith("[") || string.IsNullOrWhiteSpace(line))
-                {
-                    continue;
-                }
-                var parts = line.Split('=');
-                if (parts.Length == 2)
-                {
-                    credentials[parts[0].Trim()] = parts[1].Trim();
-                }
-            }
-            return credentials;
-        }
-
-        private Credentials GetCredentials(string filePath)
-        {
-            var credentialsDict = ReadCredentials(filePath);
-            var username = credentialsDict["username"];
-            var password = credentialsDict["password"];
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-            {
-                throw new InvalidOperationException("Test credentials are not set in TestConfig.ini.");
-            }
-
-            return new Credentials { Username = username, Password = password };
-        }
-
         [TestMethod]
         public async Task TestAccountLogin()
         {
-            var credentials = GetCredentials(TEST_CONFIG_FILE);
+            var credentials = TestConfigReader.GetCredentials(TestConfigReader.TEST_CONFIG_FILE);
 
             // Navigate to the login page
             await Page.GotoAsync("/Account/Login");
@@ -100,7 +54,7 @@ function factorializeRecursive(num) {
             // Login via main page/modal dialog
             await Page.GotoAsync("/");
 
-            var credentials = GetCredentials(TEST_CONFIG_FILE);
+            var credentials = TestConfigReader.GetCredentials(TestConfigReader.TEST_CONFIG_FILE);
             var loginLink = Page.Locator("a[href='/Account/Login']:has-text('Log in')");
 
             await loginLink.ClickAsync();
@@ -433,7 +387,7 @@ function factorializeRecursive(num) {
         }
 
 
-        private async Task LoginAsync(Credentials credentials)
+        private async Task LoginAsync(TestCredentials credentials)
         {
             await Page.FillAsync("#Email", credentials.Username);
             await Page.FillAsync("#Password", credentials.Password);
