@@ -267,3 +267,4 @@ ModelManifest.xml
 /src/BenchmarkLab/Scripts/testrunner.js.map
 /src/BenchmarkLab/wwwroot/sitemap.xml
 /E2ETests/TestConfig.ini
+/src/BenchmarkLab/wwwroot/sitemap_cached.xml
