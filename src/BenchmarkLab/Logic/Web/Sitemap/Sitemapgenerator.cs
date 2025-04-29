@@ -26,6 +26,7 @@ namespace MeasureThat.Logic.Web.Sitemap
         private const double HighPriority = 0.9;
         private const double DefaultPriority = 0.5;
         private const double LowPriority = 0.1;
+        private const string SITEMAP_CACHE = "sitemap_cached.xml";
         private readonly TimeSpan cacheDuration = TimeSpan.FromHours(6); // Set the cache duration
 
         public SitemapGenerator(ILoggerFactory loggerFactory, IUrlHelper urlHelper, IWebHostEnvironment environment, SqlServerBenchmarkRepository benchmarkRepository, [NotNull] IConfiguration mConfiguration)
@@ -39,7 +40,7 @@ namespace MeasureThat.Logic.Web.Sitemap
 
         public async Task<string> Generate()
         {
-            string sitemapPath = Path.Combine(environment.WebRootPath, "sitemap.xml");
+            string sitemapPath = Path.Combine(environment.WebRootPath, SITEMAP_CACHE);
             if (File.Exists(sitemapPath))
             {
                 DateTime lastWriteTime = File.GetLastWriteTime(sitemapPath);
