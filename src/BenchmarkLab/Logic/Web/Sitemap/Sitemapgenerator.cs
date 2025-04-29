@@ -21,6 +21,7 @@ namespace MeasureThat.Logic.Web.Sitemap
         private readonly IWebHostEnvironment environment;
         private readonly SqlServerBenchmarkRepository benchmarkRepository;
         private readonly IConfiguration m_configuration;
+        private readonly string baseUrl;
 
         private const double HighestPriority = 1.0;
         private const double HighPriority = 0.9;
@@ -36,6 +37,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             this.environment = environment;
             this.benchmarkRepository = benchmarkRepository;
             this.m_configuration = mConfiguration;
+            this.baseUrl = mConfiguration["SiteSettings:BaseUrl"];
         }
 
         public async Task<string> Generate()
@@ -99,7 +101,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("", "", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Url = CreateAbsoluteUrl("", "", null),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Weekly
             });
@@ -107,7 +109,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("", "Benchmarks", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Url = CreateAbsoluteUrl("", "Benchmarks", null),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Hourly
             });
@@ -115,7 +117,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("Add", "Benchmarks", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Url = CreateAbsoluteUrl("Add", "Benchmarks", null),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Monthly
             });
@@ -123,7 +125,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("Discussions", "", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Url = CreateAbsoluteUrl("Discussions", "", null),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Weekly
             });
@@ -131,7 +133,7 @@ namespace MeasureThat.Logic.Web.Sitemap
             nodes.Add(new SitemapNode()
             {
                 LastModified = DateTime.Now,
-                Url = this.urlHelper.Action("Index", "Tools", null, this.urlHelper.ActionContext.HttpContext.Request.Scheme),
+                Url = CreateAbsoluteUrl("Index", "Tools", null),
                 Priority = HighestPriority,
                 Frequency = SitemapFrequency.Monthly
             });
@@ -148,9 +150,34 @@ namespace MeasureThat.Logic.Web.Sitemap
                     LastModified = benchmark.WhenCreated,
                     Frequency = SitemapFrequency.Monthly,
                     Priority = DefaultPriority,
-                    Url = this.urlHelper.Action("Show", "Benchmarks", new { id = benchmark.Id, version = benchmark.Version, name = SeoFriendlyStringConverter.Convert(benchmark.BenchmarkName) }, this.urlHelper.ActionContext.HttpContext.Request.Scheme)
+                    Url = CreateAbsoluteUrl("Show", "Benchmarks", new { id = benchmark.Id, version = benchmark.Version, name = SeoFriendlyStringConverter.Convert(benchmark.BenchmarkName) })
                 });
             }
+        }
+
+        private string CreateAbsoluteUrl(string actionName, string controllerName, object values = null)
+        {
+            string localhost_url = this.urlHelper.Action(actionName, controllerName, values, this.urlHelper.ActionContext.HttpContext.Request.Scheme);
+            var builder = new UriBuilder(localhost_url)
+            {
+                Host = baseUrl
+            };
+            return builder.Uri.ToString();
+        }
+
+        public static Uri ReplaceBaseDomain(string originalUrl, string newBaseDomain)
+        {
+            Uri originalUri = new(originalUrl);
+            Uri newBaseUri = new(newBaseDomain);
+
+            // Combine the new base domain with the original path and query
+            UriBuilder uriBuilder = new UriBuilder(newBaseUri)
+            {
+                Path = originalUri.AbsolutePath,
+                Query = originalUri.Query.TrimStart('?')
+            };
+
+            return uriBuilder.Uri;
         }
     }
 
