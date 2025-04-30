@@ -1,18 +1,18 @@
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using MeasureThat.Net.Models;
-using System.Collections.Generic;
 
 namespace MeasureThat.Net.Data.Dao
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using BenchmarkLab.Data.Models;
     using BenchmarkLab.Models;
     using Exceptions;
     using Logic.Validation;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Caching.Memory;
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class SqlServerBenchmarkRepository
     {

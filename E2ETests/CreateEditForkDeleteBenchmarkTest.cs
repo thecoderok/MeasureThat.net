@@ -120,7 +120,7 @@ function factorializeRecursive(num) {
                 StringAssert.Contains(browserAlertIntegration.alertText, substring, $"The alert text does not contain the expected substring: {substring}.");
             }
             browserAlertIntegration.ResetState();
-            
+
             var guid = Guid.NewGuid();
             var benchmarkName = $"e2e tests {guid}";
             await Page.FillAsync("#BenchmarkName", benchmarkName);
@@ -375,7 +375,7 @@ function factorializeRecursive(num) {
         {
             await Expect(Page).ToHaveTitleAsync(new Regex($".* a benchmark - MeasureThat.net"));
 
-            var testCaseList = Page.Locator("ul#test-case-list");            
+            var testCaseList = Page.Locator("ul#test-case-list");
 
             var count = await testCaseList.Locator(TEST_CASE_NAME_SELECTOR).CountAsync();
             Assert.AreEqual(expectedCount, count, $"There should be exactly {expectedCount} input element with data-role='testCaseName'.");

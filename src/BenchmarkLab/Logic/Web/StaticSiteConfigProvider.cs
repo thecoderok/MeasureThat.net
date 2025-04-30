@@ -1,7 +1,7 @@
+using System;
 using JetBrains.Annotations;
 using MeasureThat.Net.Models;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace MeasureThat.Net.Logic.Web
 {

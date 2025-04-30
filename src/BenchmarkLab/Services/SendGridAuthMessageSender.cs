@@ -1,8 +1,8 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Services
 {
@@ -16,7 +16,7 @@ namespace MeasureThat.Net.Services
         public AuthMessageSenderOptions Options
         {
             get;
-        } 
+        }
 
         // https://github.com/sendgrid/sendgrid-csharp
         public async Task SendEmailAsync(string email, string subject, string message)

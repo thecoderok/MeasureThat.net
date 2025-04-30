@@ -1,9 +1,3 @@
-using MeasureThat.Net.Data.Dao;
-using MeasureThat.Net.Logic.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +5,12 @@ using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using MeasureThat.Net.Data.Dao;
+using MeasureThat.Net.Logic.Web;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace MeasureThat.Logic.Web.Sitemap
 {
@@ -64,7 +64,7 @@ namespace MeasureThat.Logic.Web.Sitemap
         public string GetSitemapDocument(IEnumerable<SitemapNode> sitemapNodes)
         {
             XNamespace xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9";
-            XElement root = new XElement(xmlns + "urlset");
+            XElement root = new(xmlns + "urlset");
 
             foreach (SitemapNode sitemapNode in sitemapNodes)
             {

@@ -2,7 +2,7 @@
 
 namespace E2ETests
 {
-    abstract public class BenchmarkLabBaseTest: PageTest
+    abstract public class BenchmarkLabBaseTest : PageTest
     {
         const int TEST_SUITE_RUN_TIMEOUT = 60000;
 

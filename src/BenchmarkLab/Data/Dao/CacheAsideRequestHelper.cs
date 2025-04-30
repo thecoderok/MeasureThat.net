@@ -1,8 +1,8 @@
 namespace MeasureThat.Net.Data.Dao
 {
-    using Microsoft.Extensions.Caching.Memory;
     using System;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Caching.Memory;
 
     public class CacheAsideRequestHelper
     {

@@ -1,5 +1,5 @@
-using JetBrains.Annotations;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using Unidecode.NET;
 
 namespace MeasureThat.Net.Logic.Web

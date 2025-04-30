@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Validation;
 using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers.ViewComponents
 {

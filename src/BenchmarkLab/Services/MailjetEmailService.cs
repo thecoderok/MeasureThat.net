@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Mailjet.Client.TransactionalEmails;
 using Mailjet.Client;
+using Mailjet.Client.TransactionalEmails;
 using MeasureThat.Net.Services;
 using Microsoft.Extensions.Options;
-using System.Linq;
 
 namespace BenchmarkLab.Services
 {

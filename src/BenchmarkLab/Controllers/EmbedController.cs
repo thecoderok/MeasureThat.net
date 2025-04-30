@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
 using MeasureThat.Net.Logic.Validation;
@@ -7,7 +8,6 @@ using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
 namespace BenchmarkLab.Controllers
 {

@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using MeasureThat.Net.Models;
 using MeasureThat.Net.Models.ManageViewModels;
 using MeasureThat.Net.Services;
@@ -5,8 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers
 {

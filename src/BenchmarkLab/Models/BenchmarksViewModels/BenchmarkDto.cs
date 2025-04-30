@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MeasureThat.Net.Models
 {
-    using BenchmarkLab.Data.Models;
     using System;
+    using BenchmarkLab.Data.Models;
 
     public class BenchmarkDto
     {

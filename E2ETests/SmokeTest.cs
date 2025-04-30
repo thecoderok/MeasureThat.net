@@ -248,7 +248,7 @@ namespace E2ETests
             await codeEditors[0].ClickAsync();
             await Page.Keyboard.TypeAsync("let a = 12345;");
 
-           
+
             await testCaseList.Locator(CreateEditForkDeleteBenchmarkTest.TEST_CASE_NAME_SELECTOR).Nth(1).FillAsync("Test case #2");
             await codeEditors[1].ClickAsync();
             await Page.Keyboard.TypeAsync("/*THIS IS A TEST*/");

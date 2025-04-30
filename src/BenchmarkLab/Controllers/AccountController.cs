@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using MeasureThat.Net.Models;
 using MeasureThat.Net.Models.AccountViewModels;
 using MeasureThat.Net.Services;
@@ -6,9 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers
 {
@@ -302,7 +302,7 @@ namespace MeasureThat.Net.Controllers
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
                 var code = await m_userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
                 await m_emailSender.SendEmailAsync(model.Email, "Reset Password",
                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 return View("ForgotPasswordConfirmation");

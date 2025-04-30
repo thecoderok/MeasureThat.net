@@ -1,5 +1,5 @@
-﻿using MeasureThat.Net.Logic.Validation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MeasureThat.Net.Logic.Validation;
 
 namespace BenchmarkLab.Logic.Web
 {

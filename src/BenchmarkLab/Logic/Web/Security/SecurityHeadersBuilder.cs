@@ -1,5 +1,5 @@
-using MeasureThat.Net.Logic.Web.Security;
 using System;
+using MeasureThat.Net.Logic.Web.Security;
 
 namespace MeasureThat.Net.Logic.Web
 {

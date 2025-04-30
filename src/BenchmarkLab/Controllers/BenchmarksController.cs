@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using MeasureThat.Net.Data.Dao;
 using MeasureThat.Net.Logic.Options;
@@ -8,12 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Threading.Tasks;
 using UAParser;
 
 namespace MeasureThat.Net.Controllers
 {
+    using System;
+    using System.Collections.Generic;
     using BenchmarkLab.Logic.Web;
     using BenchmarkLab.Models;
     using Exceptions;
@@ -22,8 +24,6 @@ namespace MeasureThat.Net.Controllers
     using MeasureThat.Net.Logic.Web.Security;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
-    using System;
-    using System.Collections.Generic;
     using Wangkanai.Detection.Services;
 
     [Authorize(Policy = "AllowGuests")]
@@ -219,9 +219,8 @@ async function globalMeasureThatScriptPrepareFunction() {
             model.UserId = user?.Id;
 
             ClientInfo clientInfo;
-            if (HttpContext.Request.Headers.ContainsKey("User-Agent"))
+            if (HttpContext.Request.Headers.TryGetValue("User-Agent", out Microsoft.Extensions.Primitives.StringValues userAgent))
             {
-                string userAgent = HttpContext.Request.Headers["User-Agent"];
                 model.RawUserAgenString = userAgent;
 
                 try
@@ -461,7 +460,7 @@ async function globalMeasureThatScriptPrepareFunction() {
                 this.HttpContext.Response.Headers.Remove(XssProtectionConstants.Header);
                 this.HttpContext.Response.Headers.Append(XssProtectionConstants.Header, XssProtectionConstants.Disabled);
             }
-            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode});
+            return this.View("TestFrame", new BenchmarkDto() { HtmlPreparationCode = htmlPrepCode });
         }
     }
 }

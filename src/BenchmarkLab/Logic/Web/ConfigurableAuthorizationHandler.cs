@@ -1,7 +1,7 @@
-﻿using MeasureThat.Net.Models;
+﻿using System.Threading.Tasks;
+using MeasureThat.Net.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Logic.Web
 {

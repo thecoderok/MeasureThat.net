@@ -1,7 +1,7 @@
 ﻿
+using System.Threading.Tasks;
 using MeasureThat.Net.Logic.Web;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BenchmarkLab.Controllers
 {

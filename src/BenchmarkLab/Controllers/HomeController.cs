@@ -1,8 +1,8 @@
+using System.Text;
+using System.Threading.Tasks;
 using MeasureThat.Logic.Web.Sitemap;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeasureThat.Net.Controllers
 {
