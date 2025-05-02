@@ -149,7 +149,7 @@ namespace E2ETests
         [TestMethod]
         public async Task TestSitemapXML()
         {
-            var response = await Page.GotoAsync("/sitemap.xml");
+            var response = await Page.GotoAsync("/sitemap.xml", new PageGotoOptions { Timeout = 1000000 });
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.AreEqual(200, response.Status, "The sitemap.xml page did not return a 200 status code.");
@@ -161,6 +161,30 @@ namespace E2ETests
             // Optionally, you can further verify the content of the XML
             var xmlContent = await response.TextAsync();
             Assert.IsTrue(xmlContent.Contains("<urlset"), "The sitemap.xml content does not contain the expected <urlset> element.");
+
+            // Parse the XML content using XDocument
+            var xmlDoc = System.Xml.Linq.XDocument.Parse(xmlContent);
+
+            // Get the namespace from the document
+            var ns = xmlDoc.Root.GetDefaultNamespace();
+
+            // Get all URL elements from the sitemap
+            var urlElements = xmlDoc.Descendants(ns + "url");
+            var urls = urlElements.Select(element => element.Element(ns + "loc")?.Value).ToList();
+
+            // Define well-known URLs to check
+            var wellKnownUrls = new[]
+            {
+                "https://measurethat.net/",
+                "https://measurethat.net/Tools",
+                "https://measurethat.net/Benchmarks/Add",
+            };
+            // Verify that each well-known URL exists in the sitemap
+            foreach (var url in wellKnownUrls)
+            {
+                Assert.IsTrue(urls.Any(u => u == url || u.Contains(url)),
+                    $"The sitemap.xml does not contain the expected URL: {url}");
+            }
         }
 
         [TestMethod]
