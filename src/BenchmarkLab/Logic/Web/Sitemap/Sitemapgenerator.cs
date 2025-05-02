@@ -79,7 +79,7 @@ namespace MeasureThat.Logic.Web.Sitemap
                 }
                 XElement urlElement = new XElement(
                     xmlns + "url",
-                    new XElement(xmlns + "loc", Uri.EscapeDataString(sitemapNode.Url)),
+                    new XElement(xmlns + "loc", sitemapNode.Url),
                     lastMod == null ? null : new XElement(
                         xmlns + "lastmod",
                         lastMod),
