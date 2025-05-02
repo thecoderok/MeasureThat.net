@@ -160,7 +160,9 @@ namespace MeasureThat.Logic.Web.Sitemap
             string localhost_url = this.urlHelper.Action(actionName, controllerName, values, this.urlHelper.ActionContext.HttpContext.Request.Scheme);
             var builder = new UriBuilder(localhost_url)
             {
-                Host = baseUrl
+                Scheme = Uri.UriSchemeHttps, // Use HTTPS by default
+                Host = baseUrl,
+                Port = -1, // Use the default port for the scheme (80 for http, 443 for https)
             };
             return builder.Uri.ToString();
         }

@@ -43,9 +43,18 @@ namespace MeasureThat.Net
             services.AddMemoryCache();
 
             services.AddDetection();
-
+            /* Need to explicitly set compatibility level, after migration to 8+
+             * 
+             * SELECT compatibility_level 
+             * FROM sys.databases 
+             * WHERE name = '<DB>';
+             * 
+             * https://github.com/dotnet/efcore/issues/31362
+             */
+            const int DB_COMPATIBILITY_LEVEL = 100;
             services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                        o => o.UseCompatibilityLevel(DB_COMPATIBILITY_LEVEL)));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(o =>
                 {
