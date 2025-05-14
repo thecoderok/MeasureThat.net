@@ -1,4 +1,4 @@
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 
 namespace E2ETests
 {
@@ -318,6 +318,48 @@ namespace E2ETests
             // Validate that the homepage is loaded
             await Expect(Page).ToHaveURLAsync("/");
         }
+
+        [TestMethod]
+        public async Task TestUnicodeTestCaseNamesInChart()
+        {
+            // Navigate to benchmark with Unicode test case names (ID: 34509)
+            await Page.GotoAsync("/Benchmarks/Show/34509");
+
+            // Wait for chart to be rendered
+            await Page.WaitForSelectorAsync("#chart_div svg", new PageWaitForSelectorOptions { Timeout = 30000 });
+
+            // Verify the chart has been created and contains SVG elements
+            var chartSvg = Page.Locator("#chart_div svg");
+            await Expect(chartSvg).ToBeVisibleAsync();
+
+            // Get all text elements in the chart - SVG text elements, not HTML
+            var textElements = Page.Locator("#chart_div svg text");
+            var textCount = await textElements.CountAsync();
+            Assert.IsTrue(textCount > 0, "No text elements found in chart");
+
+            // Extract all text content from the chart
+            var allTexts = new List<string>();
+            for (int i = 0; i < textCount; i++)
+            {
+                // Use TextContentAsync instead of InnerTextAsync for SVG elements
+                var text = await textElements.Nth(i).TextContentAsync();
+                allTexts.Add(text);
+            }
+
+            // Join all texts for easier searching
+            var allTextContent = string.Join(" ", allTexts);
+
+            // Check that HTML entities are not present in the rendered text
+            Assert.IsFalse(allTextContent.Contains("&#x"), "HTML encoded characters found in chart text");
+
+            // Check that the Unicode characters are present
+            bool hasUnicodeCharacters = allTexts.Any(text =>
+                text.Contains("线性插值"));
+
+            Assert.IsTrue(hasUnicodeCharacters, "No Unicode characters found in chart text");
+        }
+
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
 }
