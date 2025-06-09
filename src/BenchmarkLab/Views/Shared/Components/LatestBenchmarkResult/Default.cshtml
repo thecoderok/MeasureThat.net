@@ -48,7 +48,7 @@ window.addEventListener('load', function(){
     {
         <text>
         chartItem = [];
-        chartItem.push(JSON.parse('@Html.Raw(Json.Serialize(row.TestName))'));
+        chartItem.push(JSON.parse('@Html.Raw(Json.Serialize(row.TestName.Replace("\"", "''")))'));
         chartItem.push(@row.ExecutionsPerSecond.ToString("F3"));
         chartData.push(chartItem);
         </text>

@@ -359,6 +359,47 @@ namespace E2ETests
             Assert.IsTrue(hasUnicodeCharacters, "No Unicode characters found in chart text");
         }
 
+        [TestMethod]
+        public async Task TestQuotesInTestCaseNamesInChart()
+        {
+            // Navigate to benchmark with test case names containing double quotes (ID: 34678)
+            await Page.GotoAsync("/Benchmarks/Show/34678");
+
+            // Wait for chart to be rendered
+            await Page.WaitForSelectorAsync("#chart_div svg", new PageWaitForSelectorOptions { Timeout = 30000 });
+
+            // Verify the chart has been created and contains SVG elements
+            var chartSvg = Page.Locator("#chart_div svg");
+            await Expect(chartSvg).ToBeVisibleAsync();
+
+            // Get all text elements in the chart - SVG text elements, not HTML
+            var textElements = Page.Locator("#chart_div svg text");
+            var textCount = await textElements.CountAsync();
+            Assert.IsTrue(textCount > 0, "No text elements found in chart");
+
+            // Extract all text content from the chart
+            var allTexts = new List<string>();
+            for (int i = 0; i < textCount; i++)
+            {
+                // Use TextContentAsync instead of InnerTextAsync for SVG elements
+                var text = await textElements.Nth(i).TextContentAsync();
+                allTexts.Add(text);
+            }
+
+            // Join all texts for easier searching
+            var allTextContent = string.Join(" ", allTexts);
+
+            // Check that the double quotes are present in the chart text
+            bool hasQuotes = allTexts.Any(text =>
+                text.Contains("fastify deepmerge, with ''all: true''"));
+
+            Assert.IsTrue(hasQuotes, "No double quotes found in chart text");
+
+            // Check that no HTML entities for quotes are present in the rendered text
+            Assert.IsFalse(allTextContent.Contains("&quot;"), "HTML encoded quotes found in chart text");
+        }
+
+
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
