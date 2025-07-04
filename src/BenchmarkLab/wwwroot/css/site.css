@@ -129,3 +129,69 @@ body {
     resize: vertical;
     overflow: auto;
 }
+
+/* Latest benchmarks table fixes */
+table[data-test-id="latest-benchmarks"] {
+    table-layout: fixed;
+    width: 100%;
+}
+
+table[data-test-id="latest-benchmarks"] th:first-child,
+table[data-test-id="latest-benchmarks"] td:first-child {
+    width: 70%;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+table[data-test-id="latest-benchmarks"] th:last-child,
+table[data-test-id="latest-benchmarks"] td:last-child {
+    width: 30%;
+    white-space: nowrap;
+}
+
+table[data-test-id="latest-benchmarks"] td a {
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    display: inline-block;
+    max-width: 100%;
+}
+
+table[data-test-id="latest-benchmarks"] td p {
+    margin-top: 5px;
+    margin-bottom: 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    table[data-test-id="latest-benchmarks"] th:first-child,
+    table[data-test-id="latest-benchmarks"] td:first-child {
+        width: 60%;
+    }
+    
+    table[data-test-id="latest-benchmarks"] th:last-child,
+    table[data-test-id="latest-benchmarks"] td:last-child {
+        width: 40%;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    table[data-test-id="latest-benchmarks"] {
+        font-size: 14px;
+    }
+    
+    table[data-test-id="latest-benchmarks"] th:first-child,
+    table[data-test-id="latest-benchmarks"] td:first-child {
+        width: 55%;
+    }
+    
+    table[data-test-id="latest-benchmarks"] th:last-child,
+    table[data-test-id="latest-benchmarks"] td:last-child {
+        width: 45%;
+    }
+}
