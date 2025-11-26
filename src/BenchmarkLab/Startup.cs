@@ -144,6 +144,14 @@ namespace MeasureThat.Net
               .AddDefaultSecurePolicy()
             );
 
+            // User-Agent logging middleware (disabled by default)
+            bool userAgentLoggingEnabled = Configuration.GetValue<bool>("UserAgentLogging:Enabled", false);
+            if (userAgentLoggingEnabled)
+            {
+                m_logger.LogInformation("User-Agent logging is enabled");
+                app.UseMiddleware<UserAgentLoggingMiddleware>();
+            }
+
             app.UseAuthentication();
 
             app.UseMvc(routes =>
